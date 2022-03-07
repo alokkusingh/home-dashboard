@@ -1,4 +1,4 @@
-FROOM arm64v8/node as builder
+FROM arm64v8/node as builder
 
 WORKDIR /app
 COPY package.json .
