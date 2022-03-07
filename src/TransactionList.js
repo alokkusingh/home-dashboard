@@ -60,6 +60,20 @@ class TransactionList extends Component {
     });
   }
 
+  downloadTransactions = () => {
+  		fetch('/fin/report/download')
+  			.then(response => {
+  				response.blob().then(blob => {
+  					let url = window.URL.createObjectURL(blob);
+  					let a = document.createElement('a');
+  					a.href = url;
+  					a.download = 'transactions.csv';
+  					a.click();
+  				});
+  				//window.location.href = response.url;
+  		});
+  	}
+
   render() {
     const {transactions} = this.state;
     const {count} = this.state;
@@ -87,7 +101,7 @@ class TransactionList extends Component {
                     >
                     <div style={{float: 'right'}}>
                       <a
-                        href={`http://jgte:8081/fin/report/download`}
+                        href="#" onClick={this.downloadTransactions}
                         class="waves-effect waves-light btn-small">
                             <i class="material-icons right"></i>
                             Download
