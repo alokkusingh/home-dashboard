@@ -76,4 +76,5 @@ docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:
 ````
 2. Deploy
 ````
+docker run -d -p 8083:80 --rm --name home-dashboard alokkusingh/home-dashboard
 ````
