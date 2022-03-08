@@ -74,6 +74,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 ````
 docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:1.0.0 .
 ````
+2. Push
+````
+docker push alokkusingh/home-dashboard:latest
+````
 2. Deploy
 ````
 docker run -d -p 8083:80 --rm --name home-dashboard alokkusingh/home-dashboard
