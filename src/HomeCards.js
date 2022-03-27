@@ -28,6 +28,7 @@ class HomeCards extends Component {
     });
     console.log("monthExpenses: ", body.expenses);
 
+
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
     const bodySumByCat = await responseSumByCatMonth.json();
     this.setState({
@@ -59,16 +60,27 @@ class HomeCards extends Component {
       });
 
      const expensesByCategoryList = expensesByCategory.map(expense => {
+        if(expense.month < 10)
           return <tr key={expense.month} onClick={this.showModal}>
-                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.month), 'MMM yyyy')}</td>
+                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
+                  <td tranId={expense.month} style={{textAlign: "center"}}>{expense.category}</td>
+                  <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+              </tr>
+          return <tr key={expense.month} onClick={this.showModal}>
+                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
                   <td tranId={expense.month} style={{textAlign: "center"}}>{expense.category}</td>
                   <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const expensesByMonthList = expensesByMonth.map(expense => {
+        if(expense.month < 10)
           return <tr key={expense.month} onClick={this.showModal}>
-                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.month), 'MMM yyyy')}</td>
+                   <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
+                   <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+               </tr>
+          return <tr key={expense.month} onClick={this.showModal}>
+                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
                   <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
