@@ -72,7 +72,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 ### Docker Build and Deploy
 1. Build
 ````
-docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:1.0.0 .
+docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:1.1.0 .
 ````
 2. Push
 ````
@@ -82,3 +82,8 @@ docker push alokkusingh/home-dashboard:latest
 ````
 docker run -d -p 8083:80 --rm --name home-dashboard alokkusingh/home-dashboard
 ````
+
+## Open Distributed Tracing with Jaeger
+1. Compiled and included ngx_http_opentracing_module
+2. Enabled Jaeger header propagation
+3. Enabled connection to Jaeger agent
