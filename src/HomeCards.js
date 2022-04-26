@@ -16,17 +16,18 @@ class HomeCards extends Component {
       monthExpenses: [],
       expensesByCategory: [],
       expensesByMonth: [],
+      monthExpensesByDay: [],
       count: 0
     };
   }
 
   async componentDidMount() {
-    const response = await fetch('/fin/expense/current_month');
+    const response = await fetch('/fin/expense/current_month_by_day');
     const body = await response.json();
     this.setState({
-        monthExpenses: body.expenses
+        monthExpensesByDay: body.expenses
     });
-    console.log("monthExpenses: ", body.expenses);
+    console.log("monthExpensesByDay: ", body.expenses);
 
 
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
@@ -50,6 +51,7 @@ class HomeCards extends Component {
       const {monthExpenses} = this.state;
       const {expensesByCategory} = this.state;
       const {expensesByMonth} = this.state;
+      const {monthExpensesByDay} = this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -58,6 +60,13 @@ class HomeCards extends Component {
                   <td tranId={expense.id} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
+
+      const monthExpensesByDayList = monthExpensesByDay.map(expense => {
+                return <tr key={expense.date} onClick={this.showModal}>
+                        <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                        <td tranId={expense.date} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
+                    </tr>
+            });
 
      const expensesByCategoryList = expensesByCategory.map(expense => {
         if(expense.month < 10)
@@ -93,18 +102,17 @@ class HomeCards extends Component {
                     <Card
                           className="card-panel teal lighten-4"
                           textClassName="black-text"
-                          title="This Month Expenses"
+                          title="This Month Expenses by Day"
                         >
                        <Table striped bordered hover scrollable size="sm">
                             <thead>
                               <tr>
                                 <th width="25%" style={{textAlign: "center"}}>Date</th>
-                                <th width="50%" style={{textAlign: "center"}}>Head</th>
                                 <th width="25%" style={{textAlign: "right"}}>Amount</th>
                               </tr>
                             </thead>
                             <tbody>
-                            {monthExpenseList}
+                            {monthExpensesByDayList}
                             </tbody>
                         </Table>
                     </Card>
