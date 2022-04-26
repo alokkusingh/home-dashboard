@@ -17,6 +17,7 @@ class HomeCards extends Component {
       expensesByCategory: [],
       expensesByMonth: [],
       monthExpensesByDay: [],
+      monthlySummary: [],
       count: 0
     };
   }
@@ -37,12 +38,12 @@ class HomeCards extends Component {
     });
     console.log("expensesByCategory: ", bodySumByCat.expenseCategorySums);
 
-     const responseSumByMonth = await fetch('/fin/expense/sum_by_month');
-     const bodySumByMonth = await responseSumByMonth.json();
+     const responseMonthlySummary = await fetch('/fin/summary/monthly');
+     const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
-         expensesByMonth: bodySumByMonth.expenseCategorySums
+         monthlySummary: bodyMonthlySummary.records
      });
-     console.log("expensesByMonth: ", bodySumByMonth.expenseCategorySums);
+     console.log("monthlySummary: ", bodyMonthlySummary.records);
   }
 
 
@@ -52,6 +53,7 @@ class HomeCards extends Component {
       const {expensesByCategory} = this.state;
       const {expensesByMonth} = this.state;
       const {monthExpensesByDay} = this.state;
+      const {monthlySummary} = this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -82,15 +84,21 @@ class HomeCards extends Component {
               </tr>
       });
 
-     const expensesByMonthList = expensesByMonth.map(expense => {
-        if(expense.month < 10)
-          return <tr key={expense.month} onClick={this.showModal}>
-                   <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
-                   <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+     const monthlySummaryList = monthlySummary.map(record => {
+        if(record.month < 10)
+          return <tr key={record.month} onClick={this.showModal}>
+                   <td tranId={record.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
                </tr>
-          return <tr key={expense.month} onClick={this.showModal}>
-                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
-                  <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+          return <tr key={record.month} onClick={this.showModal}>
+                   <td tranId={record.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
               </tr>
       });
 
@@ -98,7 +106,7 @@ class HomeCards extends Component {
           <div>
               <div id="cards" align="center" >
               <Row >
-                <Col m={4} s={4} l={3}>
+                <Col m={2} s={2} l={2}>
                     <Card
                           className="card-panel teal lighten-4"
                           textClassName="black-text"
@@ -145,17 +153,20 @@ class HomeCards extends Component {
                           closeIcon={<Icon>close</Icon>}
                           revealIcon={<Icon>more_vert</Icon>}
                           textClassName="black-text"
-                          title="Expense vs Income vs Investment"
+                          title="Monthly Income vs Expense vs Transfer vs Investment vs Saving"
                         >
                         <Table striped bordered hover size="sm">
                               <thead>
                                 <tr>
-                                  <th width="25%" style={{textAlign: "center"}}>Month</th>
-                                  <th width="25%" style={{textAlign: "right"}}>Amount</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Month</th>
+                                  <th width="20%" style={{textAlign: "right"}}>Income</th>
+                                  <th width="20%" style={{textAlign: "right"}}>Expense</th>
+                                  <th width="20%" style={{textAlign: "right"}}>Transfer</th>
+                                  <th width="20%" style={{textAlign: "right"}}>Saving</th>
                                 </tr>
                               </thead>
                               <tbody>
-                              {expensesByMonthList}
+                              {monthlySummaryList}
                               </tbody>
                           </Table>
                     </Card>
