@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Table, Row, Col, CardTitle, CardText} from 'reactstrap';
-import styles from './cardStyles.css';
+import { Table, Row, Col} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
-import {CardPanel, Icon, Card} from 'react-materialize';
+import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
-
-
+import ExpenseMonthBarChart from './expenseMonthBarChart';
 
 class HomeCards extends Component {
 
@@ -18,6 +16,7 @@ class HomeCards extends Component {
       expensesByMonth: [],
       monthExpensesByDay: [],
       monthlySummary: [],
+      d3DOMMonthExpenses: [],
       count: 0
     };
   }
@@ -29,6 +28,10 @@ class HomeCards extends Component {
         monthExpensesByDay: body.expenses
     });
     console.log("monthExpensesByDay: ", body.expenses);
+
+    this.setState({
+        d3DOMMonthExpenses: body.expenses
+    });
 
 
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
@@ -54,6 +57,7 @@ class HomeCards extends Component {
       const {expensesByMonth} = this.state;
       const {monthExpensesByDay} = this.state;
       const {monthlySummary} = this.state;
+      const {d3DOMMonthExpenses} = this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -112,6 +116,9 @@ class HomeCards extends Component {
                           textClassName="black-text"
                           title="This Month Expenses by Day"
                         >
+                        <div>
+                             <ExpenseMonthBarChart data={d3DOMMonthExpenses} />
+                        </div>
                        <Table striped bordered hover scrollable size="sm">
                             <thead>
                               <tr>
