@@ -1,15 +1,17 @@
 import React from 'react'
 import { format, parseISO } from 'date-fns';
+import { NumberFormat } from "./NumberFormat";
 import * as d3 from 'd3';
 import { useD3 } from './hooks/useD3';
+
 
 function ExpenseMonthBarChart({ data }) {
 
   // format the data
+  var sum = 0;
   data.forEach(function(d) {
-      console.log(d.date);
       d.date = format(parseISO(d.date), "yyyy-MM-dd");
-      console.log(d.date);
+      sum += d.amount;
       d.close = +d.close;
   });
 
@@ -58,6 +60,7 @@ function ExpenseMonthBarChart({ data }) {
       svg.select(".x-axis").call(xAxis);
       svg.select(".y-axis").call(y1Axis);
 
+
       svg
         .select(".plot-area")
         .attr("fill", "teal")
@@ -69,6 +72,13 @@ function ExpenseMonthBarChart({ data }) {
         .attr("width", x.bandwidth())
         .attr("y", (d) => y1(d.amount))
         .attr("height", (d) => y1(0) - y1(d.amount));
+
+        svg.append("text")
+           .attr("x", width - 100)
+           .attr("y", 12)
+           .attr("text-anchor", "start")
+           .style("font-size", "12px")
+           .text("Total: " + sum);
     },
     [data.length]
   );
