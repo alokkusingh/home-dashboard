@@ -20,6 +20,7 @@ class HomeCards extends Component {
       monthExpensesByDay: [],
       monthExpensesByCategory: [],
       monthlySummary: [],
+      totalMonthExpense: 0,
       count: 0
     };
   }
@@ -31,8 +32,15 @@ class HomeCards extends Component {
         monthExpensesByDay: body.expenses,
         monthExpensesByCategory: body.categoryExpenses
     });
-    console.log("monthExpensesByDay: ", body.expenses);
 
+    var sum = 0;
+    body.expenses.forEach(function(d) {
+        sum += d.amount;
+    });
+    this.setState({
+        totalMonthExpense: sum
+    });
+    console.log("monthExpensesByDay: ", body.expenses);
 
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
     const bodySumByCat = await responseSumByCatMonth.json();
@@ -51,13 +59,15 @@ class HomeCards extends Component {
 
 
   render() {
-
-      const {monthExpenses} = this.state;
-      const {expensesByCategory} = this.state;
-      const {expensesByMonth} = this.state;
-      const {monthExpensesByDay} = this.state;
-      const {monthExpensesByCategory} = this.state;
-      const {monthlySummary} = this.state;
+      const {
+        monthExpenses,
+        expensesByCategory,
+        expensesByMonth,
+        monthExpensesByDay,
+        monthExpensesByCategory,
+        monthlySummary,
+        totalMonthExpense
+      } =  this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -117,7 +127,7 @@ class HomeCards extends Component {
                         >
                         <div>
                              <ExpenseMonthBarChart data={monthExpensesByDay} />
-                             <p>Month expenses per day</p>
+                             <p>Month expenses per day ({NumberFormat(totalMonthExpense)})</p>
                         </div>
                     </Card>
                 </Col>
