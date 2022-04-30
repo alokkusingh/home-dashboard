@@ -1,17 +1,9 @@
 import React from 'react'
-import { format, parseISO } from 'date-fns';
 import * as d3 from 'd3';
 import { useD3 } from './hooks/useD3';
 
-function ExpenseMonthBarChart({ data }) {
+function ExpenseMonthByCategoryBarChart({ data }) {
 
-  // format the data
-  data.forEach(function(d) {
-      console.log(d.date);
-      d.date = format(parseISO(d.date), "yyyy-MM-dd");
-      console.log(d.date);
-      d.close = +d.close;
-  });
 
  const ref = useD3(
    (svg) => {
@@ -21,7 +13,7 @@ function ExpenseMonthBarChart({ data }) {
 
       const x = d3
         .scaleBand()
-        .domain(data.map((d) => d.date))
+        .domain(data.map((d) => d.category))
         .rangeRound([width - margin.right, margin.left])
         .padding(0.1);
 
@@ -65,7 +57,7 @@ function ExpenseMonthBarChart({ data }) {
         .data(data)
         .join("rect")
         .attr("class", "bar")
-        .attr("x", (d) => x(d.date))
+        .attr("x", (d) => x(d.category))
         .attr("width", x.bandwidth())
         .attr("y", (d) => y1(d.amount))
         .attr("height", (d) => y1(0) - y1(d.amount));
@@ -90,4 +82,4 @@ function ExpenseMonthBarChart({ data }) {
   );
 }
 
-export default ExpenseMonthBarChart;
+export default ExpenseMonthByCategoryBarChart;

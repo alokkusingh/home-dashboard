@@ -5,6 +5,9 @@ import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
 import ExpenseMonthBarChart from './expenseMonthBarChart';
+import ExpenseMonthByCategoryPiChart from './expenseMonthByCategoryPiChart';
+import ExpenseMonthByCategoryPiChart2 from './expenseMonthByCategoryPiChart2';
+import ExpenseMonthByCategoryBarChart from './expenseMonthByCategoryBarChart'
 
 class HomeCards extends Component {
 
@@ -15,8 +18,8 @@ class HomeCards extends Component {
       expensesByCategory: [],
       expensesByMonth: [],
       monthExpensesByDay: [],
+      monthExpensesByCategory: [],
       monthlySummary: [],
-      d3DOMMonthExpenses: [],
       count: 0
     };
   }
@@ -25,13 +28,10 @@ class HomeCards extends Component {
     const response = await fetch('/fin/expense/current_month_by_day');
     const body = await response.json();
     this.setState({
-        monthExpensesByDay: body.expenses
+        monthExpensesByDay: body.expenses,
+        monthExpensesByCategory: body.categoryExpenses
     });
     console.log("monthExpensesByDay: ", body.expenses);
-
-    this.setState({
-        d3DOMMonthExpenses: body.expenses
-    });
 
 
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
@@ -56,8 +56,8 @@ class HomeCards extends Component {
       const {expensesByCategory} = this.state;
       const {expensesByMonth} = this.state;
       const {monthExpensesByDay} = this.state;
+      const {monthExpensesByCategory} = this.state;
       const {monthlySummary} = this.state;
-      const {d3DOMMonthExpenses} = this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -77,38 +77,73 @@ class HomeCards extends Component {
      const expensesByCategoryList = expensesByCategory.map(expense => {
         if(expense.month < 10)
           return <tr key={expense.month} onClick={this.showModal}>
-                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
-                  <td tranId={expense.month} style={{textAlign: "center"}}>{expense.category}</td>
-                  <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "center"}}>{expense.category}</td>
+                  <td style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
           return <tr key={expense.month} onClick={this.showModal}>
-                  <td tranId={expense.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
-                  <td tranId={expense.month} style={{textAlign: "center"}}>{expense.category}</td>
-                  <td tranId={expense.month} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "center"}}>{expense.category}</td>
+                  <td style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const monthlySummaryList = monthlySummary.map(record => {
         if(record.month < 10)
           return <tr key={record.month} onClick={this.showModal}>
-                   <td tranId={record.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
                </tr>
           return <tr key={record.month} onClick={this.showModal}>
-                   <td tranId={record.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td tranId={record.month} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
               </tr>
       });
 
       return (
           <div>
               <div id="cards" align="center" >
+              <Row>
+                <Col m={2} s={2} l={2}>
+                    <Card
+                          className="card-panel teal lighten-4"
+                          textClassName="black-text"
+                        >
+                        <div>
+                             <ExpenseMonthBarChart data={monthExpensesByDay} />
+                             <p>Month expenses per day</p>
+                        </div>
+                    </Card>
+                </Col>
+                <Col m={2} s={2} l={2}>
+                    <Card
+                          className="card-panel teal lighten-4"
+                          textClassName="black-text"
+                        >
+                        <div>
+                             <ExpenseMonthByCategoryBarChart data={monthExpensesByCategory} />
+                             <p>Month expenses by category</p>
+                        </div>
+                    </Card>
+                </Col>
+                <Col m={2} s={2} l={2}>
+                    <Card
+                          className="card-panel teal lighten-4"
+                          textClassName="black-text"
+                        >
+                        <div>
+                             <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} />
+                             <p>TBD</p>
+                        </div>
+                    </Card>
+                </Col>
+              </Row>
               <Row >
                 <Col m={2} s={2} l={2}>
                     <Card
@@ -116,9 +151,6 @@ class HomeCards extends Component {
                           textClassName="black-text"
                           title="This Month Expenses by Day"
                         >
-                        <div>
-                             <ExpenseMonthBarChart data={d3DOMMonthExpenses} />
-                        </div>
                        <Table striped bordered hover scrollable size="sm">
                             <thead>
                               <tr>
