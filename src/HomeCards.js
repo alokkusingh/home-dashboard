@@ -8,6 +8,7 @@ import ExpenseMonthBarChart from './expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './expenseMonthByCategoryPiChart';
 import ExpenseMonthByCategoryPiChart2 from './expenseMonthByCategoryPiChart2';
 import ExpenseMonthByCategoryBarChart from './expenseMonthByCategoryBarChart'
+import ExpenseVsIncomeLineChart from './expenseVsIncomeLineChart'
 
 class HomeCards extends Component {
 
@@ -86,33 +87,33 @@ class HomeCards extends Component {
 
      const expensesByCategoryList = expensesByCategory.map(expense => {
         if(expense.month < 10)
-          return <tr key={expense.month} onClick={this.showModal}>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "center"}}>{expense.category}</td>
-                  <td style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+          return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
+                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "0" + expense.month), 'MMM yyyy')}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center"}}>{expense.category}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
-          return <tr key={expense.month} onClick={this.showModal}>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "center"}}>{expense.category}</td>
-                  <td style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+          return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
+                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.year + "" + expense.month), 'MMM yyyy')}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center"}}>{expense.category}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const monthlySummaryList = monthlySummary.map(record => {
         if(record.month < 10)
-          return <tr key={record.month} onClick={this.showModal}>
-                   <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+          return <tr key={'' + record.year + record.month} onClick={this.showModal}>
+                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td tranId={'' + record.year + record.month +2 } style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
                </tr>
-          return <tr key={record.month} onClick={this.showModal}>
-                   <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+          return <tr key={'' + record.year + record.month} onClick={this.showModal}>
+                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
               </tr>
       });
 
@@ -137,7 +138,7 @@ class HomeCards extends Component {
                           textClassName="black-text"
                         >
                         <div>
-                             <ExpenseMonthByCategoryBarChart data={monthExpensesByCategory} />
+                             <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} />
                              <p>Month expenses by category</p>
                         </div>
                     </Card>
@@ -148,8 +149,7 @@ class HomeCards extends Component {
                           textClassName="black-text"
                         >
                         <div>
-                             <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} />
-                             <p>TBD</p>
+                             <ExpenseVsIncomeLineChart data={monthlySummary} />
                         </div>
                     </Card>
                 </Col>

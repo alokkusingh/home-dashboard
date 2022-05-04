@@ -18,8 +18,8 @@ function ExpenseMonthBarChart({ data }) {
  const ref = useD3(
    (svg) => {
       const height = 220;
-      const width = 320;
-      const margin = { top: 0, right: 10, bottom: 80, left: 25 };
+      const width = 300;
+      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
 
       const x = d3
         .scaleBand()
@@ -71,12 +71,13 @@ function ExpenseMonthBarChart({ data }) {
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
         .attr("y", (d) => y1(d.amount))
-        .attr("height", (d) => y1(0) - y1(d.amount));
+        .attr("height", (d) => y1(0) - y1(d.amount))
+        .style('overflow', 'visible');
 
         svg.append("text")
-           .attr("x", width - 100)
-           .attr("y", 12)
-           .attr("text-anchor", "start")
+           .attr("x", width/2 + 70)
+           .attr("y", 20)
+           .attr("text-anchor", "middle")
            .style("font-size", "12px")
            .text("Total: " + sum);
     },

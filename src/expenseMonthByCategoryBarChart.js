@@ -8,8 +8,8 @@ function ExpenseMonthByCategoryBarChart({ data }) {
  const ref = useD3(
    (svg) => {
       const height = 220;
-      const width = 320;
-      const margin = { top: 0, right: 10, bottom: 80, left: 25 };
+      const width = 300;
+      const margin = { top: 0, right: 10, bottom: 80, left: 30};
 
       const x = d3
         .scaleBand()

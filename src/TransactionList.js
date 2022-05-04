@@ -29,6 +29,7 @@ class TransactionList extends Component {
     fetch("/fin/bank/transactions/" + event.target.getAttribute("tranId"))
         .then(response => response.json())
         .then(data => {
+              console.log("response received: " + JSON.stringify(data));
               tranDetails[1] = data.id;
               tranDetails[2] = data.date;
               tranDetails[3] = data.debit;
@@ -36,12 +37,14 @@ class TransactionList extends Component {
               tranDetails[5] = data.head;
               tranDetails[6] = data.description;
 
+
               this.setState(
                   {
                       tranDetails: tranDetails,
                       show: true
                   }
               );
+              console.log(tranDetails);
         }
     );
   };
@@ -79,7 +82,9 @@ class TransactionList extends Component {
     const {count} = this.state;
     const {lastTransactionDate} = this.state;
     const {tranDetails} = this.state;
+    const {show} = this.state;
     const title = "Transactions (" + count + ")";
+    console.log(show);
 
     const transactionList = transactions.map(transaction => {
         return <tr key={transaction.id} onClick={this.showModal}>
@@ -108,7 +113,22 @@ class TransactionList extends Component {
                       </a>
                       <p class="grey-text text-darken-2">Last Transaction Date {lastTransactionDate}</p>
                     </div>
-                    <Modal show={this.state.show} handleClose={this.hideModal}>
+                    <div>
+
+                    <Table className="mt-4" hover="true">
+                        <thead>
+                          <tr>
+                            <th width="10%" style={{textAlign: "center"}}>Date</th>
+                            <th width="10%" style={{textAlign: "center"}}>Head</th>
+                            <th width="10%" style={{textAlign: "right"}}>Debit</th>
+                            <th width="10%" style={{textAlign: "right"}}>Credit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {transactionList}
+                        </tbody>
+                    </Table>
+                    <Modal show={show} handleClose={this.hideModal}>
                       <Table striped bordered hover>
                         <thead >
                           <tr>
@@ -123,7 +143,7 @@ class TransactionList extends Component {
                           </tr>
                           <tr>
                             <td>Date</td>
-                            <td>{tranDetails[2]}</td>
+                            <td>{show}</td>
                           </tr>
                           <tr>
                             <td>Debit</td>
@@ -144,19 +164,7 @@ class TransactionList extends Component {
                         </tbody>
                       </Table>
                     </Modal>
-                    <Table className="mt-4" hover="true">
-                        <thead>
-                          <tr>
-                            <th width="10%" style={{textAlign: "center"}}>Date</th>
-                            <th width="10%" style={{textAlign: "center"}}>Head</th>
-                            <th width="10%" style={{textAlign: "right"}}>Debit</th>
-                            <th width="10%" style={{textAlign: "right"}}>Credit</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {transactionList}
-                        </tbody>
-                    </Table>
+                    </div>
                     </Card>
                 </Container>
          </div>
