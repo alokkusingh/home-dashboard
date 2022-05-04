@@ -188,7 +188,7 @@ function ExpenseVsIncomeLineChart({ data }) {
            .attr("text-anchor", "left")
            .text(d => d)
            .style('font-family', 'Helvetica')
-           .style('font-size', 3)
+           .style('font-size', 8)
 
 // ---------- for expense --------------
        // Draw the dots for expense
