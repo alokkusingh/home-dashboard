@@ -83,9 +83,6 @@ function ExpenseVsIncomeLineChart({ data }) {
           }
     });
 
-    console.log("minDate: " + minDate);
-    console.log("maxDate: " + maxDate);
-
     useEffect(() => {
          drawChart();
     }, [filteredData]);
@@ -121,6 +118,7 @@ function ExpenseVsIncomeLineChart({ data }) {
             .domain([minDate, maxDate])
             .range([0, width]);
 
+
        const yScale = d3.scaleLinear()
           .domain([0, maxIncomeAmount + 10000])
           .range([height, 0]);
@@ -130,7 +128,7 @@ function ExpenseVsIncomeLineChart({ data }) {
            .ticks(d3.timeMonth, 1).tickFormat(d3.timeFormat('%b'));
 
       const yAxis = d3.axisLeft(yScale)
-          .ticks(10)
+          .ticks(10);
 
        // Setting Text
           // Title
@@ -140,8 +138,8 @@ function ExpenseVsIncomeLineChart({ data }) {
           .style('text-anchor', 'middle')
           .style('color', 'teal')
           .style('font-family', 'Helvetica')
-          .style('font-size', 10)
-          .text('Last one year summary')
+          .style('font-size', 14)
+          .text('Last 12 months summary');
 
           // X label - not working
        svg.append('text')
@@ -188,7 +186,7 @@ function ExpenseVsIncomeLineChart({ data }) {
            .attr("text-anchor", "left")
            .text(d => d)
            .style('font-family', 'Helvetica')
-           .style('font-size', 8)
+           .style('font-size', 10)
 
 // ---------- for expense --------------
        // Draw the dots for expense
