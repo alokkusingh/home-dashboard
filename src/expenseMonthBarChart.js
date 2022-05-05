@@ -52,6 +52,11 @@ function ExpenseMonthBarChart({ data }) {
       const width = 300;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
 
+      const colorScale = d3.scaleLinear()
+        .domain([0,5000,10000])
+        .range(['green', 'orange', 'red'])
+        .clamp(true)
+
      // Remove the old svg
      d3.select('#month-exp-bar-container')
         .select('svg')
@@ -101,12 +106,12 @@ function ExpenseMonthBarChart({ data }) {
     // Setting Text
               // Title
    svg.append('text')
-      .attr('x', width/2 + 70)
+      .attr('x', width/2 + 10)
       .attr('y', -20)
       .style('text-anchor', 'middle')
       .style('color', 'teal')
       .style('font-family', 'Helvetica')
-      .style('font-size', 14)
+      .style('font-size', 18)
       .text('This month expense by day')
 
       // X label - not working
@@ -121,7 +126,7 @@ function ExpenseMonthBarChart({ data }) {
       // Y label
    svg.append('text')
      .attr('text-anchor', 'middle')
-     .attr('transform', `translate(-50,100)rotate(-90)`) // translate has x axis and y axis
+     .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
      .style('font-family', 'Helvetica')
      .style('font-size', 14)
      .text('Expense (Rs)')
@@ -140,7 +145,7 @@ function ExpenseMonthBarChart({ data }) {
         .enter()
         .append("rect")
             .attr("class", "bar")
-            .attr("fill", "teal")
+            .attr("fill", function(d) { return colorScale(d.amount); })
             .attr("x", function(d) { return xScale(d.date); })
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())

@@ -148,12 +148,12 @@ function ExpenseVsIncomeLineChart({ data }) {
        // Setting Text
           // Title
        svg.append('text')
-          .attr('x', width/2 + 70)
+          .attr('x', width/2 + 10)
           .attr('y', -20)
           .style('text-anchor', 'middle')
           .style('color', 'teal')
           .style('font-family', 'Helvetica')
-          .style('font-size', 14)
+          .style('font-size', 18)
           .text('Last 12 months summary');
 
           // X label - not working
@@ -168,13 +168,10 @@ function ExpenseVsIncomeLineChart({ data }) {
           // Y label
        svg.append('text')
          .attr('text-anchor', 'middle')
-         .attr('transform', `translate(-50,100)rotate(-90)`) // translate has x axis and y axis
+         .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
          .style('font-family', 'Helvetica')
          .style('font-size', 14)
          .text('Amount (Rs)')
-
-
-
 
        //append legends
        var legend = svg.append('g')

@@ -138,7 +138,6 @@ class HomeCards extends Component {
                         >
                         <div>
                              <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} />
-                             <p>Month expenses by category</p>
                         </div>
                     </Card>
                 </Col>

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import * as d3 from 'd3';
 
 function ExpenseMonthByCategoryPiChart({data}) {
-   const outerRadius = 100;
+   const outerRadius = 111;
    const innerRadius = 70;
    const margin = {
      top: 0, right: 50, bottom: 0, left: 50,
@@ -21,6 +21,12 @@ function ExpenseMonthByCategoryPiChart({data}) {
    }, [data]);
 
    function drawChart() {
+     const categories = ["Bills", "Fuel", "Milk", "Maintenance", "Travel", "House Help", "Food Outside", "Accessories", "Grocery", "Education", "Medical", "Grooming", "Appliances", "Gift", "Entertainment", "Baby Care", "Furniture", "Other"];
+
+      var myColor = d3.scaleOrdinal()
+              .domain(categories)
+              .range(d3.schemeSet2);
+
      // Remove the old svg
      d3.select('#pie-container')
        .select('svg')
@@ -32,8 +38,10 @@ function ExpenseMonthByCategoryPiChart({data}) {
        .append('svg')
        .attr('width', width)
        .attr('height', height)
+       .style('background', 'white')
+       .style('overflow', 'visible')
        .append('g')
-       .attr('transform', `translate(${width / 2}, ${height / 2})`);
+       .attr('transform', `translate(${width / 2}, ${height / 2})`)
 
      const arcGenerator = d3
        .arc()
@@ -50,11 +58,42 @@ function ExpenseMonthByCategoryPiChart({data}) {
        .data(pieGenerator(data))
        .enter();
 
+     svg.append('text')
+           .attr('x', width/2 - 150 )
+           .attr('y', -130)
+           .style('text-anchor', 'middle')
+           .style('color', 'teal')
+           .style('font-family', 'Helvetica')
+           .style('font-size', 18)
+           .text('This month expense by category')
+
+        //append legends
+        var legend = svg.append('g')
+            .selectAll('g.legend')
+            .data(categories)
+            .enter()
+            .append("g")
+            .attr("class", "legend");
+
+        legend.append("circle")
+            .attr("cx", width - 150)
+            .attr('cy', (d, i) => i * 14 - 90)
+            .attr("r", 4)
+            .style("fill", d => myColor(d));
+
+        legend.append("text")
+            .attr("x", width - 140)
+            .attr("y", (d, i) => i * 14 - 88)
+            .attr("text-anchor", "left")
+            .text(d => d)
+            .style('font-family', 'Helvetica')
+            .style('font-size', 6)
+
      // Append arcs
      arc
        .append('path')
        .attr('d', arcGenerator)
-       .style('fill', (_, i) => colorScale(i))
+       .style('fill', (d, i) => myColor(d.data.category))
        .style('stroke', '#ffffff')
        .style('stroke-width', 0);
 
@@ -63,8 +102,8 @@ function ExpenseMonthByCategoryPiChart({data}) {
        .append('text')
        .attr('text-anchor', 'middle')
        .attr('alignment-baseline', 'middle')
-       .text((d) => d.data.category + ' (' + d.data.amount + ')')
-       .style('fill', (_, i) => colorScale(data.length - i))
+       //.text((d) => d.data.category + ' (' + d.data.amount + ')')
+       .text((d) => d.data.amount)
        .style('stroke', 'teal')
        .style('font-size', '10px')
        .style('font-family', "Courier New")
