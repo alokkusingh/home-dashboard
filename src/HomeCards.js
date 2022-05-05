@@ -128,7 +128,6 @@ class HomeCards extends Component {
                         >
                         <div>
                              <ExpenseMonthBarChart data={monthExpensesByDay} />
-                             <p>Month expenses per day</p>
                         </div>
                     </Card>
                 </Col>

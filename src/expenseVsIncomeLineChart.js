@@ -127,8 +127,23 @@ function ExpenseVsIncomeLineChart({ data }) {
       const xAxis = d3.axisBottom(xScale)
            .ticks(d3.timeMonth, 1).tickFormat(d3.timeFormat('%b'));
 
-      const yAxis = d3.axisLeft(yScale)
+      const yAxis = d3
+          .axisLeft(yScale)
+          .tickFormat(function(d){ return d/1000 + 'K'; })
           .ticks(10);
+
+       svg.append('g')
+          .call(xAxis)
+          .attr('transform', `translate(0, ${height})`)
+          .selectAll("text")
+                   .style("text-anchor", "end")
+                   .style('font-size', '12')
+                   .attr("dx", "-.8em")
+                   .attr("dy", ".15em")
+                   .attr("transform", "rotate(-65)")
+
+       svg.append('g')
+           .call(yAxis);
 
        // Setting Text
           // Title
@@ -144,26 +159,21 @@ function ExpenseVsIncomeLineChart({ data }) {
           // X label - not working
        svg.append('text')
           .attr('x', width/2 )
-          .attr('y', height+35)
+          .attr('y', height+40)
           .attr('text-anchor', 'middle')
           .style('font-family', 'Helvetica')
-          .style('font-size', 8)
-          .text('Months')
+          .style('font-size', 14)
+          .text('-- Months -->')
 
           // Y label
        svg.append('text')
          .attr('text-anchor', 'middle')
          .attr('transform', `translate(-50,100)rotate(-90)`) // translate has x axis and y axis
          .style('font-family', 'Helvetica')
-         .style('font-size', 8)
+         .style('font-size', 14)
          .text('Amount (Rs)')
 
-       svg.append('g')
-          .call(xAxis)
-          .attr('transform', `translate(0, ${height})`);
 
-       svg.append('g')
-           .call(yAxis);
 
 
        //append legends
