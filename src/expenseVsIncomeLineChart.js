@@ -195,118 +195,40 @@ function ExpenseVsIncomeLineChart({ data }) {
            .style('font-family', 'Helvetica')
            .style('font-size', 10)
 
-// ---------- for expense --------------
-       // Draw the dots for expense
-        svg.append('g')
-          .selectAll('dot')
-          .data(expenseArray)
-          .enter()
-          .append('circle')
-          .attr('cx', function(d, i) {
-             return xScale(d.date);
-           })
-          .attr('cy', function(d) { return yScale(d.amount); })
-          .attr('r', 3)
-          .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
-          .style('fill', function(d){ return myColor("expense") });
+       drawLineAndDots("expense", expenseArray);
+       drawLineAndDots("income", incomeArray);
+       drawLineAndDots("transfer", transferArray);
+       drawLineAndDots("investment", investmentArray);
 
-      // Draw the line - for expense
-      svg
+       function drawLineAndDots(type, data) {
+            // Draw the dots for income
+            svg.append('g')
+              .selectAll('dot')
+              .data(data)
+              .enter()
+              .append('circle')
+              .attr('cx', function(d, i) {
+                 return xScale(d.date);
+               })
+              .attr('cy', function(d) { return yScale(d.amount); })
+              .attr('r', 3)
+              .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
+              .style('fill', function(d){ return myColor(type) });
+
+          // Draw the line - for income
+          svg
             .append('g')
             .append("path")
-              .datum(expenseArray)
+              .datum(data)
               .attr("d", d3.line()
                 .x(function(d) { return xScale(d.date) })
                 .y(function(d) { return yScale(d.amount) })
               )
-              .attr("stroke", function(d){ return myColor("expense") })
+              .attr("stroke", function(d){ return myColor(type) })
               .style("stroke-width", 2)
-              .style("fill", "none")
-
-   // ---------- for income --------------
-          // Draw the dots for income
-           svg.append('g')
-             .selectAll('dot')
-             .data(incomeArray)
-             .enter()
-             .append('circle')
-             .attr('cx', function(d, i) {
-                return xScale(d.date);
-              })
-             .attr('cy', function(d) { return yScale(d.amount); })
-             .attr('r', 3)
-             .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
-             .style('fill', function(d){ return myColor("income") });
-
-         // Draw the line - for income
-         svg
-               .append('g')
-               .append("path")
-                 .datum(incomeArray)
-                 .attr("d", d3.line()
-                   .x(function(d) { return xScale(d.date) })
-                   .y(function(d) { return yScale(d.amount) })
-                 )
-                 .attr("stroke", function(d){ return myColor("income") })
-                 .style("stroke-width", 2)
-                 .style("fill", "none")
-
-   // ---------- for transfer --------------
-             // Draw the dots for income
-              svg.append('g')
-                .selectAll('dot')
-                .data(transferArray)
-                .enter()
-                .append('circle')
-                .attr('cx', function(d, i) {
-                   return xScale(d.date);
-                 })
-                .attr('cy', function(d) { return yScale(d.amount); })
-                .attr('r', 3)
-                .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
-                .style('fill', function(d){ return myColor("transfer") });
-
-            // Draw the line - for income
-            svg
-                  .append('g')
-                  .append("path")
-                    .datum(transferArray)
-                    .attr("d", d3.line()
-                      .x(function(d) { return xScale(d.date) })
-                      .y(function(d) { return yScale(d.amount) })
-                    )
-                    .attr("stroke", function(d){ return myColor("transfer") })
-                    .style("stroke-width", 2)
-                    .style("fill", "none")
-
-   // ---------- for investment --------------
-                // Draw the dots for income
-                 svg.append('g')
-                   .selectAll('dot')
-                   .data(investmentArray)
-                   .enter()
-                   .append('circle')
-                   .attr('cx', function(d, i) {
-                      return xScale(d.date);
-                    })
-                   .attr('cy', function(d) { return yScale(d.amount); })
-                   .attr('r', 3)
-                   .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
-                   .style('fill', function(d){ return myColor("investment") });
-
-               // Draw the line - for income
-               svg
-                     .append('g')
-                     .append("path")
-                       .datum(investmentArray)
-                       .attr("d", d3.line()
-                         .x(function(d) { return xScale(d.date) })
-                         .y(function(d) { return yScale(d.amount) })
-                       )
-                       .attr("stroke", function(d){ return myColor("investment") })
-                       .style("stroke-width", 2)
-                       .style("fill", "none");
-         }
+              .style("fill", "none");
+       }
+   }
 
    return <div id="summary-line-container" />;
 }
