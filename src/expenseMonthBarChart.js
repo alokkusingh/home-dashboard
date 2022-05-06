@@ -46,6 +46,7 @@ function ExpenseMonthBarChart({ data }) {
       const height = 220;
       const width = 300;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+      const numberOfYaxisTicks = 10;
 
       const colorScale = d3.scaleLinear()
         .domain([0,5000,15000])
@@ -126,7 +127,7 @@ function ExpenseMonthBarChart({ data }) {
     const yAxis = d3
        .axisLeft(yScale)
        .tickFormat(function(d){ return d/1000 + 'K'; })
-       .ticks(10);
+       .ticks(numberOfYaxisTicks);
 
     svg.append('g')
        .call(xAxis)
@@ -190,10 +191,45 @@ function ExpenseMonthBarChart({ data }) {
             .attr("width", xScale.bandwidth())
             .attr("height", (d) => yScale(0) - yScale(d.amount))
 
-      console.log("timeMonth: " + getDaysOfMonthDomain);
-    }
 
-  return <div id="month-exp-bar-container" />;
+      drawHorizontalLines();
+
+      function drawHorizontalLines() {
+        // preparing data for horizontal lines
+        const horizontalDataGridPoints = [];
+
+        const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
+
+        for (var y = 0; y < height ; y = y + yIncrBy) {
+             horizontalDataGridPoints.push(
+                 [{
+                      'x': 0, 'y': y
+                  },{
+                      'x': width, 'y': y
+                  }]
+             );
+        }
+
+        horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
+     }
+
+      function drawGridLines(dataGrid) {
+          svg
+             .append('g')
+             .append("path")
+               .datum(dataGrid)
+               .attr("d", d3.line()
+                 .x(function(d) { return d.x })
+                 .y(function(d) { return d.y })
+               )
+               .attr("stroke", 'grey')
+               .style("stroke-width", .2)
+               .style("fill", "none");
+
+     }
+   }
+
+   return <div id="month-exp-bar-container" />;
 }
 
 export default ExpenseMonthBarChart;

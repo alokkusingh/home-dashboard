@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react'
 import { parseISO } from 'date-fns';
-import { NumberFormat } from "./NumberFormat";
 import * as d3 from 'd3';
 
 function ExpenseVsIncomeLineChart({ data }) {
@@ -91,6 +90,7 @@ function ExpenseVsIncomeLineChart({ data }) {
        const height = 220;
        const width = 300;
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+       const numberOfYaxisTicks = 10;
 
        var allGroup = ["income", "expense", "transfer", "saving", "investment"]
        // A color scale: one color for each group
@@ -130,7 +130,7 @@ function ExpenseVsIncomeLineChart({ data }) {
       const yAxis = d3
           .axisLeft(yScale)
           .tickFormat(function(d){ return d/1000 + 'K'; })
-          .ticks(10);
+          .ticks(numberOfYaxisTicks);
 
        svg.append('g')
           .call(xAxis)
@@ -200,6 +200,11 @@ function ExpenseVsIncomeLineChart({ data }) {
        drawLineAndDots("transfer", transferArray);
        drawLineAndDots("investment", investmentArray);
 
+       // Draw grid lines
+       drawHorizontalLines();
+       drawVerticalLines();
+
+
        function drawLineAndDots(type, data) {
             // Draw the dots for income
             svg.append('g')
@@ -227,6 +232,57 @@ function ExpenseVsIncomeLineChart({ data }) {
               .attr("stroke", function(d){ return myColor(type) })
               .style("stroke-width", 2)
               .style("fill", "none");
+       }
+
+       function drawHorizontalLines() {
+          // preparing data for horizontal lines
+          const horizontalDataGridPoints = [];
+
+          const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
+
+          for (var y = 0; y < height ; y = y + yIncrBy) {
+               horizontalDataGridPoints.push(
+                   [{
+                        'x': 0, 'y': y
+                    },{
+                        'x': width, 'y': y
+                    }]
+               );
+          }
+
+          horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
+       }
+
+       function drawVerticalLines() {
+         // preparing data for vertical lines
+         const verticalDataGridPoints = [];
+
+         const xIncrBy = width / 11;
+         for (var x = 0; x < width ; x = x + xIncrBy) {
+              verticalDataGridPoints.push(
+                  [{
+                       'x': x, 'y': height
+                   },{
+                       'x': x, 'y': 0
+                   }]
+              );
+         }
+         verticalDataGridPoints.forEach(grid => drawGridLines(grid));
+      }
+
+       function drawGridLines(dataGrid) {
+            svg
+               .append('g')
+               .append("path")
+                 .datum(dataGrid)
+                 .attr("d", d3.line()
+                   .x(function(d) { return d.x })
+                   .y(function(d) { return d.y })
+                 )
+                 .attr("stroke", 'grey')
+                 .style("stroke-width", .2)
+                 .style("fill", "none");
+
        }
    }
 
