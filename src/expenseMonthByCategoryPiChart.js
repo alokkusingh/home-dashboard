@@ -70,20 +70,21 @@ function ExpenseMonthByCategoryPiChart({data}) {
         //append legends
         var legend = svg.append('g')
             .selectAll('g.legend')
-            .data(categories)
+            //.data(categories)
+            .data(data.map(entry => entry.category))
             .enter()
             .append("g")
             .attr("class", "legend");
 
         legend.append("circle")
             .attr("cx", width - 110)
-            .attr('cy', (d, i) => i * 14 - 90)
+            .attr('cy', (d, i) => i * 14 - 55)
             .attr("r", 4)
             .style("fill", d => myColor(d));
 
         legend.append("text")
             .attr("x", width - 100)
-            .attr("y", (d, i) => i * 14 - 88)
+            .attr("y", (d, i) => i * 14 - 53)
             .attr("text-anchor", "left")
             .text(d => d)
             .style('font-family', 'Helvetica')

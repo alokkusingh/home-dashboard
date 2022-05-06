@@ -133,7 +133,7 @@ function ExpenseMonthBarChart({ data }) {
        .attr('transform', `translate(0, ${height})`)
        .selectAll("text")
          .style("text-anchor", "end")
-         .style('font-size', '12')
+         .style('font-size', '10')
          .attr("dx", "-.8em")
          .attr("dy", ".15em")
          .attr("transform", "rotate(-65)")
@@ -172,6 +172,7 @@ function ExpenseMonthBarChart({ data }) {
    svg.append("text")
       .attr("x", width/2 + 110)
       .attr("y", 15)
+      .style("color", "grey")
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .text("Total: " + sum);
