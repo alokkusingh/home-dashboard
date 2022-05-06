@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import * as d3 from 'd3';
 
 function ExpenseMonthByCategoryPiChart({data}) {
-   const outerRadius = 111;
-   const innerRadius = 70;
+   const outerRadius = 105;
+   const innerRadius = 60;
    const margin = {
-     top: 0, right: 50, bottom: 0, left: 50,
+     top: 5, left: 20, bottom: 5, right: 20,
    };
 
    const width = 2 * outerRadius + margin.left + margin.right;
@@ -59,7 +59,7 @@ function ExpenseMonthByCategoryPiChart({data}) {
        .enter();
 
      svg.append('text')
-           .attr('x', width/2 - 150 )
+           .attr('x', width/2 - 130 )
            .attr('y', -130)
            .style('text-anchor', 'middle')
            .style('color', 'teal')
@@ -76,13 +76,13 @@ function ExpenseMonthByCategoryPiChart({data}) {
             .attr("class", "legend");
 
         legend.append("circle")
-            .attr("cx", width - 150)
+            .attr("cx", width - 110)
             .attr('cy', (d, i) => i * 14 - 90)
             .attr("r", 4)
             .style("fill", d => myColor(d));
 
         legend.append("text")
-            .attr("x", width - 140)
+            .attr("x", width - 100)
             .attr("y", (d, i) => i * 14 - 88)
             .attr("text-anchor", "left")
             .text(d => d)
