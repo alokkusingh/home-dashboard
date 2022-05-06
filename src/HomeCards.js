@@ -4,6 +4,7 @@ import { Table, Row, Col} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
+import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
 import ExpenseMonthBarChart from './expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './expenseMonthByCategoryPiChart';
 import ExpenseMonthByCategoryPiChart2 from './expenseMonthByCategoryPiChart2';
@@ -103,17 +104,17 @@ class HomeCards extends Component {
         if(record.month < 10)
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
                    <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td tranId={'' + record.year + record.month +2 } style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.incomeAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.expenseAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
                </tr>
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
                    <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
-                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount)}</td>
-                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right"}}>{NumberFormat(record.expenseAmount)}</td>
-                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormat(record.transferAmount)}</td>
-                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormat(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.incomeAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.expenseAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.transferAmount)}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.incomeAmount - record.expenseAmount - record.transferAmount)}</td>
               </tr>
       });
 
