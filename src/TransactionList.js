@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import { Button, ButtonGroup, Container, Table, Modal, ModalHeader } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import {Toast, ToastBody, ToastHeader, Spinner} from 'reactstrap';
-import Modal from './Modal.js';
 import { format, parseISO } from 'date-fns';
 import {CardPanel, Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
@@ -16,7 +15,7 @@ class TransactionList extends Component {
       transactions: [],
       count: 0,
       lastTransactionDate: "",
-      show: false,
+      transactionModalShow: false,
       tranDetails: []
     };
   }
@@ -24,7 +23,7 @@ class TransactionList extends Component {
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("tranId"))
 
-    let tranDetails = [...this.state.tranDetails];
+    let tranDetails = [];
 
     fetch("/fin/bank/transactions/" + event.target.getAttribute("tranId"))
         .then(response => response.json())
@@ -37,20 +36,17 @@ class TransactionList extends Component {
               tranDetails[5] = data.head;
               tranDetails[6] = data.description;
 
-
-              this.setState(
-                  {
-                      tranDetails: tranDetails,
-                      show: true
-                  }
-              );
               console.log(tranDetails);
+              this.setState(
+                  { tranDetails: tranDetails }
+              );
+              this.setState({transactionModalShow: !this.state.transactionModalShow});
         }
     );
   };
 
   hideModal = () => {
-    this.setState({ show: false });
+    this.setState({ transactionModalShow: !this.state.transactionModalShow});
   };
 
   async componentDidMount() {
@@ -82,9 +78,8 @@ class TransactionList extends Component {
     const {count} = this.state;
     const {lastTransactionDate} = this.state;
     const {tranDetails} = this.state;
-    const {show} = this.state;
+    const {transactionModalShow} = this.state;
     const title = "Transactions (" + count + ")";
-    console.log(show);
 
     const transactionList = transactions.map(transaction => {
         return <tr key={transaction.id} onClick={this.showModal}>
@@ -128,7 +123,8 @@ class TransactionList extends Component {
                         {transactionList}
                         </tbody>
                     </Table>
-                    <Modal show={show} handleClose={this.hideModal}>
+                    <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="Expenses">
+                    <ModalHeader toggle={this.hideModal}/>
                       <Table striped bordered hover>
                         <thead >
                           <tr>
@@ -143,7 +139,7 @@ class TransactionList extends Component {
                           </tr>
                           <tr>
                             <td>Date</td>
-                            <td>{show}</td>
+                            <td>{tranDetails[2]}</td>
                           </tr>
                           <tr>
                             <td>Debit</td>

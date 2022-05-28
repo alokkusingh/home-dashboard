@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import './App.css';
-import { Table, Row, Col} from 'reactstrap';
+import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
@@ -10,6 +10,7 @@ import ExpenseMonthByCategoryPiChart from './expenseMonthByCategoryPiChart';
 import ExpenseMonthByCategoryPiChart2 from './expenseMonthByCategoryPiChart2';
 import ExpenseMonthByCategoryBarChart from './expenseMonthByCategoryBarChart'
 import ExpenseVsIncomeLineChart from './expenseVsIncomeLineChart'
+import ExpenseVsIncomeLineChartAll from './expenseVsIncomeLineChartAll'
 
 class HomeCards extends Component {
 
@@ -23,9 +24,40 @@ class HomeCards extends Component {
       monthExpensesByCategory: [],
       monthlySummary: [],
       totalMonthExpense: 0,
-      count: 0
+      count: 0,
+      expenseModalShow: false,
+      dayExpensesRows: ""
     };
   }
+
+  showExpenseModal = (event) => {
+      console.log("event: ", event.target.getAttribute("tranId"))
+      let expenseDayDetails = [];
+      this.state.monthExpensesByDay.forEach(
+        record => {
+            if (record.date == event.target.getAttribute("tranId")) {
+                expenseDayDetails = record.expenses;
+            }
+        }
+      );
+      console.log(expenseDayDetails);
+      const dayExpensesRows = expenseDayDetails.map(expense => {
+        return <tr>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Left"}}>{expense.head}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "left"}}>{expense.comment}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "right"}}>{expense.amount}</td>
+               </tr>
+        });
+
+      this.setState({dayExpensesRows: dayExpensesRows});
+
+      this.setState({ expenseModalShow: !this.state.expenseModalShow });
+  }
+
+  closeExpenseModal = () => {
+      console.log("event: closeExpenseModal");
+      this.setState({ expenseModalShow: !this.state.expenseModalShow });
+  };
 
   async componentDidMount() {
     const response = await fetch('/fin/expense/current_month_by_day');
@@ -59,7 +91,6 @@ class HomeCards extends Component {
      console.log("monthlySummary: ", bodyMonthlySummary.records);
   }
 
-
   render() {
       const {
         monthExpenses,
@@ -68,8 +99,11 @@ class HomeCards extends Component {
         monthExpensesByDay,
         monthExpensesByCategory,
         monthlySummary,
-        totalMonthExpense
+        totalMonthExpense,
+        expenseModalShow,
+        dayExpensesRows
       } =  this.state;
+
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -80,7 +114,7 @@ class HomeCards extends Component {
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
-                return <tr key={expense.date} onClick={this.showModal}>
+                return <tr key={expense.date} onClick={this.showExpenseModal}>
                         <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
                         <td tranId={expense.date} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
                     </tr>
@@ -168,9 +202,24 @@ class HomeCards extends Component {
                               </tr>
                             </thead>
                             <tbody>
-                            {monthExpensesByDayList}
+                              {monthExpensesByDayList}
                             </tbody>
                         </Table>
+                        <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses">
+                        <ModalHeader toggle={this.closeExpenseModal}/>
+                         <Table striped bordered hover>
+                             <thead >
+                               <tr>
+                                 <th>Head</th>
+                                 <th>Comment</th>
+                                 <th>Amount</th>
+                               </tr>
+                             </thead>
+                             <tbody>
+                               {dayExpensesRows}
+                             </tbody>
+                           </Table>
+                        </Modal>
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
