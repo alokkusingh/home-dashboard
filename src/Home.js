@@ -16,6 +16,7 @@ class Home extends Component {
                 <Container fluid>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/transactions">Transactions</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/expenses">Expenses</Link></a>
+                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/salary">Salary</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="uploadStatement">Upload Statement</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadExpense">Upload Expenses</Link></a>
                 </Container>

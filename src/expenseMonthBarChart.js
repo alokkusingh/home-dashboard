@@ -170,13 +170,13 @@ function ExpenseMonthBarChart({ data }) {
      .style('font-size', 14)
      .text('Expense (Rs)')
 
-   svg.append("text")
-      .attr("x", width/2 + 110)
+   //svg.append("text")
+   /*   .attr("x", width/2 + 110)
       .attr("y", 15)
       .style("color", "grey")
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
-      .text("Total: " + sum);
+      .text("Total: " + sum);*/
 
       svg
         .append('g')
