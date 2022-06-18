@@ -5,6 +5,8 @@ RUN cd /tmp && npm install
 RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 WORKDIR /app
+COPY package.json /app/
+COPY src /app/src
 RUN npm run build
 
 FROM arm64v8/nginx:1.19.2-alpine as builder2
