@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
+import { Container, Table, Row, Col } from 'reactstrap';
 import AppNavbar from './AppNavbar';
-import { Link } from 'react-router-dom';
-import {Toast, ToastBody, ToastHeader, Spinner} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
-import {CardPanel, Icon, Card} from 'react-materialize';
+import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
 import SalaryByCompanyPiChart from './salaryByCompanyPiChart';
+import SalaryByMonthBarChart from './salaryByMonthBarChart';
 
 class Salary extends Component {
 
@@ -119,15 +118,34 @@ class Salary extends Component {
     const evolRows = evolByMonth.map(record => prepareSalaryRow(record));
     const subexRows = subexByMonth.map(record => prepareSalaryRow(record));
 
+    // Prepares Salary by Company
     let companySalaryChartDataText = '[' +
     '{ "company":"Subex" , "amount":' + subexTotal +'},' +
-    '{ "company":"Evolving Systems" , "amount":' + evolTotal +'},' +
+    '{ "company":"Evolving" , "amount":' + evolTotal +'},' +
     '{ "company":"Wipro" , "amount":' + wiproTotal +'},' +
     '{ "company":"Yodlee" , "amount":' + yodleeTotal +'},' +
     '{ "company":"Bosch" , "amount":' + boschTotal +'},' +
-    '{ "company":"JP Morgan" , "amount":' + jpmcTotal +' } ]';
-
+    '{ "company":"JPMC" , "amount":' + jpmcTotal +' } ]';
     const companySalaryChartDataObject = JSON.parse(companySalaryChartDataText);
+
+    // Prepare Salary by Year
+    function aggregateSalaryByMonth(companyMonthRecord, salaryByYearMap) {
+      for (let monthRecord of companyMonthRecord) {
+          let yearTotal = salaryByYearMap.get(monthRecord.year);
+          if (yearTotal === undefined) {
+             yearTotal = 0;
+          }
+          yearTotal = yearTotal + monthRecord.amount;
+          salaryByYearMap.set(monthRecord.year, yearTotal)
+      }
+    }
+    const salaryByYearMap = new Map();
+    aggregateSalaryByMonth(subexByMonth, salaryByYearMap);
+    aggregateSalaryByMonth(evolByMonth, salaryByYearMap);
+    aggregateSalaryByMonth(wiproByMonth, salaryByYearMap);
+    aggregateSalaryByMonth(yodleeByMonth, salaryByYearMap);
+    aggregateSalaryByMonth(boschByMonth, salaryByYearMap);
+    aggregateSalaryByMonth(jpmcByMonth, salaryByYearMap);
 
     return (
          <div className="card teal lighten-5">
@@ -141,6 +159,27 @@ class Salary extends Component {
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
                             <div>
                                 <SalaryByCompanyPiChart data={companySalaryChartDataObject} total={total} />
+                            </div>
+                        </Card>
+                    </Col>
+                    <Col m={3} s={3} l={3}>
+                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                            <div>
+                                <SalaryByMonthBarChart salaryByYearMap={salaryByYearMap} />
+                            </div>
+                        </Card>
+                    </Col>
+                    <Col m={3} s={3} l={3}>
+                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                            <div>
+                            <h3>Coming soon...</h3>
+                            </div>
+                        </Card>
+                    </Col>
+                    <Col m={3} s={3} l={3}>
+                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                            <div>
+                            <h3>Coming soon...</h3>
                             </div>
                         </Card>
                     </Col>

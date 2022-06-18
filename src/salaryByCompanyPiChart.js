@@ -12,30 +12,25 @@ function SalaryByCompanyPiChart({data, total}) {
    const width = 2 * outerRadius + margin.left + margin.right;
    const height = 2 * outerRadius + margin.top + margin.bottom;
 
-   const colorScale = d3
-     .scaleSequential()
-     .interpolator(d3.interpolateCool)
-     .domain([0, data.length]);
-
    useEffect(() => {
      drawChart();
-   }, [data]);
+   });
 
    function drawChart() {
-     const companies = ['Subex', 'Evolving Systems', 'Wipro', 'Yodlee', 'Bosch', 'JP Morgan'];
+     const companies = ['Subex', 'Evolving', 'Wipro', 'Yodlee', 'Bosch', 'JPMC'];
 
       var myColor = d3.scaleOrdinal()
               .domain(companies)
               .range(d3.schemeSet2);
 
      // Remove the old svg
-     d3.select('#pie-container')
+     d3.select('#salary-pie-container')
        .select('svg')
        .remove();
 
      // Create new svg
      const svg = d3
-       .select('#pie-container')
+       .select('#salary-pie-container')
        .append('svg')
        .attr('width', width)
        .attr('height', height)
@@ -71,7 +66,6 @@ function SalaryByCompanyPiChart({data, total}) {
         //append legends
         var legend = svg.append('g')
             .selectAll('g.legend')
-            //.data(categories)
             .data(data.map(entry => entry.company))
             .enter()
             .append("g")
@@ -126,7 +120,7 @@ function SalaryByCompanyPiChart({data, total}) {
 
    }
 
-   return <div id="pie-container" />;
+   return <div id="salary-pie-container" />;
  }
 
 export default SalaryByCompanyPiChart;

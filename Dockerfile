@@ -1,10 +1,10 @@
 FROM arm64v8/node as builder1
 
-WORKDIR /app
-COPY package.json .
+COPY package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
-RUN npm install
-COPY . .
+WORKDIR /app
 RUN npm run build
 
 FROM arm64v8/nginx:1.19.2-alpine as builder2
