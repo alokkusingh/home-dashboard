@@ -34,7 +34,6 @@ class Salary extends Component {
     this.setState({
         total: bodySalaryByCompany.total
     });
-    console.log("salaryByCompany: ", bodySalaryByCompany);
 
     for (let companyRecord of bodySalaryByCompany.companySalaries) {
       let name = companyRecord.company;
