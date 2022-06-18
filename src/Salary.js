@@ -110,6 +110,7 @@ class Salary extends Component {
 
     const title = "Salary";
 
+    // Prepare table rows for each company
     const jpmcRows = jpmcByMonth.map(record => prepareSalaryRow(record));
     const boschRows = boschByMonth.map(record => prepareSalaryRow(record));
     const yodleeRows = yodleeByMonth.map(record => prepareSalaryRow(record));
