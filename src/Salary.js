@@ -6,6 +6,7 @@ import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
 import SalaryByCompanyPiChart from './salaryByCompanyPiChart';
 import SalaryByMonthBarChart from './salaryByMonthBarChart';
+import TaxByYearBarChart from './taxByYearBarChart';
 
 class Salary extends Component {
 
@@ -24,7 +25,8 @@ class Salary extends Component {
       boschTotal: 0,
       boschByMonth: [],
       jpmcTotal: 0,
-      jpmcByMonth: []
+      jpmcByMonth: [],
+      taxByYear: []
     };
   }
 
@@ -77,6 +79,12 @@ class Salary extends Component {
         });
       }
     }
+
+    const responseTaxByYear = await fetch('/fin/tax/all');
+        const bodyResponseTaxByYear = await responseTaxByYear.json();
+        this.setState({
+            taxByYear: bodyResponseTaxByYear.taxes
+        });
   }
 
   render() {
@@ -93,7 +101,8 @@ class Salary extends Component {
           boschTotal,
           boschByMonth,
           jpmcTotal,
-          jpmcByMonth
+          jpmcByMonth,
+          taxByYear
     } = this.state;
 
     function prepareSalaryRow(record) {
@@ -172,7 +181,7 @@ class Salary extends Component {
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
                             <div>
-                            <h3>Coming soon...</h3>
+                                <TaxByYearBarChart dataArr={taxByYear} />
                             </div>
                         </Card>
                     </Col>

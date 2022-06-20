@@ -1,0 +1,103 @@
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
+import AppNavbar from './AppNavbar';
+
+class UploadFile extends Component {
+  emptyItem = {
+        // Initially, no file is selected
+        file: null
+  };
+
+  constructor(props) {
+      super(props);
+      this.state = {
+          item: this.emptyItem
+      };
+      this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async handleSubmit(event) {
+      event.preventDefault();
+
+      const selectedFile = event.target.input.files[0];
+      console.log('Selected File', selectedFile);
+      var data = new FormData();
+      data.append('file', selectedFile);
+      console.log('Form', data);
+
+      uploadFile(data)
+      .then(response => {
+        console.log(response.uploadType);
+        if (response.uploadType === 'TaxGoogleSheet')
+          this.props.history.push('/salary');
+        else if (response.uploadType === 'InvestmentGoogleSheet')
+          this.props.history.push('/salary');
+        else if (response.uploadType === 'ExpenseGoogleSheet')
+         this.props.history.push('/expenses');
+        else if (response.uploadType === 'HDFCExportedStatement')
+         this.props.history.push('/transactions');
+        else if (response.uploadType === 'KotakExportedStatement')
+         this.props.history.push('/transactions');
+        else
+          this.props.history.push('/');
+      }).catch((error) => {
+        // Your error is here!
+         console.log(error)
+         this.props.history.push('/');
+      });
+
+      async function uploadFile(data) {
+        const response =  await fetch('/fin/file/upload', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: data
+        });
+
+        if (!response.ok) {
+          const message = `An error has occurred: ${response.status}`;
+          throw new Error(message);
+        }
+
+        // waits until the request completes...
+        const responseJson = await response.json();
+        return responseJson;
+      }
+  }
+
+
+   render() {
+        const title = <h3>Upload Expense</h3>;
+
+        return <div teal lighten-5>
+              <AppNavbar/>
+              <Container>
+                        {title}
+                  <Form onSubmit={this.handleSubmit} >
+                       <FormGroup row>
+                            <Label for="input" sm={3}>
+                              File
+                            </Label>
+                            <Col sm={10}>
+                                <Input
+                                  id="input"
+                                  name="input"
+                                  type="file"
+                                />
+                            </Col>
+                       </FormGroup>
+                       <br/>
+                       <br/>
+                       <br/>
+                       <br/>
+                       <br/>
+                       <Button color="primary" outline type="submit">Submit</Button>
+                  </Form>
+              </Container>
+        </div>
+    }
+}
+
+export default withRouter(UploadFile);
