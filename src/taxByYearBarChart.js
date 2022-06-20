@@ -46,16 +46,7 @@ function TaxByYearBarChart({ dataArr }) {
     // Setting up the axis
     const xAxis = (g) =>
       g.attr("transform", `translate(0, ${height - margin.bottom})`)
-        .call(
-          d3
-            .axisBottom(xScale)
-            .tickValues(
-              d3
-                .ticks(...d3.extent(xScale.domain()), width / 20)
-                .filter((v) => xScale(v) !== undefined )
-            )
-          .tickSizeOuter(0)
-        );
+        .call(d3.axisBottom(xScale));
 
     const yAxis = d3
        .axisLeft(yScale)
