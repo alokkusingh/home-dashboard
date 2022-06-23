@@ -1,9 +1,17 @@
 import React, {useEffect} from 'react'
 import * as d3 from 'd3';
 
-function TaxByYearBarChart({ dataArr }) {
+function SalaryByMonthBarChart({ salaryByYearMap }) {
 
-  console.log(dataArr)
+  const salaryByYearMapSorted = new Map([...salaryByYearMap].sort())
+  var dataArr = [];
+  salaryByYearMapSorted.forEach(function(value, key) {
+    dataArr.push({
+       'year': key,
+       'amount': value
+    });
+  });
+
   useEffect(() => {
       drawChart();
   });
@@ -12,7 +20,7 @@ function TaxByYearBarChart({ dataArr }) {
       const height = 220;
       const width = 300;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-      const numberOfYaxisTicks = 10;
+      const numberOfYaxisTicks = 6;
 
       const colorScale = d3.scaleLinear()
         .domain([500000,2500000])
@@ -20,13 +28,13 @@ function TaxByYearBarChart({ dataArr }) {
         .clamp(true)
 
      // Remove the old svg
-     d3.select('#tax-by-year-bar-container')
+     d3.select('#sal-by-month-bar-container')
         .select('svg')
         .remove();
 
      // Create new svg
      const svg = d3
-        .select('#tax-by-year-bar-container')
+        .select('#sal-by-month-bar-container')
         .append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -35,18 +43,28 @@ function TaxByYearBarChart({ dataArr }) {
 
      // Setting the scale
     const xScale = d3.scaleBand()
-         .domain(dataArr.map((record) => record.financialYear))
+         .domain(dataArr.map((record) => record.year))
+         //.domain(getDaysOfMonthDomain())
          .range([0, width])
          .padding(0.1);
 
     const yScale = d3.scaleLinear()
-       .domain([0, 1000000])
+       .domain([0, 3000000])
        .range([height, 0]);
 
     // Setting up the axis
     const xAxis = (g) =>
       g.attr("transform", `translate(0, ${height - margin.bottom})`)
-        .call(d3.axisBottom(xScale));
+        .call(
+          d3
+            .axisBottom(xScale)
+            .tickValues(
+              d3
+                .ticks(...d3.extent(xScale.domain()), width / 20)
+                .filter((v) => xScale(v) !== undefined)
+            )
+            .tickSizeOuter(0)
+        );
 
     const yAxis = d3
        .axisLeft(yScale)
@@ -75,7 +93,7 @@ function TaxByYearBarChart({ dataArr }) {
       .style('color', 'teal')
       .style('font-family', 'Helvetica')
       .style('font-size', 18)
-      .text('Tax paid by year')
+      .text('Salary by year')
 
       svg
         .append('g')
@@ -84,11 +102,11 @@ function TaxByYearBarChart({ dataArr }) {
         .enter()
         .append("rect")
             .attr("class", "bar")
-            .attr("fill", function(d) { return colorScale(d.paidAmount); })
-            .attr("x", function(d) { return xScale(d.financialYear); })
-            .attr("y", function(d) { return yScale(d.paidAmount); })
+            .attr("fill", function(d) { return colorScale(d.amount); })
+            .attr("x", function(d) { return xScale(d.year); })
+            .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
-            .attr("height", (d) => yScale(0) - yScale(d.paidAmount))
+            .attr("height", (d) => yScale(0) - yScale(d.amount))
 
       drawHorizontalLines();
 
@@ -127,7 +145,7 @@ function TaxByYearBarChart({ dataArr }) {
      }
    }
 
-   return <div id="tax-by-year-bar-container" />;
+   return <div id="sal-by-month-bar-container" />;
 }
 
-export default TaxByYearBarChart;
+export default SalaryByMonthBarChart;

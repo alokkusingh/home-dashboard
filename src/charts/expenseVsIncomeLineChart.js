@@ -156,14 +156,14 @@ function ExpenseVsIncomeLineChart({ data }) {
           .style('font-size', 18)
           .text('Last 12 months summary');
 
-          // X label - not working
-       svg.append('text')
+          // X label - not needed
+/*       svg.append('text')
           .attr('x', width/2 )
           .attr('y', height+40)
           .attr('text-anchor', 'middle')
           .style('font-family', 'Helvetica')
           .style('font-size', 14)
-          .text('-- Months -->')
+          .text('-- Months -->')*/
 
           // Y label
        svg.append('text')

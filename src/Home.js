@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './css/App.css';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import { Container} from 'reactstrap';
@@ -18,8 +18,6 @@ class Home extends Component {
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/expenses">Expenses</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/salary">Salary</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadFile">Upload File</Link></a>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadStatement">Upload Statement</Link></a>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadExpense">Upload Expenses</Link></a>
                 </Container>
                 <HomeCards/>
             </div>

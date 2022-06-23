@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { format, parseISO } from 'date-fns';
-import { NumberFormat } from "./NumberFormat";
+import { NumberFormat } from "../NumberFormat";
 import * as d3 from 'd3';
 import { useD3 } from './hooks/useD3';
 
@@ -34,10 +34,6 @@ function ExpenseMonthBarChart({ data }) {
       });
   });
 
-  console.log(minDate);
-  console.log(maxDate);
-  console.log(maxExpenseAmount);
-
   useEffect(() => {
       drawChart();
   }, [data]);
@@ -67,8 +63,6 @@ function ExpenseMonthBarChart({ data }) {
             for (let day = 1; day <= numberOfDays; day++) {
                days.push(parseD3Time(new Date(year, month, day)));
             }
-
-            console.log("days: " + days)
 
             return days;
       }
@@ -153,14 +147,14 @@ function ExpenseMonthBarChart({ data }) {
       .style('font-size', 18)
       .text('This month expense by day')
 
-      // X label - not working
-   svg.append('text')
+      // X label - not needed
+/*   svg.append('text')
       .attr('x', width/2 )
       .attr('y', height+40)
       .attr('text-anchor', 'middle')
       .style('font-family', 'Helvetica')
       .style('font-size', 14)
-      .text('-- Date -->');
+      .text('-- Date -->');*/
 
       // Y label
    svg.append('text')

@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react'
 import * as d3 from 'd3';
-import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
+import { NumberFormatNoDecimal } from "../NumberFormatNoDecimal";
 
-function SalaryByCompanyPiChart({data, total}) {
+function ExpenseMonthByCategoryPiChart({data}) {
+
+  var sum = 0;
+  data.forEach(function(record) {
+        sum += record.amount;
+  });
+
    const outerRadius = 105;
    const innerRadius = 60;
    const margin = {
@@ -12,25 +18,30 @@ function SalaryByCompanyPiChart({data, total}) {
    const width = 2 * outerRadius + margin.left + margin.right;
    const height = 2 * outerRadius + margin.top + margin.bottom;
 
+   const colorScale = d3
+     .scaleSequential()
+     .interpolator(d3.interpolateCool)
+     .domain([0, data.length]);
+
    useEffect(() => {
      drawChart();
-   });
+   }, [data]);
 
    function drawChart() {
-     const companies = ['Subex', 'Evolving', 'Wipro', 'Yodlee', 'Bosch', 'JPMC'];
+     const categories = ["Bills", "Fuel", "Milk", "Maintenance", "Travel", "House Help", "Food Outside", "Accessories", "Grocery", "Education", "Medical", "Grooming", "Appliances", "Gift", "Entertainment", "Baby Care", "Furniture", "Other"];
 
       var myColor = d3.scaleOrdinal()
-              .domain(companies)
+              .domain(categories)
               .range(d3.schemeSet2);
 
      // Remove the old svg
-     d3.select('#salary-pie-container')
+     d3.select('#pie-container')
        .select('svg')
        .remove();
 
      // Create new svg
      const svg = d3
-       .select('#salary-pie-container')
+       .select('#pie-container')
        .append('svg')
        .attr('width', width)
        .attr('height', height)
@@ -61,12 +72,13 @@ function SalaryByCompanyPiChart({data, total}) {
            .style('color', 'teal')
            .style('font-family', 'Helvetica')
            .style('font-size', 18)
-           .text('Salary by company')
+           .text('This month expense by category')
 
         //append legends
         var legend = svg.append('g')
             .selectAll('g.legend')
-            .data(data.map(entry => entry.company))
+            //.data(categories)
+            .data(data.map(entry => entry.category))
             .enter()
             .append("g")
             .attr("class", "legend");
@@ -89,7 +101,7 @@ function SalaryByCompanyPiChart({data, total}) {
      arc
        .append('path')
        .attr('d', arcGenerator)
-       .style('fill', (d, i) => myColor(d.data.company))
+       .style('fill', (d, i) => myColor(d.data.category))
        .style('stroke', '#ffffff')
        .style('stroke-width', 0);
 
@@ -98,6 +110,7 @@ function SalaryByCompanyPiChart({data, total}) {
        .append('text')
        .attr('text-anchor', 'middle')
        .attr('alignment-baseline', 'middle')
+       //.text((d) => d.data.category + ' (' + d.data.amount + ')')
        .text((d) => d.data.amount)
        .style('stroke', 'teal')
        .style('font-size', '10px')
@@ -107,20 +120,18 @@ function SalaryByCompanyPiChart({data, total}) {
          return `translate(${x}, ${y})`;
        });
 
-    // Append total amount in center
-     arc
-        .append('svg:text')
-        .attr('text-anchor', 'middle')
-        .attr('alignment-baseline', 'middle')
-        .text(NumberFormatNoDecimal(total))
-        .style('stroke', 'gray')
-        .style('font-size', '10px')
-        .style('font-family', "Courier New");
-
-
+     // Append total amount in center
+      arc
+         .append('svg:text')
+         .attr('text-anchor', 'middle')
+         .attr('alignment-baseline', 'middle')
+         .text(NumberFormatNoDecimal(sum))
+         .style('stroke', 'gray')
+         .style('font-size', '10px')
+         .style('font-family', "Courier New");
    }
 
-   return <div id="salary-pie-container" />;
+   return <div id="pie-container" />;
  }
 
-export default SalaryByCompanyPiChart;
+export default ExpenseMonthByCategoryPiChart;

@@ -1,16 +1,14 @@
 import React, { Component, useState, useEffect } from 'react';
-import './App.css';
+import './css/App.css';
 import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./NumberFormat";
 import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
-import ExpenseMonthBarChart from './expenseMonthBarChart';
-import ExpenseMonthByCategoryPiChart from './expenseMonthByCategoryPiChart';
-import ExpenseMonthByCategoryPiChart2 from './expenseMonthByCategoryPiChart2';
-import ExpenseMonthByCategoryBarChart from './expenseMonthByCategoryBarChart'
-import ExpenseVsIncomeLineChart from './expenseVsIncomeLineChart'
-import ExpenseVsIncomeLineChartAll from './expenseVsIncomeLineChartAll'
+import ExpenseMonthBarChart from './charts/expenseMonthBarChart';
+import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChart';
+import ExpenseMonthByCategoryBarChart from './charts/expenseMonthByCategoryBarChart'
+import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart'
 
 class HomeCards extends Component {
 
@@ -40,7 +38,6 @@ class HomeCards extends Component {
             }
         }
       );
-      console.log(expenseDayDetails);
       const dayExpensesRows = expenseDayDetails.map(expense => {
         return <tr>
                   <td style={{whiteSpace: 'nowrap', textAlign: "Left"}}>{expense.head}</td>
@@ -55,7 +52,6 @@ class HomeCards extends Component {
   }
 
   closeExpenseModal = () => {
-      console.log("event: closeExpenseModal");
       this.setState({ expenseModalShow: !this.state.expenseModalShow });
   };
 
@@ -74,21 +70,18 @@ class HomeCards extends Component {
     this.setState({
         totalMonthExpense: sum
     });
-    console.log("monthExpensesByDay: ", body.expenses);
 
     const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
     const bodySumByCat = await responseSumByCatMonth.json();
     this.setState({
         expensesByCategory: bodySumByCat.expenseCategorySums
     });
-    console.log("expensesByCategory: ", bodySumByCat.expenseCategorySums);
 
      const responseMonthlySummary = await fetch('/fin/summary/monthly');
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records
      });
-     console.log("monthlySummary: ", bodyMonthlySummary.records);
   }
 
   render() {

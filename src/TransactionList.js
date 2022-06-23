@@ -28,7 +28,6 @@ class TransactionList extends Component {
     fetch("/fin/bank/transactions/" + event.target.getAttribute("tranId"))
         .then(response => response.json())
         .then(data => {
-              console.log("response received: " + JSON.stringify(data));
               tranDetails[1] = data.id;
               tranDetails[2] = data.date;
               tranDetails[3] = data.debit;
@@ -36,7 +35,6 @@ class TransactionList extends Component {
               tranDetails[5] = data.head;
               tranDetails[6] = data.description;
 
-              console.log(tranDetails);
               this.setState(
                   { tranDetails: tranDetails }
               );

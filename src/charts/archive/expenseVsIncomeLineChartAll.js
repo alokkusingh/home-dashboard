@@ -39,28 +39,28 @@ function ExpenseVsIncomeLineChartAll({ data }) {
           }
           record.date = date;
 
-          if (record.expenseAmount != null && record.expenseAmount != 0) {
+          if (record.expenseAmount !== null && record.expenseAmount !== 0) {
             expenseArray.push({
               'date': date,
               'amount': record.expenseAmount
             });
           }
 
-          if (record.incomeAmount != null && record.incomeAmount != 0) {
+          if (record.incomeAmount !== null && record.incomeAmount !== 0) {
             incomeArray.push({
                  'date': date,
                  'amount': record.incomeAmount
             });
           }
 
-          if (record.transferAmount != null && record.transferAmount != 0) {
+          if (record.transferAmount !== null && record.transferAmount !== 0) {
             transferArray.push({
                  'date': date,
                  'amount': record.transferAmount
             });
           }
 
-          if (record.investmentAmount != null && record.investmentAmount != 0) {
+          if (record.investmentAmount !== null && record.investmentAmount !== 0) {
             investmentArray.push({
                  'date': date,
                  'amount': record.investmentAmount

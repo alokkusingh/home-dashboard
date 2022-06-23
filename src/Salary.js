@@ -4,9 +4,9 @@ import AppNavbar from './AppNavbar';
 import { format, parseISO } from 'date-fns';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
-import SalaryByCompanyPiChart from './salaryByCompanyPiChart';
-import SalaryByMonthBarChart from './salaryByMonthBarChart';
-import TaxByYearBarChart from './taxByYearBarChart';
+import SalaryByCompanyPiChart from './charts/salaryByCompanyPiChart';
+import SalaryByMonthBarChart from './charts/salaryByMonthBarChart';
+import TaxByYearBarChart from './charts/taxByYearBarChart';
 
 class Salary extends Component {
 
@@ -161,7 +161,7 @@ class Salary extends Component {
              <AppNavbar/>
                 <Container fluid>
                 <tr>
-                  <td><h1>{title}</h1></td>
+                  <td><h1>{title}</h1></td><td><h12>(take home)</h12></td>
                 </tr>
                 <Row>
                     <Col m={3} s={3} l={3}>
