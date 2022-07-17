@@ -19,6 +19,7 @@ export default class AppNavbar extends Component {
         return <Navbar className="card-panel teal lighten-1" expand="md">
             <NavbarBrand tag={Link} to="/">
               <h2>Home Dashboard</h2>
+              <h5>{this.props.title}</h5>
             </NavbarBrand>
         </Navbar>
     }

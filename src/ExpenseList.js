@@ -167,11 +167,8 @@ class ExpenseList extends Component {
 
     return (
          <div className="teal lighten-5">
-             <AppNavbar/>
+             <AppNavbar title="Expense"/>
                 <Container fluid>
-                  <tr>
-                    <td><h1>{title}</h1></td>
-                  </tr>
                   <Row>
                     <Col m={2} s={2} l={2}>
                     </Col>

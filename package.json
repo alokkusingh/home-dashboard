@@ -45,6 +45,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8081",
-  "proxy-x": "http://jgte:30080"
+  "proxy-x": "http://localhost:8081",
+  "proxy": "http://jgte:30080"
 }

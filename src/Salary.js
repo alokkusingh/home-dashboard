@@ -154,11 +154,8 @@ class Salary extends Component {
 
     return (
          <div className="card teal lighten-5">
-             <AppNavbar/>
+             <AppNavbar title="Salary"/>
                 <Container fluid>
-                <tr>
-                  <td><h1>{title}</h1></td><td><h12>(take home)</h12></td>
-                </tr>
                 <Row>
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">

@@ -90,12 +90,11 @@ class TransactionList extends Component {
 
     return (
          <div className="teal lighten-5">
-             <AppNavbar/>
+             <AppNavbar title="Bank Transaction"/>
                 <Container fluid>
                 <Card
                       className="teal lighten-4"
                       textClassName="black-text"
-                      title={title}
                     >
                     <div style={{float: 'right'}}>
                       <a
@@ -104,7 +103,6 @@ class TransactionList extends Component {
                             <i class="material-icons right"></i>
                             Download
                       </a>
-                      <p class="grey-text text-darken-2">Last Transaction Date {lastTransactionDate}</p>
                     </div>
                     <div>
 
