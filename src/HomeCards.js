@@ -108,11 +108,11 @@ class HomeCards extends Component {
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
-                return <tr key={expense.date} onClick={this.showExpenseModal}>
-                        <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                        <td tranId={expense.date} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
-                    </tr>
-            });
+          return <tr key={expense.date} onClick={this.showExpenseModal}>
+                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td tranId={expense.date} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
+              </tr>
+      });
 
      const expensesByCategoryList = expensesByCategory.map(expense => {
           return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
