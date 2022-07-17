@@ -108,8 +108,8 @@ class Salary extends Component {
 
     function prepareSalaryRow(record) {
         return <tr>
-           <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(record.year, record.month)}</td>
-           <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
+           <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(record.year, record.month)}</td>
+           <td style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.amount)}</td>
          </tr>
     }
 

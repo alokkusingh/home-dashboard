@@ -109,10 +109,10 @@ class TransactionList extends Component {
                     <Table className="mt-4" hover="true">
                         <thead>
                           <tr>
-                            <th width="10%" style={{textAlign: "center"}}>Date</th>
-                            <th width="10%" style={{textAlign: "center"}}>Head</th>
-                            <th width="10%" style={{textAlign: "right"}}>Debit</th>
-                            <th width="10%" style={{textAlign: "right"}}>Credit</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '.8rem'}}>Date</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '.8rem'}}>Head</th>
+                            <th width="10%" style={{textAlign: "right", fontSize: '.8rem'}}>Debit</th>
+                            <th width="10%" style={{textAlign: "right", fontSize: '.8rem'}}>Credit</th>
                           </tr>
                         </thead>
                         <tbody>

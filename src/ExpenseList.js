@@ -115,10 +115,10 @@ class ExpenseList extends Component {
           .then(expensesJson => {
               const expenseCategoryMonthRows = expensesJson.expenses.map( expense => {
                   return <tr>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "Left"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "Left"}}>{expense.head}</td>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "right"}}>{expense.amount}</td>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "left"}}>{expense.comment}</td>
+                      <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                      <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{expense.head}</td>
+                      <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
+                      <td style={{whiteSpace: 'wrap', textAlign: "left", fontWeight: '200', fontSize: '.8rem'}}>{expense.comment}</td>
                    </tr>
               });
               this.setState({ expenseCategoryMonthRows: expenseCategoryMonthRows });
@@ -150,18 +150,18 @@ class ExpenseList extends Component {
 
     const expenseList = expenses.map(expense => {
         return <tr key={expense.id} >
-                <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                <td style={{textAlign: "center"}}>{expense.head}</td>
-                <td style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
-                <td style={{textAlign: "center"}}>{expense.category}</td>
-                <td style={{textAlign: "center"}}>{expense.comment}</td>
+                <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.head}</td>
+                <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(expense.amount)}</td>
+                <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.category}</td>
+                <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.comment}</td>
             </tr>
     });
 
     const expenseForCategoriesRows = expensesForCategory.map(record => {
        return <tr key={record.year +'-'+ record.month} onClick={this.showExpenseCategoryModal}>
-               <td tranId={record.year +'-'+ record.month} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(record.year, record.month)}</td>
-               <td tranId={record.year +'-'+ record.month} style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.sum)}</td>
+               <td tranId={record.year +'-'+ record.month} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(record.year, record.month)}</td>
+               <td tranId={record.year +'-'+ record.month} style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(record.sum)}</td>
              </tr>
     });
 

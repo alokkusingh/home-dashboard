@@ -41,9 +41,9 @@ class HomeCards extends Component {
       );
       const dayExpensesRows = expenseDayDetails.map(expense => {
         return <tr>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Left"}}>{expense.head}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "left"}}>{expense.comment}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "right"}}>{expense.amount}</td>
+                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.head}</td>
+                  <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{expense.comment}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
                </tr>
         });
 
@@ -101,34 +101,34 @@ class HomeCards extends Component {
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
-                  <td tranId={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.id} style={{textAlign: "center"}}>{expense.head}</td>
-                  <td tranId={expense.id} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
+                  <td tranId={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td tranId={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.8rem'}}>{expense.head}</td>
+                  <td tranId={expense.id} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
           return <tr key={expense.date} onClick={this.showExpenseModal}>
-                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.date} style={{textAlign: "right"}}>{NumberFormat(expense.amount)}</td>
+                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td tranId={expense.date} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
      const expensesByCategoryList = expensesByCategory.map(expense => {
           return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
-                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(expense.year, expense.month)}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center"}}>{expense.category}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right"}}>{NumberFormat(expense.sum)}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.8rem'}}>{expense.category}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
-                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right"}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right"}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right"}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right"}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
                </tr>
       });
 
@@ -230,7 +230,7 @@ class HomeCards extends Component {
                           closeIcon={<Icon>close</Icon>}
                           revealIcon={<Icon>more_vert</Icon>}
                           textClassName="black-text"
-                          title="Monthly Income vs Expense vs Transfer vs Investment vs Saving"
+                          title="Monthly Fund Flow"
                         >
                         <Table striped bordered hover size="sm">
                               <thead>
