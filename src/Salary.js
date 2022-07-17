@@ -108,13 +108,13 @@ class Salary extends Component {
     function prepareSalaryRow(record) {
         if(record.month < 10)
             return <tr>
-                     <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-                     <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
-                   </tr>
-        return <tr>
-                   <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
-                   <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
-                 </tr>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
+               <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
+             </tr>
+            return <tr>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
+               <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
+             </tr>
     }
 
     const title = "Salary";

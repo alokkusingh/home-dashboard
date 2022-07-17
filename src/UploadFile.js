@@ -69,7 +69,7 @@ class UploadFile extends Component {
 
 
    render() {
-        const title = <h3>Upload Expense</h3>;
+        const title = <h3>Upload a file</h3>;
 
         return <div teal lighten-5>
               <AppNavbar/>
