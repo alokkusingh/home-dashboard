@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Container, Table, Row, Col } from 'reactstrap';
 import AppNavbar from './AppNavbar';
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { Card} from 'react-materialize';
-import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
+import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { formatYearMonth } from "./utils/FormatYearMonth";
 import SalaryByCompanyPiChart from './charts/salaryByCompanyPiChart';
 import SalaryByMonthBarChart from './charts/salaryByMonthBarChart';
 import TaxByYearBarChart from './charts/taxByYearBarChart';
@@ -106,15 +107,10 @@ class Salary extends Component {
     } = this.state;
 
     function prepareSalaryRow(record) {
-        if(record.month < 10)
-            return <tr>
-               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-               <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
-             </tr>
-            return <tr>
-               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
-               <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
-             </tr>
+        return <tr>
+           <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(record.year, record.month)}</td>
+           <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.amount)}</td>
+         </tr>
     }
 
     const title = "Salary";

@@ -1,8 +1,6 @@
 import React, {useEffect} from 'react'
-import { format, parseISO } from 'date-fns';
-import { NumberFormat } from "../NumberFormat";
+import { parseISO } from 'date-fns';
 import * as d3 from 'd3';
-import { useD3 } from './hooks/useD3';
 
 
 function ExpenseMonthBarChart({ data }) {

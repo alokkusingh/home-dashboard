@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import * as d3 from 'd3';
-import { NumberFormatNoDecimal } from "../NumberFormatNoDecimal";
+import { NumberFormatNoDecimal } from "../utils/NumberFormatNoDecimal";
 
 function SalaryByCompanyPiChart({data, total}) {
    const outerRadius = 105;

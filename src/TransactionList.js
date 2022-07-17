@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import {Toast, ToastBody, ToastHeader, Spinner} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {CardPanel, Icon, Card} from 'react-materialize';
-import { NumberFormat } from "./NumberFormat";
+import { NumberFormat } from "./utils/NumberFormat";
 
 class TransactionList extends Component {
 

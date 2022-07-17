@@ -4,8 +4,9 @@ import { ButtonDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } 
 import AppNavbar from './AppNavbar';
 import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
-import { NumberFormat } from "./NumberFormat";
-import { NumberFormatNoDecimal } from "./NumberFormatNoDecimal";
+import { NumberFormat } from "./utils/NumberFormat";
+import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { formatYearMonth } from "./utils/FormatYearMonth";
 
 class ExpenseList extends Component {
 
@@ -15,11 +16,44 @@ class ExpenseList extends Component {
       expenses: [],
       expensesForCategory: [],
       categories: [],
+      months: [],
       count: 0,
       lastTransactionDate: "",
       categoryDropDownValue: 'Select a category',
-      categoryDropdownOpen: false
+      categoryDropdownOpen: false,
+      monthExpDropDownValue: 'All Months',
+      monthExpDropdownOpen: false
     };
+  }
+
+  async componentDidMount() {
+      const response = await fetch('/fin/expense/all');
+      const body = await response.json();
+      this.setState({
+          expenses: body.expenses,
+          count: body.count,
+          lastTransactionDate: body.lastTransactionDate
+      });
+
+      const responseCategories = await fetch('/fin/expense/categories/names');
+      const categories = await responseCategories.json();
+      this.setState({
+          categories: categories
+      });
+
+      const responseMonths = await fetch('/fin/expense/months');
+      const months = await responseMonths.json();
+      var monthsArr = [];
+      months.forEach(
+        month => monthsArr.push({
+            'year': month.year,
+            'month': month.month,
+            'monthStr': formatYearMonth(month.year, month.month)
+        })
+      )
+      this.setState({
+          months: monthsArr
+      });
   }
 
   toggleCategory = () => {
@@ -43,21 +77,28 @@ class ExpenseList extends Component {
       );
   }
 
-  async componentDidMount() {
-    const response = await fetch('/fin/expense/all');
-    const body = await response.json();
-    this.setState({
-        expenses: body.expenses,
-        count: body.count,
-        lastTransactionDate: body.lastTransactionDate
-    });
-
-    const responseCategories = await fetch('/fin/expense/categories/names');
-    const categories = await responseCategories.json();
-    this.setState({
-        categories: categories
-    });
+  toggleExpMonth = () => {
+      this.setState({
+          monthExpDropdownOpen: !this.state.monthExpDropdownOpen
+      });
   }
+
+  changeExpMonthValue = (e) => {
+      const yearMonth = e.currentTarget.getAttribute("id");
+      this.setState({monthExpDropDownValue: e.currentTarget.textContent});
+
+      fetch("/fin/expense/monthly/categories/" + e.currentTarget.getAttribute("id"))
+          .then(response => response.json())
+          .then(expensesJson => {
+              console.table(expensesJson.expenses);
+              this.setState(
+                  { expenses: expensesJson.expenseCategorySums }
+              );
+          }
+      );
+  }
+
+
 
   render() {
     const {
@@ -65,9 +106,12 @@ class ExpenseList extends Component {
       count,
       lastTransactionDate,
       categories,
+      months,
       categoryDropDownValue,
       categoryDropdownOpen,
-      expensesForCategory
+      expensesForCategory,
+      monthExpDropdownOpen,
+      monthExpDropDownValue
     } = this.state;
     const title = "Expenses";
 
@@ -82,13 +126,8 @@ class ExpenseList extends Component {
     });
 
     const expenseForCategoriesRows = expensesForCategory.map(record => {
-        if(record.month < 10)
-            return <tr>
-               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "0" + record.month), 'MMM yyyy')}</td>
-               <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.sum)}</td>
-             </tr>
-            return <tr>
-               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(record.year + "" + record.month), 'MMM yyyy')}</td>
+       return <tr>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center"}}>{formatYearMonth(record.year, record.month)}</td>
                <td style={{textAlign: "right"}}>{NumberFormatNoDecimal(record.sum)}</td>
              </tr>
     });
@@ -159,6 +198,16 @@ class ExpenseList extends Component {
                       </Card>
                     </Col>
                     <Col m={2} s={2} l={2}>
+                        <ButtonDropdown isOpen={monthExpDropdownOpen} toggle={this.toggleExpMonth}>
+                            <DropdownToggle caret>
+                                {monthExpDropDownValue}
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                {months.map(e => {
+                                    return <DropdownItem id={e.year + '-' + e.month} key={e.monthStr} onClick={this.changeExpMonthValue}>{e.monthStr}</DropdownItem>
+                                })}
+                            </DropdownMenu>
+                        </ButtonDropdown>
                     <Card className="teal lighten-4" textClassName="black-text" title="Total Expenses" >
                     <Table striped bordered hover size="sm">
                         <thead>
