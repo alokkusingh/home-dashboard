@@ -114,7 +114,12 @@ class HomeCards extends Component {
               </tr>
       });
 
+     // Lets show only current month
+     const currentDate = new Date();
+     const currentYear = currentDate.getFullYear();
+     const currentMonth = currentDate.getMonth()+1
      const expensesByCategoryList = expensesByCategory.map(expense => {
+          if (expense.year === currentYear && expense.month === currentMonth)
           return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
                   <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
                   <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.8rem'}}>{expense.category}</td>

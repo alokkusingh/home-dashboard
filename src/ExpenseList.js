@@ -15,6 +15,7 @@ class ExpenseList extends Component {
     this.state = {
       expenses: [],
       expensesForCategory: [],
+      expensesByCategory: [],
       categories: [],
       months: [],
       count: 0,
@@ -22,6 +23,7 @@ class ExpenseList extends Component {
       categoryDropDownValue: 'Grocery',
       categoryDropdownOpen: false,
       monthExpDropDownValue: 'All Months',
+      monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
       expenseCategoryModalShow: false,
       expenseCategoryMonthRows: ""
@@ -37,6 +39,12 @@ class ExpenseList extends Component {
           expenses: body.expenses,
           count: body.count,
           lastTransactionDate: body.lastTransactionDate
+      });
+
+      const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
+      const bodySumByCat = await responseSumByCatMonth.json();
+      this.setState({
+          expensesByCategory: bodySumByCat.expenseCategorySums
       });
 
       // Default set Expense Category - Grocery
@@ -141,12 +149,29 @@ class ExpenseList extends Component {
       categoryDropDownValue,
       categoryDropdownOpen,
       expensesForCategory,
+      expensesByCategory,
       monthExpDropdownOpen,
       monthExpDropDownValue,
+      monthExpByCatDropDownValue,
       expenseCategoryModalShow,
       expenseCategoryMonthRows
     } = this.state;
     const title = "Expenses";
+
+    const expenseForCategoriesRows = expensesForCategory.map(record => {
+       return <tr key={record.year +'-'+ record.month} onClick={this.showExpenseCategoryModal}>
+               <td tranId={record.year +'-'+ record.month} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(record.year, record.month)}</td>
+               <td tranId={record.year +'-'+ record.month} style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(record.sum)}</td>
+             </tr>
+    });
+
+    const expenseByCategoryListRows = expensesByCategory.map(expense => {
+        return <tr key={expense.id} >
+                <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+                <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.category}</td>
+                <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(expense.sum)}</td>
+            </tr>
+    });
 
     const expenseList = expenses.map(expense => {
         return <tr key={expense.id} >
@@ -158,28 +183,12 @@ class ExpenseList extends Component {
             </tr>
     });
 
-    const expenseForCategoriesRows = expensesForCategory.map(record => {
-       return <tr key={record.year +'-'+ record.month} onClick={this.showExpenseCategoryModal}>
-               <td tranId={record.year +'-'+ record.month} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(record.year, record.month)}</td>
-               <td tranId={record.year +'-'+ record.month} style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(record.sum)}</td>
-             </tr>
-    });
-
     return (
          <div className="teal lighten-5">
              <AppNavbar title="Expense"/>
                 <Container fluid>
                   <Row>
-                    <Col m={2} s={2} l={2}>
-                    </Col>
-                    <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
-                            <div>
-                            <h3>Coming soon...</h3>
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col m={3} s={3} l={3}>
+                    <Col m={6} s={6} l={6}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
                             <div>
                             <h3>Coming soon...</h3>
@@ -213,7 +222,7 @@ class ExpenseList extends Component {
                               })}
                           </DropdownMenu>
                       </ButtonDropdown>
-                      <Card className="teal lighten-4" textClassName="black-text" title="Month Expense for Category" >
+                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expense for Category" >
                           <Table striped bordered hover size="sm">
                               <thead>
                                 <tr>
@@ -241,6 +250,27 @@ class ExpenseList extends Component {
                                </tbody>
                              </Table>
                           </Modal>
+                      </Card>
+                    </Col>
+                    <Col m={2} s={2} l={2}>
+                      <ButtonDropdown direction="right" >
+                          <DropdownToggle caret size="sm">
+                              {monthExpByCatDropDownValue}
+                          </DropdownToggle>
+                      </ButtonDropdown>
+                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expenses by Category" >
+                      <Table striped bordered hover size="sm">
+                          <thead>
+                            <tr>
+                              <th width="10%" style={{textAlign: "center"}}>Month</th>
+                              <th width="10%" style={{textAlign: "center"}}>Category</th>
+                              <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {expenseByCategoryListRows}
+                          </tbody>
+                      </Table>
                       </Card>
                     </Col>
                     <Col m={2} s={2} l={2}>
