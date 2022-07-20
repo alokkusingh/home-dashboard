@@ -7,6 +7,7 @@ import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
+import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart"
 
 class ExpenseList extends Component {
 
@@ -15,13 +16,16 @@ class ExpenseList extends Component {
     this.state = {
       expenses: [],
       expensesForCategory: [],
+      expensesForSelectedCategoryForBar: [],
       expensesByCategory: [],
       categories: [],
       months: [],
       count: 0,
       lastTransactionDate: "",
       categoryDropDownValue: 'Grocery',
+      categoryDropDownValueForBar: 'ALL',
       categoryDropdownOpen: false,
+      categoryDropdownOpenForBar: false,
       monthExpDropDownValue: 'All Months',
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
@@ -47,6 +51,15 @@ class ExpenseList extends Component {
           expensesByCategory: bodySumByCat.expenseCategorySums
       });
 
+      var expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+        var ym = expense.year + '-' + expense.month;
+        expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
+        return expensesForSelectedCategory;
+      }, {});
+      this.setState(
+          { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
+      );
+
       // Default set Expense Category - Grocery
       const catExpResponse = await fetch("/fin/expense/monthly/categories/" + this.state.categoryDropDownValue);
       const catExpResponseJson = await catExpResponse.json();
@@ -59,6 +72,7 @@ class ExpenseList extends Component {
       this.setState({
           categories: categories
       });
+      categories.push('ALL')
 
       const responseMonths = await fetch('/fin/expense/months');
       const months = await responseMonths.json();
@@ -92,6 +106,38 @@ class ExpenseList extends Component {
                   { expensesForCategory: expensesJson.expenseCategorySums }
               );
           }
+      );
+  }
+
+  toggleCategoryForBar = () => {
+      this.setState({
+          categoryDropdownOpenForBar: !this.state.categoryDropdownOpenForBar
+      });
+  }
+
+  changeCategoryValueForBar = (e) => {
+      const selectedOption = e.currentTarget.textContent;
+      this.setState({categoryDropDownValueForBar: selectedOption});
+
+      let expensesForSelectedCategory = [];
+      if (selectedOption === "ALL") {
+          expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+          var ym = expense.year + '-' + expense.month;
+          expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
+          return expensesForSelectedCategory;
+        }, {});
+      } else {
+          expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+          var ym = expense.year + '-' + expense.month;
+          if (selectedOption === expense.category) {
+              expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
+          }
+          return expensesForSelectedCategory;
+        }, {});
+      }
+
+      this.setState(
+          { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
       );
   }
 
@@ -147,9 +193,12 @@ class ExpenseList extends Component {
       categories,
       months,
       categoryDropDownValue,
+      categoryDropDownValueForBar,
       categoryDropdownOpen,
+      categoryDropdownOpenForBar,
       expensesForCategory,
       expensesByCategory,
+      expensesForSelectedCategoryForBar,
       monthExpDropdownOpen,
       monthExpDropDownValue,
       monthExpByCatDropDownValue,
@@ -189,6 +238,28 @@ class ExpenseList extends Component {
                 <Container fluid>
                   <Row>
                     <Col m={6} s={6} l={6}>
+                        <ButtonDropdown direction="right" isOpen={categoryDropdownOpenForBar} toggle={this.toggleCategoryForBar}>
+                            <DropdownToggle caret size="sm">
+                                {categoryDropDownValueForBar}
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                {categories.map(e => {
+                                    return <DropdownItem id={e} key={e} onClick={this.changeCategoryValueForBar}>{e}</DropdownItem>
+                                })}
+                            </DropdownMenu>
+                        </ButtonDropdown>
+                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                            <div>
+                              <ExpenseForCategoryBarChart data={expensesForSelectedCategoryForBar} />
+                            </div>
+                        </Card>
+                    </Col>
+                    <Col m={3} s={3} l={3}>
+                       <ButtonDropdown direction="right" >
+                            <DropdownToggle caret size="sm">
+                               Some Filter
+                            </DropdownToggle>
+                        </ButtonDropdown>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
                             <div>
                             <h3>Coming soon...</h3>
@@ -196,13 +267,11 @@ class ExpenseList extends Component {
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
-                            <div>
-                            <h3>Coming soon...</h3>
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col m={3} s={3} l={3}>
+                       <ButtonDropdown direction="right" >
+                            <DropdownToggle caret size="sm">
+                               Some Filter
+                            </DropdownToggle>
+                        </ButtonDropdown>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
                             <div>
                             <h3>Coming soon...</h3>
