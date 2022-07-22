@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 function ExpenseVsIncomeLineChart({ data }) {
 
     var oneYearBackFromNow = new Date();
-    oneYearBackFromNow.setFullYear(oneYearBackFromNow.getFullYear() - 1);
+    oneYearBackFromNow.setFullYear(oneYearBackFromNow.getFullYear() - 1.5);
 
     var filteredData = data.filter(function(record) {
        var date = null;
@@ -88,11 +88,11 @@ function ExpenseVsIncomeLineChart({ data }) {
 
     function drawChart() {
        const height = 220;
-       const width = 300;
+       const width = 450;
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-       const numberOfYaxisTicks = 10;
+       const numberOfYaxisTicks = 7;
 
-       var allGroup = ["income", "expense", "transfer", "saving", "investment"]
+       var allGroup = ["income", "expense", "transfer", "investment"]
        // A color scale: one color for each group
        var myColor = d3.scaleOrdinal()
          .domain(allGroup)
@@ -154,7 +154,7 @@ function ExpenseVsIncomeLineChart({ data }) {
           .style('color', 'teal')
           .style('font-family', 'Helvetica')
           .style('font-size', 18)
-          .text('Last 12 months summary');
+          .text('Last 18 months summary');
 
           // X label - not needed
 /*       svg.append('text')
@@ -166,12 +166,12 @@ function ExpenseVsIncomeLineChart({ data }) {
           .text('-- Months -->')*/
 
           // Y label
-       svg.append('text')
+       /*svg.append('text')
          .attr('text-anchor', 'middle')
          .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
          .style('font-family', 'Helvetica')
          .style('font-size', 14)
-         .text('Amount (Rs)')
+         .text('Amount (Rs)')*/
 
        //append legends
        var legend = svg.append('g')
@@ -182,18 +182,20 @@ function ExpenseVsIncomeLineChart({ data }) {
            .attr("class", "legend");
 
        legend.append("circle")
-           .attr("cx", width + 15)
-           .attr('cy', (d, i) => i * 30 + 90)
-           .attr("r", 6)
+           .attr("cx", width - 420)
+           .attr('cy', (d, i) => i * 18 + 10)
+           .attr("r", 4)
            .style("fill", d => myColor(d));
 
        legend.append("text")
-           .attr("x", width + 25)
-           .attr("y", (d, i) => i * 30 + 93)
+           .attr("x", width - 400)
+           .attr("y", (d, i) => i * 18 + 12)
+           .attr("dx", "-.8em")
+           .attr("dy", ".15em")
            .attr("text-anchor", "left")
+           .style('font-family', 'Patrick Hand SC')
+           .style('font-size', '.5em')
            .text(d => d)
-           .style('font-family', 'Helvetica')
-           .style('font-size', 10)
 
        drawLineAndDots("expense", expenseArray);
        drawLineAndDots("income", incomeArray);
@@ -203,7 +205,6 @@ function ExpenseVsIncomeLineChart({ data }) {
        // Draw grid lines
        drawHorizontalLines();
        drawVerticalLines();
-
 
        function drawLineAndDots(type, data) {
             // Draw the dots for income

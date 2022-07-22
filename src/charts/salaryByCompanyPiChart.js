@@ -72,18 +72,18 @@ function SalaryByCompanyPiChart({data, total}) {
             .attr("class", "legend");
 
         legend.append("circle")
-            .attr("cx", width - 110)
-            .attr('cy', (d, i) => i * 14 - 55)
+            .attr("cx", width - 115)
+            .attr('cy', (d, i) => i * 14 + 23)
             .attr("r", 4)
             .style("fill", d => myColor(d));
 
         legend.append("text")
-            .attr("x", width - 100)
-            .attr("y", (d, i) => i * 14 - 53)
+            .attr("x", width - 105)
+            .attr("y", (d, i) => i * 14 + 25)
             .attr("text-anchor", "left")
             .text(d => d)
-            .style('font-family', 'Helvetica')
-            .style('font-size', 6)
+            .style('font-family', 'Patrick Hand SC')
+            .style('font-size', '.5em')
 
      // Append arcs
      arc

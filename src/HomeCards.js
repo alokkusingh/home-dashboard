@@ -16,6 +16,7 @@ class HomeCards extends Component {
   constructor() {
     super();
     this.state = {
+      expCategories: [],
       monthExpenses: [],
       expensesByCategory: [],
       expensesByMonth: [],
@@ -83,6 +84,12 @@ class HomeCards extends Component {
      this.setState({
          monthlySummary: bodyMonthlySummary.records
      });
+
+      const responseCategories = await fetch('/fin/expense/categories/names');
+       const categories = await responseCategories.json();
+       this.setState({
+           expCategories: categories
+       });
   }
 
   render() {
@@ -95,22 +102,23 @@ class HomeCards extends Component {
         monthlySummary,
         totalMonthExpense,
         expenseModalShow,
-        dayExpensesRows
+        dayExpensesRows,
+        expCategories
       } =  this.state;
 
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
-                  <td tranId={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.8rem'}}>{expense.head}</td>
-                  <td tranId={expense.id} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td tranId={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td tranId={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.75rem'}}>{expense.head}</td>
+                  <td tranId={expense.id} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
           return <tr key={expense.date} onClick={this.showExpenseModal}>
-                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.date} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td tranId={expense.date} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
@@ -121,19 +129,20 @@ class HomeCards extends Component {
      const expensesByCategoryList = expensesByCategory.map(expense => {
           if (expense.year === currentYear && expense.month === currentMonth)
           return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
-                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.8rem'}}>{expense.category}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(expense.sum)}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
+                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
-                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.investmentAmount))}</td>
+                   <td tranId={'' + record.year + record.month + 5} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
                </tr>
       });
 
@@ -157,7 +166,7 @@ class HomeCards extends Component {
                           textClassName="black-text"
                         >
                         <div>
-                             <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} />
+                             <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} categories={expCategories} />
                         </div>
                     </Card>
                 </Col>
@@ -244,6 +253,7 @@ class HomeCards extends Component {
                                   <th width="20%" style={{textAlign: "right"}}>Income</th>
                                   <th width="20%" style={{textAlign: "right"}}>Expense</th>
                                   <th width="20%" style={{textAlign: "right"}}>Transfer</th>
+                                  <th width="20%" style={{textAlign: "right"}}>Investment</th>
                                   <th width="20%" style={{textAlign: "right"}}>Saving</th>
                                 </tr>
                               </thead>

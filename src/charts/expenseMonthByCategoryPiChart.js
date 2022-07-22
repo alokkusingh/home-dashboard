@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import * as d3 from 'd3';
 import { NumberFormatNoDecimal } from "../utils//NumberFormatNoDecimal";
 
-function ExpenseMonthByCategoryPiChart({data}) {
+function ExpenseMonthByCategoryPiChart({data, categories}) {
 
   var sum = 0;
   data.forEach(function(record) {
@@ -28,7 +28,7 @@ function ExpenseMonthByCategoryPiChart({data}) {
    }, [data]);
 
    function drawChart() {
-     const categories = ["Bills", "Fuel", "Milk", "Maintenance", "Travel", "House Help", "Food Outside", "Accessories", "Grocery", "Education", "Medical", "Grooming", "Appliances", "Gift", "Entertainment", "Baby Care", "Furniture", "Other"];
+     //const categories = ["Bills", "Fuel", "Milk", "Maintenance", "Travel", "House Help", "Food Outside", "Accessories", "Grocery", "Education", "Medical", "Grooming", "Appliances", "Gift", "Entertainment", "Baby Care", "Furniture", "Other"];
 
       var myColor = d3.scaleOrdinal()
               .domain(categories)
@@ -84,18 +84,20 @@ function ExpenseMonthByCategoryPiChart({data}) {
             .attr("class", "legend");
 
         legend.append("circle")
-            .attr("cx", width - 110)
+            .attr("cx", width - 107)
             .attr('cy', (d, i) => i * 14 - 55)
             .attr("r", 4)
             .style("fill", d => myColor(d));
 
         legend.append("text")
-            .attr("x", width - 100)
+            .attr("x", width - 87)
             .attr("y", (d, i) => i * 14 - 53)
+             .attr("dx", "-.8em")
+             .attr("dy", ".15em")
             .attr("text-anchor", "left")
+            .style('font-family', 'Patrick Hand SC')
+            .style('font-size', '.5em')
             .text(d => d)
-            .style('font-family', 'Helvetica')
-            .style('font-size', 6)
 
      // Append arcs
      arc
