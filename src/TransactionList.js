@@ -21,7 +21,7 @@ class TransactionList extends Component {
   }
 
   showModal = (event) => {
-    console.log("event: ", event.target.getAttribute("tranId"))
+    console.log("event: ", event.target.getAttribute("id"))
 
     let tranDetails = [];
 
@@ -81,10 +81,10 @@ class TransactionList extends Component {
 
     const transactionList = transactions.map(transaction => {
         return <tr key={transaction.id} onClick={this.showModal}>
-                <td tranId={transaction.id} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                <td tranId={transaction.id} style={{textAlign: "center"}}>{transaction.head}</td>
-                <td tranId={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.credit)}</td>
-                <td tranId={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.debit)}</td>
+                <td id={transaction.id} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                <td id={transaction.id} style={{textAlign: "center"}}>{transaction.head}</td>
+                <td id={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.credit)}</td>
+                <td d={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.debit)}</td>
             </tr>
     });
 
@@ -99,14 +99,14 @@ class TransactionList extends Component {
                     <div style={{float: 'right'}}>
                       <a
                         href="#" onClick={this.downloadTransactions}
-                        class="waves-effect waves-light btn-small">
-                            <i class="material-icons right"></i>
+                        className="waves-effect waves-light btn-small">
+                            <i className="material-icons right"></i>
                             Download
                       </a>
+
                     </div>
                     <div>
-
-                    <Table className="mt-4" hover="true">
+                    <Table className="mt-4" hover>
                         <thead>
                           <tr>
                             <th width="10%" style={{textAlign: "center", fontSize: '.8rem'}}>Date</th>
