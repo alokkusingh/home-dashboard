@@ -31,11 +31,11 @@ class HomeCards extends Component {
   }
 
   showExpenseModal = (event) => {
-      console.log("event: ", event.target.getAttribute("tranId"))
+      console.log("event: ", event.target.getAttribute("id"))
       let expenseDayDetails = [];
       this.state.monthExpensesByDay.forEach(
         record => {
-            if (record.date == event.target.getAttribute("tranId")) {
+            if (record.date == event.target.getAttribute("id")) {
                 expenseDayDetails = record.expenses;
             }
         }
@@ -109,16 +109,16 @@ class HomeCards extends Component {
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
-                  <td tranId={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.75rem'}}>{expense.head}</td>
-                  <td tranId={expense.id} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td id={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td id={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.75rem'}}>{expense.head}</td>
+                  <td id={expense.id} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
           return <tr key={expense.date} onClick={this.showExpenseModal}>
-                  <td tranId={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td tranId={expense.date} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td id={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td id={expense.date} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
@@ -129,20 +129,20 @@ class HomeCards extends Component {
      const expensesByCategoryList = expensesByCategory.map(expense => {
           if (expense.year === currentYear && expense.month === currentMonth)
           return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
-                  <td tranId={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
-                  <td tranId={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
+                  <td id={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+                  <td id={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
+                  <td id={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
-                   <td tranId={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td tranId={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.investmentAmount))}</td>
-                   <td tranId={'' + record.year + record.month + 5} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td id={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
+                   <td id={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.investmentAmount))}</td>
+                   <td id={'' + record.year + record.month + 5} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
                </tr>
       });
 

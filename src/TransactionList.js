@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table, Modal, ModalHeader } from 'reactstrap';
+import { Container, Table, Modal, ModalHeader } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import {Toast, ToastBody, ToastHeader, Spinner} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {CardPanel, Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
+import { Button } from 'semantic-ui-react'
 
 class TransactionList extends Component {
 
@@ -97,13 +98,9 @@ class TransactionList extends Component {
                       textClassName="black-text"
                     >
                     <div style={{float: 'right'}}>
-                      <a
-                        href="#" onClick={this.downloadTransactions}
-                        className="waves-effect waves-light btn-small">
-                            <i className="material-icons right"></i>
-                            Download
-                      </a>
-
+                      <Button.Group basic size='medium'>
+                        <Button icon='download' onClick={this.downloadTransactions} />
+                      </Button.Group>
                     </div>
                     <div>
                     <Table className="mt-4" hover>

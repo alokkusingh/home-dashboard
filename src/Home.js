@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './css/App.css';
+import 'materialize-css/dist/css/materialize.min.css'
+import 'semantic-ui-css/semantic.min.css'
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
-import { Container} from 'reactstrap';
+import { Container, Row, Col} from 'reactstrap';
 import HomeCards from './HomeCards';
-import {Button, Icon} from 'react-materialize';
-import 'materialize-css/dist/css/materialize.min.css'
+import RefreshGoogleSheets from './RefreshGoogleSheets';
 
 class Home extends Component {
 
@@ -18,6 +19,7 @@ class Home extends Component {
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/expenses">Expenses</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/salary">Salary</Link></a>
                     <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadFile">Upload File</Link></a>
+                    <RefreshGoogleSheets />
                 </Container>
                 <HomeCards/>
             </div>
