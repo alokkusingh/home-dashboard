@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
-import { Button } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 
 class RefreshGoogleSheets extends Component {
 
@@ -30,29 +30,20 @@ class RefreshGoogleSheets extends Component {
 
       return (
           <div style={{float: 'right'}}>
-              <Row>
-                <Col align="middle">
-                  <Button.Group basic size='small'>
-                    <Button icon='refresh' id='expense' onClick={this.refreshSheet}></Button>
-                  </Button.Group>
-                  <br/>
+            <Button.Group basic size='small'>
+                <Button id='expense' onClick={this.refreshSheet}>
+                  <Icon name='refresh'/>
                   Expense
-                  </Col>
-                  <Col align="middle">
-                    <Button.Group basic size='small'>
-                      <Button icon='refresh' id='investment' onClick={this.refreshSheet}></Button>
-                    </Button.Group>
-                    <br/>
-                    Investment
-                  </Col>
-                  <Col align="middle">
-                    <Button.Group basic size='small'>
-                      <Button icon='refresh' id='tax' onClick={this.refreshSheet}></Button>
-                    </Button.Group>
-                    <br/>
-                    Tax
-                  </Col>
-              </Row>
+                </Button>
+                <Button id='investment' onClick={this.refreshSheet}>
+                  <Icon name='refresh'/>
+                  Investment
+                </Button>
+                <Button id='tax' onClick={this.refreshSheet}>
+                  <Icon name='refresh'/>
+                  Tax
+                </Button>
+            </Button.Group>
           </div>
       );
   }
