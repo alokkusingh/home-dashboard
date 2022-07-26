@@ -4,7 +4,7 @@ import 'materialize-css/dist/css/materialize.min.css'
 import 'semantic-ui-css/semantic.min.css'
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col} from 'reactstrap';
+import { Container } from 'reactstrap';
 import HomeCards from './HomeCards';
 import RefreshGoogleSheets from './RefreshGoogleSheets';
 

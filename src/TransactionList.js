@@ -26,7 +26,7 @@ class TransactionList extends Component {
 
     let tranDetails = [];
 
-    fetch("/fin/bank/transactions/" + event.target.getAttribute("tranId"))
+    fetch("/fin/bank/transactions/" + event.target.getAttribute("id"))
         .then(response => response.json())
         .then(data => {
               tranDetails[1] = data.id;
@@ -81,11 +81,13 @@ class TransactionList extends Component {
     const title = "Transactions (" + count + ")";
 
     const transactionList = transactions.map(transaction => {
-        return <tr key={transaction.id} onClick={this.showModal}>
-                <td id={transaction.id} style={{whiteSpace: 'nowrap', textAlign: "center"}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                <td id={transaction.id} style={{textAlign: "center"}}>{transaction.head}</td>
-                <td id={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.credit)}</td>
-                <td d={transaction.id} style={{textAlign: "right"}}>{NumberFormat(transaction.debit)}</td>
+        return <tr id={transaction.id} style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
+                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.head}</td>
+                <td id={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.credit)}</td>
+                <td d={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.debit)}</td>
+                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.bank}</td>
+                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.subHead}</td>
             </tr>
     });
 
@@ -106,10 +108,12 @@ class TransactionList extends Component {
                     <Table className="mt-4" hover>
                         <thead>
                           <tr>
-                            <th width="10%" style={{textAlign: "center", fontSize: '.8rem'}}>Date</th>
-                            <th width="10%" style={{textAlign: "center", fontSize: '.8rem'}}>Head</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '.8rem'}}>Debit</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '.8rem'}}>Credit</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Date</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Head</th>
+                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Debit</th>
+                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Credit</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Bank</th>
+                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Sub Head</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -121,34 +125,34 @@ class TransactionList extends Component {
                       <Table striped bordered hover>
                         <thead >
                           <tr>
-                            <th>Field</th>
-                            <th>Value</th>
+                            <th style={{textAlign: "center", fontSize: '1rem'}}>Field</th>
+                            <th style={{textAlign: "center", fontSize: '1rem'}}>Value</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td>Id</td>
-                            <td>{tranDetails[1]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Id</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[1]}</td>
                           </tr>
                           <tr>
-                            <td>Date</td>
-                            <td>{tranDetails[2]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Date</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[2]}</td>
                           </tr>
                           <tr>
-                            <td>Debit</td>
-                            <td>{tranDetails[3]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Debit</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[3]}</td>
                           </tr>
                           <tr>
-                            <td>Credit</td>
-                            <td>{tranDetails[4]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Credit</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[4]}</td>
                           </tr>
                           <tr>
-                            <td>Head</td>
-                            <td>{tranDetails[5]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Head</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[5]}</td>
                           </tr>
                           <tr>
-                            <td>Description</td>
-                            <td>{tranDetails[6]}</td>
+                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Description</td>
+                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[6]}</td>
                           </tr>
                         </tbody>
                       </Table>
