@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
-import AppNavbar from './AppNavbar';
 
 class UploadFile extends Component {
   emptyItem = {
@@ -72,7 +71,6 @@ class UploadFile extends Component {
         const title = <h3>Upload a file</h3>;
 
         return <div teal lighten-5>
-              <AppNavbar/>
               <Container>
                         {title}
                   <Form onSubmit={this.handleSubmit} >

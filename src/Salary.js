@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Container, Table, Row, Col } from 'reactstrap';
-import AppNavbar from './AppNavbar';
 import { parseISO } from 'date-fns';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
@@ -153,9 +152,7 @@ class Salary extends Component {
     aggregateSalaryByMonth(jpmcByMonth, salaryByYearMap);
 
     return (
-         <div className="card teal lighten-5">
-             <AppNavbar title="Salary"/>
-                <Container fluid>
+         <div id="cards" align="center" >
                 <Row>
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text">
@@ -279,7 +276,6 @@ class Salary extends Component {
                         </Card>
                     </Col>
                 </Row>
-                </Container>
          </div>
     );
   }

@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
-import { Container, Table, Modal, ModalHeader } from 'reactstrap';
-import AppNavbar from './AppNavbar';
-import { Link } from 'react-router-dom';
-import {Toast, ToastBody, ToastHeader, Spinner} from 'reactstrap';
+import { Container, Table } from 'reactstrap';
 import { format, parseISO } from 'date-fns';
-import {CardPanel, Icon, Card} from 'react-materialize';
+import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
-import { Button } from 'semantic-ui-react'
+import { Button, Modal } from 'semantic-ui-react';
 
 class TransactionList extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       transactions: [],
       count: 0,
@@ -74,27 +71,22 @@ class TransactionList extends Component {
 
   render() {
     const {transactions} = this.state;
-    const {count} = this.state;
-    const {lastTransactionDate} = this.state;
     const {tranDetails} = this.state;
     const {transactionModalShow} = this.state;
-    const title = "Transactions (" + count + ")";
 
     const transactionList = transactions.map(transaction => {
         return <tr id={transaction.id} style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
                 <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
                 <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.head}</td>
                 <td id={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.credit)}</td>
-                <td d={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.debit)}</td>
+                <td id={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.debit)}</td>
                 <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.bank}</td>
                 <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.subHead}</td>
             </tr>
     });
 
     return (
-         <div className="teal lighten-5">
-             <AppNavbar title="Bank Transaction"/>
-                <Container fluid>
+            <div id="cards" align="center" >
                 <Card
                       className="teal lighten-4"
                       textClassName="black-text"
@@ -120,47 +112,53 @@ class TransactionList extends Component {
                         {transactionList}
                         </tbody>
                     </Table>
-                    <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="Expenses">
-                    <ModalHeader toggle={this.hideModal}/>
-                      <Table striped bordered hover>
-                        <thead >
-                          <tr>
-                            <th style={{textAlign: "center", fontSize: '1rem'}}>Field</th>
-                            <th style={{textAlign: "center", fontSize: '1rem'}}>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Id</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[1]}</td>
-                          </tr>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Date</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[2]}</td>
-                          </tr>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Debit</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[3]}</td>
-                          </tr>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Credit</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[4]}</td>
-                          </tr>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Head</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[5]}</td>
-                          </tr>
-                          <tr>
-                            <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Description</td>
-                            <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[6]}</td>
-                          </tr>
-                        </tbody>
-                      </Table>
+                    <Modal size='tiny' open={transactionModalShow} onClose={this.hideModal}>
+                      <Modal.Header>Transaction Details</Modal.Header>
+                      <Modal.Content>
+                        <Table striped bordered hover>
+                          <thead >
+                            <tr>
+                              <th style={{textAlign: "center", fontSize: '1rem'}}>Field</th>
+                              <th style={{textAlign: "center", fontSize: '1rem'}}>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Id</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[1]}</td>
+                            </tr>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Date</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[2]}</td>
+                            </tr>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Debit</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[3]}</td>
+                            </tr>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Credit</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[4]}</td>
+                            </tr>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Head</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[5]}</td>
+                            </tr>
+                            <tr>
+                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Description</td>
+                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[6]}</td>
+                            </tr>
+                          </tbody>
+                        </Table>
+                      </Modal.Content>
+                      <Modal.Actions>
+                        <Button positive onClick={this.hideModal}>
+                          Close
+                        </Button>
+                      </Modal.Actions>
                     </Modal>
                     </div>
                     </Card>
-                </Container>
-         </div>
+            </div>
     );
   }
 }

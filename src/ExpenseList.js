@@ -7,7 +7,8 @@ import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
-import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart"
+import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
+import { Dimmer, Loader } from 'semantic-ui-react'
 
 class ExpenseList extends Component {
 
@@ -30,7 +31,8 @@ class ExpenseList extends Component {
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
       expenseCategoryModalShow: false,
-      expenseCategoryMonthRows: ""
+      expenseCategoryMonthRows: "",
+      dimmerActive: {}
     };
   }
 
@@ -59,6 +61,7 @@ class ExpenseList extends Component {
       this.setState(
           { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
       );
+      this.setState({ dimmerActive: false })
 
       // Default set Expense Category - Grocery
       const catExpResponse = await fetch("/fin/expense/monthly/categories/" + this.state.categoryDropDownValue);
@@ -87,6 +90,7 @@ class ExpenseList extends Component {
       this.setState({
           months: monthsArr
       });
+
   }
 
   toggleCategory = () => {
@@ -203,7 +207,8 @@ class ExpenseList extends Component {
       monthExpDropDownValue,
       monthExpByCatDropDownValue,
       expenseCategoryModalShow,
-      expenseCategoryMonthRows
+      expenseCategoryMonthRows,
+      dimmerActive
     } = this.state;
     const title = "Expenses";
 
@@ -233,145 +238,155 @@ class ExpenseList extends Component {
     });
 
     return (
-         <div className="teal lighten-5">
-             <AppNavbar title="Expense"/>
-                <Container fluid>
-                  <Row>
-                    <Col m={6} s={6} l={6}>
-                        <ButtonDropdown direction="right" isOpen={categoryDropdownOpenForBar} toggle={this.toggleCategoryForBar}>
-                            <DropdownToggle caret size="sm">
-                                {categoryDropDownValueForBar}
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                {categories.map(e => {
-                                    return <DropdownItem id={e} key={e} onClick={this.changeCategoryValueForBar}>{e}</DropdownItem>
-                                })}
-                            </DropdownMenu>
-                        </ButtonDropdown>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
-                            <div>
-                              <ExpenseForCategoryBarChart data={expensesForSelectedCategoryForBar} />
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col m={3} s={3} l={3}>
-                       <ButtonDropdown direction="right" >
-                            <DropdownToggle caret size="sm">
-                               Some Filter
-                            </DropdownToggle>
-                        </ButtonDropdown>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
-                            <div>
-                            <h3>Coming soon...</h3>
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col m={3} s={3} l={3}>
-                       <ButtonDropdown direction="right" >
-                            <DropdownToggle caret size="sm">
-                               Some Filter
-                            </DropdownToggle>
-                        </ButtonDropdown>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
-                            <div>
-                            <h3>Coming soon...</h3>
-                            </div>
-                        </Card>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col m={2} s={2} l={2}>
-                      <ButtonDropdown direction="right" isOpen={categoryDropdownOpen} toggle={this.toggleCategory}>
-                          <DropdownToggle caret size="sm">
-                              {categoryDropDownValue}
-                          </DropdownToggle>
-                          <DropdownMenu>
-                              {categories.map(e => {
-                                  return <DropdownItem id={e} key={e} onClick={this.changeCategoryValue}>{e}</DropdownItem>
-                              })}
-                          </DropdownMenu>
-                      </ButtonDropdown>
-                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expense for Category" >
-                          <Table striped bordered hover size="sm">
-                              <thead>
-                                <tr>
-                                  <th width="10%" style={{textAlign: "center"}}>Month</th>
-                                  <th width="10%" style={{textAlign: "right"}}>Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {expenseForCategoriesRows}
-                              </tbody>
-                          </Table>
-                          <Modal isOpen={expenseCategoryModalShow} onClose={this.closeExpenseCategoryModal} contentLabel="ExpenseCategory">
-                            <ModalHeader toggle={this.closeExpenseCategoryModal}/>
-                            <Table striped bordered hover>
-                               <thead >
-                                 <tr>
-                                   <th>Date</th>
-                                   <th>Head</th>
-                                   <th>Amount</th>
-                                   <th>Comment</th>
-                                 </tr>
-                               </thead>
-                               <tbody>
-                                 {expenseCategoryMonthRows}
-                               </tbody>
-                             </Table>
-                          </Modal>
-                      </Card>
-                    </Col>
-                    <Col m={2} s={2} l={2}>
-                      <ButtonDropdown direction="right" >
-                          <DropdownToggle caret size="sm">
-                              {monthExpByCatDropDownValue}
-                          </DropdownToggle>
-                      </ButtonDropdown>
-                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expenses by Category" >
-                      <Table striped bordered hover size="sm">
-                          <thead>
-                            <tr>
-                              <th width="10%" style={{textAlign: "center"}}>Month</th>
-                              <th width="10%" style={{textAlign: "center"}}>Category</th>
-                              <th width="10%" style={{textAlign: "right"}}>Amount</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {expenseByCategoryListRows}
-                          </tbody>
-                      </Table>
-                      </Card>
-                    </Col>
-                    <Col m={2} s={2} l={2}>
-                        <ButtonDropdown direction="right" isOpen={monthExpDropdownOpen} toggle={this.toggleExpMonth}>
-                            <DropdownToggle caret size="sm">
-                                {monthExpDropDownValue}
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                {months.map(e => {
-                                    return <DropdownItem id={e.year + '-' + e.month} key={e.monthStr} onClick={this.changeExpMonthValue}>{e.monthStr}</DropdownItem>
-                                })}
-                            </DropdownMenu>
-                        </ButtonDropdown>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Total Expenses" >
+         <div id="cards" align="center" >
+               <Dimmer active={dimmerActive}>
+                 <Loader size='medium'>Loading</Loader>
+               </Dimmer>
+            <Row>
+              <Col m={6} s={6} l={6}>
+                  <div align="left" >
+                  <ButtonDropdown direction="right" isOpen={categoryDropdownOpenForBar} toggle={this.toggleCategoryForBar}>
+                      <DropdownToggle caret size="sm">
+                          {categoryDropDownValueForBar}
+                      </DropdownToggle>
+                      <DropdownMenu>
+                          {categories.map(e => {
+                              return <DropdownItem id={e} key={e} onClick={this.changeCategoryValueForBar}>{e}</DropdownItem>
+                          })}
+                      </DropdownMenu>
+                  </ButtonDropdown>
+                  </div>
+                  <Card className="card-panel teal lighten-4" textClassName="black-text">
+                      <div>
+                        <ExpenseForCategoryBarChart data={expensesForSelectedCategoryForBar} />
+                      </div>
+                  </Card>
+              </Col>
+              <Col m={3} s={3} l={3}>
+                 <div align="left" >
+                 <ButtonDropdown direction="right" >
+                      <DropdownToggle caret size="sm">
+                         Some Filter
+                      </DropdownToggle>
+                  </ButtonDropdown>
+                  </div>
+                  <Card className="card-panel teal lighten-4" textClassName="black-text">
+                      <div>
+                      <h3>Coming soon...</h3>
+                      </div>
+                  </Card>
+              </Col>
+              <Col m={3} s={3} l={3}>
+                 <ButtonDropdown direction="right" >
+                      <DropdownToggle caret size="sm">
+                         Some Filter
+                      </DropdownToggle>
+                  </ButtonDropdown>
+                  <Card className="card-panel teal lighten-4" textClassName="black-text">
+                      <div>
+                      <h3>Coming soon...</h3>
+                      </div>
+                  </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col m={2} s={2} l={2}>
+                <div align="left" >
+                <ButtonDropdown direction="right" isOpen={categoryDropdownOpen} toggle={this.toggleCategory}>
+                    <DropdownToggle caret size="sm">
+                        {categoryDropDownValue}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        {categories.map(e => {
+                            return <DropdownItem id={e} key={e} onClick={this.changeCategoryValue}>{e}</DropdownItem>
+                        })}
+                    </DropdownMenu>
+                </ButtonDropdown>
+                </div>
+                <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expense for Category" >
                     <Table striped bordered hover size="sm">
                         <thead>
                           <tr>
-                            <th width="10%" style={{textAlign: "center"}}>Date</th>
-                            <th width="10%" style={{textAlign: "center"}}>Head</th>
+                            <th width="10%" style={{textAlign: "center"}}>Month</th>
                             <th width="10%" style={{textAlign: "right"}}>Amount</th>
-                            <th width="10%" style={{textAlign: "center"}}>Category</th>
-                            <th width="20%" style={{textAlign: "center"}}>Comment</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {expenseList}
+                          {expenseForCategoriesRows}
                         </tbody>
                     </Table>
-                    </Card>
-                    </Col>
-                  </Row>
-                </Container>
+                    <Modal isOpen={expenseCategoryModalShow} onClose={this.closeExpenseCategoryModal} contentLabel="ExpenseCategory">
+                      <ModalHeader toggle={this.closeExpenseCategoryModal}/>
+                      <Table striped bordered hover>
+                         <thead >
+                           <tr>
+                             <th>Date</th>
+                             <th>Head</th>
+                             <th>Amount</th>
+                             <th>Comment</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           {expenseCategoryMonthRows}
+                         </tbody>
+                       </Table>
+                    </Modal>
+                </Card>
+              </Col>
+              <Col m={2} s={2} l={2}>
+                <div align="left" >
+                <ButtonDropdown direction="right" >
+                    <DropdownToggle caret size="sm">
+                        {monthExpByCatDropDownValue}
+                    </DropdownToggle>
+                </ButtonDropdown>
+                </div>
+                <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expenses by Category" >
+                <Table striped bordered hover size="sm">
+                    <thead>
+                      <tr>
+                        <th width="10%" style={{textAlign: "center"}}>Month</th>
+                        <th width="10%" style={{textAlign: "center"}}>Category</th>
+                        <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expenseByCategoryListRows}
+                    </tbody>
+                </Table>
+                </Card>
+              </Col>
+              <Col m={2} s={2} l={2}>
+                <div align="left" >
+                  <ButtonDropdown direction="right" isOpen={monthExpDropdownOpen} toggle={this.toggleExpMonth}>
+                      <DropdownToggle caret size="sm">
+                          {monthExpDropDownValue}
+                      </DropdownToggle>
+                      <DropdownMenu>
+                          {months.map(e => {
+                              return <DropdownItem id={e.year + '-' + e.month} key={e.monthStr} onClick={this.changeExpMonthValue}>{e.monthStr}</DropdownItem>
+                          })}
+                      </DropdownMenu>
+                  </ButtonDropdown>
+                  </div>
+              <Card className="teal lighten-4" textClassName="black-text" title="Total Expenses" >
+              <Table striped bordered hover size="sm">
+                  <thead>
+                    <tr>
+                      <th width="10%" style={{textAlign: "center"}}>Date</th>
+                      <th width="10%" style={{textAlign: "center"}}>Head</th>
+                      <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                      <th width="10%" style={{textAlign: "center"}}>Category</th>
+                      <th width="20%" style={{textAlign: "center"}}>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseList}
+                  </tbody>
+              </Table>
+              </Card>
+              </Col>
+            </Row>
          </div>
     );
   }

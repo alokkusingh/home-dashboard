@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import HomeCards from './HomeCards';
 import RefreshGoogleSheets from './RefreshGoogleSheets';
+import MenuBarWithContent from './MenuBarWithContent';
 
 class Home extends Component {
 
@@ -14,14 +15,7 @@ class Home extends Component {
         return (
             <div className="teal lighten-5">
                 <AppNavbar/>
-                <Container fluid>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/transactions">Transactions</Link></a>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/expenses">Expenses</Link></a>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/salary">Salary</Link></a>
-                    <a class="waves-effect waves-light btn-small"><Link class="white-text" to="/uploadFile">Upload File</Link></a>
-                    <RefreshGoogleSheets />
-                </Container>
-                <HomeCards/>
+                <MenuBarWithContent/>
             </div>
         );
     }

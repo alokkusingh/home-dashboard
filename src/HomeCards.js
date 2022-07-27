@@ -8,8 +8,9 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseMonthBarChart from './charts/expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChart';
-import ExpenseMonthByCategoryBarChart from './charts/expenseMonthByCategoryBarChart'
-import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart'
+import ExpenseMonthByCategoryBarChart from './charts/expenseMonthByCategoryBarChart';
+import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
+import { Dimmer, Loader } from 'semantic-ui-react'
 
 class HomeCards extends Component {
 
@@ -26,7 +27,8 @@ class HomeCards extends Component {
       totalMonthExpense: 0,
       count: 0,
       expenseModalShow: false,
-      dayExpensesRows: ""
+      dayExpensesRows: "",
+      dimmerActive: {}
     };
   }
 
@@ -90,6 +92,8 @@ class HomeCards extends Component {
        this.setState({
            expCategories: categories
        });
+
+       this.setState({ dimmerActive: false })
   }
 
   render() {
@@ -103,7 +107,8 @@ class HomeCards extends Component {
         totalMonthExpense,
         expenseModalShow,
         dayExpensesRows,
-        expCategories
+        expCategories,
+        dimmerActive
       } =  this.state;
 
 
@@ -148,33 +153,27 @@ class HomeCards extends Component {
 
       return (
           <div>
+             <Dimmer active={dimmerActive}>
+               <Loader size='medium'>Loading</Loader>
+             </Dimmer>
               <div id="cards" align="center" >
               <Row>
                 <Col m={2} s={2} l={2}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          textClassName="black-text"
-                        >
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" >
                         <div>
                              <ExpenseMonthBarChart data={monthExpensesByDay} />
                         </div>
                     </Card>
                 </Col>
                 <Col m={2} s={2} l={2}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          textClassName="black-text"
-                        >
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" >
                         <div>
                              <ExpenseMonthByCategoryPiChart data={monthExpensesByCategory} categories={expCategories} />
                         </div>
                     </Card>
                 </Col>
                 <Col m={2} s={2} l={2}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          textClassName="black-text"
-                        >
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" >
                         <div>
                              <ExpenseVsIncomeLineChart data={monthlySummary} />
                         </div>
@@ -183,11 +182,7 @@ class HomeCards extends Component {
               </Row>
               <Row >
                 <Col m={2} s={2} l={2}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          textClassName="black-text"
-                          title="This Month Expenses by Day"
-                        >
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" title="This Month Expenses by Day" >
                        <Table striped bordered hover scrollable size="sm">
                             <thead>
                               <tr>
@@ -217,13 +212,7 @@ class HomeCards extends Component {
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          closeIcon={<Icon>close</Icon>}
-                          revealIcon={<Icon>more_vert</Icon>}
-                          textClassName="black-text"
-                          title="This Month Expenses by Category"
-                        >
+                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="This Month Expenses by Category" >
                        <Table striped bordered hover size="sm">
                             <thead>
                               <tr>
@@ -239,13 +228,7 @@ class HomeCards extends Component {
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
-                    <Card
-                          className="card-panel teal lighten-4"
-                          closeIcon={<Icon>close</Icon>}
-                          revealIcon={<Icon>more_vert</Icon>}
-                          textClassName="black-text"
-                          title="Monthly Fund Flow"
-                        >
+                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Monthly Fund Flow" >
                         <Table striped bordered hover size="sm">
                               <thead>
                                 <tr>
