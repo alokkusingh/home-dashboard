@@ -27,7 +27,9 @@ class HomeCards extends Component {
       totalMonthExpense: 0,
       count: 0,
       expenseModalShow: false,
+      expenseCatModalShow: false,
       dayExpensesRows: "",
+      catExpensesRows: "",
       dimmerActive: {}
     };
   }
@@ -44,6 +46,7 @@ class HomeCards extends Component {
       );
       const dayExpensesRows = expenseDayDetails.map(expense => {
         return <tr>
+                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.date}</td>
                   <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.head}</td>
                   <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{expense.comment}</td>
                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
@@ -57,6 +60,34 @@ class HomeCards extends Component {
 
   closeExpenseModal = () => {
       this.setState({ expenseModalShow: !this.state.expenseModalShow });
+  };
+
+  showCategoryExpenseModal = (event) => {
+      console.log("event: ", event.target.getAttribute("id"))
+      let expenses = [];
+      this.state.monthExpensesByCategory.forEach(
+        record => {
+            if (record.category == event.target.getAttribute("id")) {
+                expenses = record.expenses;
+            }
+        }
+      );
+      const catExpensesRows = expenses.map(expense => {
+        return <tr>
+                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.date}</td>
+                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.head}</td>
+                  <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{expense.comment}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
+               </tr>
+        });
+
+      this.setState({catExpensesRows: catExpensesRows});
+
+      this.setState({ expenseCatModalShow: !this.state.expenseCatModalShow });
+  }
+
+  closeCategoryExpenseModal = () => {
+      this.setState({ expenseCatModalShow: !this.state.expenseCatModalShow });
   };
 
   async componentDidMount() {
@@ -106,7 +137,9 @@ class HomeCards extends Component {
         monthlySummary,
         totalMonthExpense,
         expenseModalShow,
+        expenseCatModalShow,
         dayExpensesRows,
+        catExpensesRows,
         expCategories,
         dimmerActive
       } =  this.state;
@@ -133,10 +166,10 @@ class HomeCards extends Component {
      const currentMonth = currentDate.getMonth()+1
      const expensesByCategoryList = expensesByCategory.map(expense => {
           if (expense.year === currentYear && expense.month === currentMonth)
-          return <tr key={expense.category + expense.year + expense.month} onClick={this.showModal}>
-                  <td id={expense.category + expense.year + expense.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
-                  <td id={expense.category + expense.year + expense.month + 1} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
-                  <td id={expense.category + expense.year + expense.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
+          return <tr key={expense.category} onClick={this.showCategoryExpenseModal}>
+                  <td id={expense.category} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+                  <td id={expense.category} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
+                  <td id={expense.category} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
               </tr>
       });
 
@@ -199,6 +232,7 @@ class HomeCards extends Component {
                          <Table striped bordered hover>
                              <thead >
                                <tr>
+                                 <th>Date</th>
                                  <th>Head</th>
                                  <th>Comment</th>
                                  <th>Amount</th>
@@ -225,6 +259,22 @@ class HomeCards extends Component {
                             {expensesByCategoryList}
                             </tbody>
                         </Table>
+                        <Modal isOpen={expenseCatModalShow} onClose={this.closeCategoryExpenseModal} contentLabel="Expenses">
+                          <ModalHeader toggle={this.closeCategoryExpenseModal}/>
+                           <Table striped bordered hover>
+                               <thead >
+                                 <tr>
+                                   <th>Date</th>
+                                   <th>Head</th>
+                                   <th>Comment</th>
+                                   <th>Amount</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                 {catExpensesRows}
+                               </tbody>
+                             </Table>
+                          </Modal>
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
