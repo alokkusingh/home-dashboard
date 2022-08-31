@@ -43,6 +43,10 @@ class RefreshGoogleSheets extends Component {
                   <Icon name='refresh'/>
                   Tax
                 </Button>
+                <Button id='odion/transactions' onClick={this.refreshSheet}>
+                  <Icon name='refresh'/>
+                  Odion Transaction
+                </Button>
             </Button.Group>
           </div>
       );
