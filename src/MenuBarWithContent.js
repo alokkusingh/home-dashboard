@@ -8,6 +8,7 @@ import Salary from './Salary';
 import UploadFile from './UploadFile';
 import RefreshGoogleSheets from './RefreshGoogleSheets';
 import OdionTransactionList from './OdionTransactionList';
+import OdionSummary from './OdionSummary';
 
 export default class MenuBarWithContent extends Component {
   state = { activeItem: 'Summary' }
@@ -40,6 +41,9 @@ export default class MenuBarWithContent extends Component {
       }
       if (page === 'o-Trans') {
         return <OdionTransactionList />;
+      }
+      if (page === 'o-Summary') {
+        return <OdionSummary />;
       }
 
       return <TbdPage />;
@@ -144,6 +148,10 @@ export default class MenuBarWithContent extends Component {
                 <Icon name='newspaper outline'/>
                 Summary
               </Menu.Item>
+              <Menu.Item name='o-Trans' active={activeItem === 'o-Trans'} onClick={this.handleItemClick} >
+                <Icon name='list ol'/>
+                Transactions
+              </Menu.Item>
               <Menu.Item name='o-Land' active={activeItem === 'o-Land'} onClick={this.handleItemClick} >
                 <Icon name='map marker alternate'/>
                 Land
@@ -156,10 +164,7 @@ export default class MenuBarWithContent extends Component {
                 <Icon name='question circle outline'/>
                 Loan
               </Menu.Item>
-              <Menu.Item name='o-Trans' active={activeItem === 'o-Trans'} onClick={this.handleItemClick} >
-                <Icon name='list ol'/>
-                Transactions
-              </Menu.Item>
+
             </Menu.Menu>
 
           </Menu>
