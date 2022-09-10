@@ -3,6 +3,8 @@ import { Container, Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import OdionExpensesPiChart from "./charts/odionExpensesPiChart";
+import OdionFundingsPiChart from "./charts/odionFundingsPiChart";
 
 class OdionSummary extends Component {
 
@@ -18,33 +20,36 @@ class OdionSummary extends Component {
       monthlyMaxGains: [],
       monthlySavings: [],
       monthlyOdions: [],
-      monthlyMiscs: []
+      monthlyMiscs: [],
+      expenses: [],
+      fundings: [],
+      total: 0
     };
   }
 
-    showModal = (event) => {
-      console.log("event: ", event.target.getAttribute("id"))
+  showModal = (event) => {
+    console.log("event: ", event.target.getAttribute("id"))
 
-      fetch("/fin/odion/transactions/" + event.target.getAttribute("id"))
-          .then(response => response.json())
-          .then(transactionsJson => {
-              const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
-                  return <tr>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                      <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
-                      <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
-                   </tr>
-              });
-              this.setState({ accountTransactionsRows: accountTransactionsRows });
-              this.setState({ transactionModalShow: !this.state.transactionModalShow });
-          }
-      );
-    };
+    fetch("/fin/odion/transactions/" + event.target.getAttribute("id"))
+        .then(response => response.json())
+        .then(transactionsJson => {
+            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
+                return <tr>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
+                 </tr>
+            });
+            this.setState({ accountTransactionsRows: accountTransactionsRows });
+            this.setState({ transactionModalShow: !this.state.transactionModalShow });
+        }
+    );
+  };
 
-    hideModal = () => {
-      this.setState({ transactionModalShow: !this.state.transactionModalShow});
-    };
+  hideModal = () => {
+    this.setState({ transactionModalShow: !this.state.transactionModalShow});
+  };
 
   async componentDidMount() {
     const response = await fetch('/fin/odion/accounts');
@@ -52,7 +57,55 @@ class OdionSummary extends Component {
     this.setState({
         accountsBalance: body.accountBalances
     });
+    const expenses = [];
+    const fundings = [];
+    var total = 0;
+    body.accountBalances.map(record => {
+          if (record.account === 'INTEREST') {
+             expenses.push({
+               'head': 'Interest',
+               'amount': Math.abs(record.balance)
+            });
+            total += Math.abs(record.balance);
+          }
+          if (record.account === 'ODION') {
+             expenses.push({
+               'head': 'Odion',
+               'amount': Math.abs(record.balance)
+            });
+            total += Math.abs(record.balance);
+          }
+          if (record.account === 'MISC') {
+             expenses.push({
+               'head': 'Miscellaneous',
+               'amount': Math.abs(record.balance)
+            });
+            total += Math.abs(record.balance);
+          }
 
+          if (record.account === 'SAVING') {
+             fundings.push({
+               'head': 'Saving',
+               'amount': Math.abs(record.balance)
+            });
+          }
+          if (record.account === 'SBI_MAX_GAIN') {
+             fundings.push({
+               'head': 'SBI Max Gain',
+               'amount': Math.abs(record.balance)
+            });
+          }
+       }
+     );
+     this.setState({
+         fundings: fundings
+     });
+     this.setState({
+         expenses: expenses
+     });
+     this.setState({
+         total: total
+     });
      const monthlyResponse = await fetch('/fin/odion/monthly/transaction');
      const bodyMonthly = await monthlyResponse.json();
      const interests = bodyMonthly.accountMonthTransaction.INTEREST;
@@ -126,7 +179,10 @@ class OdionSummary extends Component {
       monthlyMaxGains,
       monthlySavings,
       monthlyOdions,
-      monthlyMiscs
+      monthlyMiscs,
+      expenses,
+      fundings,
+      total
     } = this.state;
 
     const accountsBalanceList = accountsBalance.map(record => {
@@ -178,9 +234,7 @@ class OdionSummary extends Component {
             <div id="cards" align="center" >
               <Row>
                <Col m={6} s={6} l={6}>
-                <Card className="teal lighten-4"
-                      textClassName="black-text"
-                    >
+                <Card className="teal lighten-4" textClassName="black-text">
                     <div>
                     <Table className="mt-4" hover>
                         <thead>
@@ -213,6 +267,20 @@ class OdionSummary extends Component {
                     </div>
                     </Card>
                    </Col>
+                    <Col m={6} s={6} l={6}>
+                       <Card className="teal lighten-4" textClassName="black-text">
+                         <div>
+                           <OdionExpensesPiChart data={expenses} total={total} />
+                         </div>
+                       </Card>
+                    </Col>
+                    <Col m={6} s={6} l={6}>
+                       <Card className="teal lighten-4" textClassName="black-text">
+                         <div>
+                           <OdionFundingsPiChart data={fundings} total={total} />
+                         </div>
+                       </Card>
+                    </Col>
                 </Row>
                 <Row>
                   <Col m={6} s={6} l={6}>
