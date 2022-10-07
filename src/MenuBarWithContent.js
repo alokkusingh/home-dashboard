@@ -5,6 +5,7 @@ import HomeCard from './HomeCards'
 import TransactionList from './TransactionList';
 import ExpenseList from './ExpenseList';
 import Salary from './Salary';
+import Investment from './Investment';
 import UploadFile from './UploadFile';
 import RefreshGoogleSheets from './RefreshGoogleSheets';
 import OdionTransactionList from './OdionTransactionList';
@@ -32,6 +33,9 @@ export default class MenuBarWithContent extends Component {
       }
       if (page === 'Salary') {
         return <Salary />;
+      }
+      if (page === 'Investment') {
+        return <Investment />;
       }
       if (page === 'UploadFile') {
         return <UploadFile />;
@@ -74,7 +78,7 @@ export default class MenuBarWithContent extends Component {
             </Menu.Header>
             <Menu.Menu>
               <Menu.Item name='Summary' active={activeItem === 'Summary'} onClick={this.handleItemClick} >
-                <Icon name='newspaper outline'/>
+                <Icon name='chart pie'/>
                 Summary
               </Menu.Item>
               <Menu.Item name='Expense' active={activeItem === 'Expense'} onClick={this.handleItemClick} >
@@ -84,6 +88,10 @@ export default class MenuBarWithContent extends Component {
               <Menu.Item name='Salary' active={activeItem === 'Salary'} onClick={this.handleItemClick} >
                 <Icon name='money bill alternate outline'/>
                 Salary
+              </Menu.Item>
+              <Menu.Item name='Investment' active={activeItem === 'Investment'} onClick={this.handleItemClick} >
+                <Icon name='chart line'/>
+                Investment
               </Menu.Item>
               <Menu.Item name='Transaction' active={activeItem === 'Transaction'} onClick={this.handleItemClick} >
                 <Icon name='list ol'/>
@@ -98,6 +106,36 @@ export default class MenuBarWithContent extends Component {
                 Refresh
               </Menu.Item>
               </Menu.Menu>
+
+            <Divider horizontal/>
+
+            <Menu.Header>
+              <Icon name='building outline'/>
+              Odion
+            </Menu.Header>
+            <Menu.Menu>
+              <Menu.Item name='o-Summary' active={activeItem === 'o-Summary'} onClick={this.handleItemClick} >
+                <Icon name='chart pie'/>
+                Summary
+              </Menu.Item>
+              <Menu.Item name='o-Trans' active={activeItem === 'o-Trans'} onClick={this.handleItemClick} >
+                <Icon name='list ol'/>
+                Transactions
+              </Menu.Item>
+              <Menu.Item name='o-Land' active={activeItem === 'o-Land'} onClick={this.handleItemClick} >
+                <Icon name='map marker alternate'/>
+                Land
+              </Menu.Item>
+              <Menu.Item name='o-Construction' active={activeItem === 'o-Construction'} onClick={this.handleItemClick} >
+                <Icon name='building outline'/>
+                Construction
+              </Menu.Item>
+              <Menu.Item name='o-Loan' active={activeItem === 'o-Loan'} onClick={this.handleItemClick} >
+                <Icon name='question circle outline'/>
+                Loan
+              </Menu.Item>
+
+            </Menu.Menu>
 
               <Divider horizontal/>
 
@@ -137,35 +175,7 @@ export default class MenuBarWithContent extends Component {
               </Menu.Item>
             </Menu.Menu>
 
-            <Divider horizontal/>
 
-            <Menu.Header>
-              <Icon name='building outline'/>
-              Odion
-            </Menu.Header>
-            <Menu.Menu>
-              <Menu.Item name='o-Summary' active={activeItem === 'o-Summary'} onClick={this.handleItemClick} >
-                <Icon name='newspaper outline'/>
-                Summary
-              </Menu.Item>
-              <Menu.Item name='o-Trans' active={activeItem === 'o-Trans'} onClick={this.handleItemClick} >
-                <Icon name='list ol'/>
-                Transactions
-              </Menu.Item>
-              <Menu.Item name='o-Land' active={activeItem === 'o-Land'} onClick={this.handleItemClick} >
-                <Icon name='map marker alternate'/>
-                Land
-              </Menu.Item>
-              <Menu.Item name='o-Construction' active={activeItem === 'o-Construction'} onClick={this.handleItemClick} >
-                <Icon name='question circle outline'/>
-                Construction
-              </Menu.Item>
-              <Menu.Item name='o-Loan' active={activeItem === 'o-Loan'} onClick={this.handleItemClick} >
-                <Icon name='question circle outline'/>
-                Loan
-              </Menu.Item>
-
-            </Menu.Menu>
 
           </Menu>
         </Grid.Column>
