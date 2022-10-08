@@ -20,9 +20,6 @@ function InvestmentLineChartLIC({ investmentType, data }) {
        }
     });
 
-    var maxAsOnValue = 0;
-    const contributionArray = [];
-    const investmentValueArray = [];
     filteredData.sort((a,b) => {
         if ( a.yearMonth < b.yearMonth ){
             return -1;
@@ -33,10 +30,17 @@ function InvestmentLineChartLIC({ investmentType, data }) {
           return 0;
     });
 
+    var maxAsOnValue = 0;
+    var maxInvestmentAmount = 0;
+    const contributionArray = [];
+    const investmentValueArray = [];
     filteredData.forEach(function(record) {
 
           if (maxAsOnValue < record.asOnValue) {
               maxAsOnValue = record.asOnValue;
+          }
+          if (maxInvestmentAmount < record.asOnInvestment) {
+              maxInvestmentAmount = record.asOnInvestment;
           }
 
           contributionArray.push({
@@ -60,7 +64,7 @@ function InvestmentLineChartLIC({ investmentType, data }) {
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
        const numberOfYaxisTicks = 30;
 
-       var allGroup = ["invested", "value"]
+      var allGroup = ["invested: " + Math.round(maxInvestmentAmount/1000) + "K", "value: " + Math.round(maxAsOnValue/1000) + "K"]
        // A color scale: one color for each group
        var myColor = d3.scaleOrdinal()
          .domain(allGroup)
@@ -125,23 +129,6 @@ function InvestmentLineChartLIC({ investmentType, data }) {
           .style('font-size', 18)
           .text('Last ' + numberOfYears + ' years ' + investmentType + ' investment');
 
-          // X label - not needed
-/*       svg.append('text')
-          .attr('x', width/2 )
-          .attr('y', height+40)
-          .attr('text-anchor', 'middle')
-          .style('font-family', 'Helvetica')
-          .style('font-size', 14)
-          .text('-- Months -->')*/
-
-          // Y label
-       /*svg.append('text')
-         .attr('text-anchor', 'middle')
-         .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
-         .style('font-family', 'Helvetica')
-         .style('font-size', 14)
-         .text('Amount (Rs)')*/
-
        //append legends
        var legend = svg.append('g')
            .selectAll('g.legend')
@@ -163,11 +150,11 @@ function InvestmentLineChartLIC({ investmentType, data }) {
            .attr("dy", ".15em")
            .attr("text-anchor", "left")
            .style('font-family', 'Patrick Hand SC')
-           .style('font-size', '.7em')
+           .style('font-size', '.9em')
            .text(d => d)
 
-       drawLineAndDots("invested", contributionArray);
-       drawLineAndDots("value", investmentValueArray);
+      drawLineAndDots("invested: " + Math.round(maxInvestmentAmount/1000) + "K", contributionArray);
+      drawLineAndDots("value: " +Math.round(maxAsOnValue/1000) + "K", investmentValueArray);
 
        // Draw grid lines
        drawHorizontalLines();
@@ -254,7 +241,6 @@ function InvestmentLineChartLIC({ investmentType, data }) {
        }
    }
    return <div id='investment-line-container-LIC' />;
-   //return document.getElementById('investment-line-container-' + investmentType);
 }
 
 export default InvestmentLineChartLIC;
