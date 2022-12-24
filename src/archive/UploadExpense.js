@@ -26,7 +26,7 @@ class UploadExpense extends Component {
       data.append('file', selectedFile);
       console.log('Form', data);
 
-      await fetch('/fin/expense/upload', {
+      await fetch('/home/etl/expense/upload', {
           method: 'POST',
           headers: {
               'Accept': 'application/json'

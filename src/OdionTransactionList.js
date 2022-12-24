@@ -19,7 +19,7 @@ class OdionTransactionList extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('/fin/odion/transactions');
+    const response = await fetch('/home/api/odion/transactions');
     const body = await response.json();
     this.setState({
         transactions: body.transactions

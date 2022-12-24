@@ -39,7 +39,7 @@ class ExpenseList extends Component {
   async componentDidMount() {
 
       // Default set Expenses for all months
-      const response = await fetch('/fin/expense');
+      const response = await fetch('/home/api/expense');
       const body = await response.json();
       this.setState({
           expenses: body.expenses,
@@ -47,7 +47,7 @@ class ExpenseList extends Component {
           lastTransactionDate: body.lastTransactionDate
       });
 
-      const responseSumByCatMonth = await fetch('/fin/expense/sum_by_category_month');
+      const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month');
       const bodySumByCat = await responseSumByCatMonth.json();
       this.setState({
           expensesByCategory: bodySumByCat.expenseCategorySums
@@ -64,20 +64,20 @@ class ExpenseList extends Component {
       this.setState({ dimmerActive: false })
 
       // Default set Expense Category - Grocery
-      const catExpResponse = await fetch("/fin/expense/monthly/categories/" + this.state.categoryDropDownValue);
+      const catExpResponse = await fetch("/home/api/expense/monthly/categories/" + this.state.categoryDropDownValue);
       const catExpResponseJson = await catExpResponse.json();
       this.setState(
            { expensesForCategory: catExpResponseJson.expenseCategorySums }
       );
 
-      const responseCategories = await fetch('/fin/expense/categories/names');
+      const responseCategories = await fetch('/home/api/expense/categories/names');
       const categories = await responseCategories.json();
       this.setState({
           categories: categories
       });
       categories.push('ALL')
 
-      const responseMonths = await fetch('/fin/expense/months');
+      const responseMonths = await fetch('/home/api/expense/months');
       const months = await responseMonths.json();
       var monthsArr = [];
       months.forEach(
@@ -102,7 +102,7 @@ class ExpenseList extends Component {
   changeCategoryValue = (e) => {
       this.setState({categoryDropDownValue: e.currentTarget.textContent});
 
-      fetch("/fin/expense/monthly/categories/" + e.currentTarget.getAttribute("id"))
+      fetch("/home/api/expense/monthly/categories/" + e.currentTarget.getAttribute("id"))
           .then(response => response.json())
           .then(expensesJson => {
               console.table(expensesJson.expenses);
@@ -155,7 +155,7 @@ class ExpenseList extends Component {
       const yearMonth = e.currentTarget.getAttribute("id");
       this.setState({monthExpDropDownValue: e.currentTarget.textContent});
 
-      fetch("/fin/expense?yearMonth=" + yearMonth)
+      fetch("/home/api/expense?yearMonth=" + yearMonth)
           .then(response => response.json())
           .then(expensesJson => {
               console.table(expensesJson.expenses);
@@ -168,7 +168,7 @@ class ExpenseList extends Component {
 
   showExpenseCategoryModal = (event) => {
       console.log("event: ", event.target.getAttribute("tranId"))
-      fetch("/fin/expense?yearMonth=" + event.target.getAttribute("tranId") + "&category=" + this.state.categoryDropDownValue)
+      fetch("/home/api/expense?yearMonth=" + event.target.getAttribute("tranId") + "&category=" + this.state.categoryDropDownValue)
           .then(response => response.json())
           .then(expensesJson => {
               const expenseCategoryMonthRows = expensesJson.expenses.map( expense => {

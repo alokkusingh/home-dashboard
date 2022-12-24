@@ -23,7 +23,7 @@ class TransactionList extends Component {
 
     let tranDetails = [];
 
-    fetch("/fin/bank/transactions/" + event.target.getAttribute("id"))
+    fetch("/home/api/bank/transactions/" + event.target.getAttribute("id"))
         .then(response => response.json())
         .then(data => {
               tranDetails[1] = data.id;
@@ -46,7 +46,7 @@ class TransactionList extends Component {
   };
 
   async componentDidMount() {
-    const response = await fetch('/fin/bank/transactions');
+    const response = await fetch('/home/api/bank/transactions');
     const body = await response.json();
     this.setState({
         transactions: body.transactions,
@@ -56,7 +56,7 @@ class TransactionList extends Component {
   }
 
   downloadTransactions = () => {
-  		fetch('/fin/report/download')
+  		fetch('/home/etl/report/download')
   			.then(response => {
   				response.blob().then(blob => {
   					let url = window.URL.createObjectURL(blob);

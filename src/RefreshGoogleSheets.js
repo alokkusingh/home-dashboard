@@ -16,7 +16,7 @@ class RefreshGoogleSheets extends Component {
   refreshSheet = (e) => {
     console.log(e);
     console.log(e.currentTarget.getAttribute("id"));
-    fetch("/fin/gsheet/refresh/" + e.currentTarget.getAttribute("id"))
+    fetch("/home/etl/gsheet/refresh/" + e.currentTarget.getAttribute("id"))
         .then(response => {
             console.log(response);
         }

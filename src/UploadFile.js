@@ -47,7 +47,7 @@ class UploadFile extends Component {
       });
 
       async function uploadFile(data) {
-        const response =  await fetch('/fin/file/upload', {
+        const response =  await fetch('/home/etl/file/upload', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json'

@@ -31,7 +31,7 @@ class Salary extends Component {
   }
 
   async componentDidMount() {
-    const responseSalaryByCompany = await fetch('/fin/bank/salary/bycompany');
+    const responseSalaryByCompany = await fetch('/home/api/bank/salary/bycompany');
     const bodySalaryByCompany = await responseSalaryByCompany.json();
     this.setState({
         total: bodySalaryByCompany.total
@@ -80,7 +80,7 @@ class Salary extends Component {
       }
     }
 
-    const responseTaxByYear = await fetch('/fin/tax/all');
+    const responseTaxByYear = await fetch('/home/api/tax/all');
         const bodyResponseTaxByYear = await responseTaxByYear.json();
         this.setState({
             taxByYear: bodyResponseTaxByYear.taxes

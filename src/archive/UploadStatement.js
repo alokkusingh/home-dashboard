@@ -26,7 +26,7 @@ class UploadStatement extends Component {
       data.append('file', selectedFile);
       console.log('Form', data);
 
-      await fetch('/fin/bank/statement/upload', {
+      await fetch('/home/etl/bank/statement/upload', {
           method: 'POST',
           headers: {
               'Accept': 'application/json'

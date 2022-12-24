@@ -24,7 +24,7 @@ class Investment extends Component {
   }
 
   async componentDidMount() {
-     const responseInvestments = await fetch('/fin/investment/all');
+     const responseInvestments = await fetch('/home/api/investment/all');
      const bodyInvestments = await responseInvestments.json();
 
      const totalMonthlyInvestment = [];
