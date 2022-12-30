@@ -26,7 +26,8 @@ class Salary extends Component {
       boschByMonth: [],
       jpmcTotal: 0,
       jpmcByMonth: [],
-      taxByYear: []
+      taxByYear: [],
+      monthlySummary: []
     };
   }
 
@@ -81,10 +82,16 @@ class Salary extends Component {
     }
 
     const responseTaxByYear = await fetch('/home/api/tax/all');
-        const bodyResponseTaxByYear = await responseTaxByYear.json();
-        this.setState({
-            taxByYear: bodyResponseTaxByYear.taxes
-        });
+    const bodyResponseTaxByYear = await responseTaxByYear.json();
+    this.setState({
+        taxByYear: bodyResponseTaxByYear.taxes
+    });
+
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04');
+     const bodyMonthlySummary = await responseMonthlySummary.json();
+     this.setState({
+         monthlySummary: bodyMonthlySummary.records
+     });
   }
 
   render() {
@@ -102,7 +109,8 @@ class Salary extends Component {
           boschByMonth,
           jpmcTotal,
           jpmcByMonth,
-          taxByYear
+          taxByYear,
+          monthlySummary
     } = this.state;
 
     function prepareSalaryRow(record) {
@@ -113,6 +121,17 @@ class Salary extends Component {
     }
 
     const title = "Salary";
+
+    // Prepare Monthly Salary Summary
+     const monthlySummaryList = monthlySummary.map(record => {
+          return <tr key={'' + record.year + record.month} onClick={this.showModal}>
+                   <td id={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td id={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc)}</td>
+                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc - Math.round(record.incomeAmount) - record.taxAmount)}</td>
+                   <td id={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
+               </tr>
+      });
 
     // Prepare table rows for each company
     const jpmcRows = jpmcByMonth.map(record => prepareSalaryRow(record));
@@ -175,12 +194,34 @@ class Salary extends Component {
                             </div>
                         </Card>
                     </Col>
+                </Row>
+                <Row>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary Summary Since April 2021">
                             <div>
-                            <h3>Coming soon...</h3>
+                              <Table striped bordered hover size="sm">
+                                  <thead>
+                                    <tr>
+                                      <th width="20%" style={{textAlign: "center"}}>Month</th>
+                                      <th width="20%" style={{textAlign: "center"}}>CTC</th>
+                                      <th width="20%" style={{textAlign: "center"}}>In Hand Received</th>
+                                      <th width="20%" style={{textAlign: "center"}}>Investment Received</th>
+                                      <th width="20%" style={{textAlign: "center"}}>Tax Paid</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {monthlySummaryList}
+                                  </tbody>
+                              </Table>
                             </div>
                         </Card>
+                    </Col>
+                    <Col m={3} s={3} l={3}>
+                      <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <div>
+                          <h3>Coming soon...</h3>
+                        </div>
+                      </Card>
                     </Col>
                 </Row>
                 <Row>

@@ -155,12 +155,12 @@ function ExpenseMonthBarChart({ data }) {
       .text('-- Date -->');*/
 
       // Y label
-   svg.append('text')
-     .attr('text-anchor', 'middle')
-     .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
-     .style('font-family', 'Helvetica')
-     .style('font-size', 14)
-     .text('Expense (Rs)')
+//   svg.append('text')
+//     .attr('text-anchor', 'middle')
+//     .attr('transform', `translate(-45,100)rotate(-90)`) // translate has x axis and y axis
+//     .style('font-family', 'Helvetica')
+//     .style('font-size', 14)
+//     .text('Expense (Rs)')
 
    //svg.append("text")
    /*   .attr("x", width/2 + 110)
