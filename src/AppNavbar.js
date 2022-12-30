@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Navbar, NavbarBrand} from 'reactstrap';
+import {Navbar, NavbarBrand, NavbarText} from 'reactstrap';
 import {Link} from 'react-router-dom';
 
 export default class AppNavbar extends Component {
@@ -17,10 +17,10 @@ export default class AppNavbar extends Component {
 
     render() {
         return <Navbar className="card-panel teal lighten-1" expand="md">
-            <NavbarBrand tag={Link} to="/">
-              <h2>Home Dashboard</h2>
-              <h5>{this.props.title}</h5>
+            <NavbarBrand  className="card-panel teal lighten-2" href="/">
+              <img alt="logo" src="/logo512.png" style={{ height: 55, width: 55 }} />
             </NavbarBrand>
+            <NavbarText>Home Dashboard</NavbarText>
         </Navbar>
     }
 }
