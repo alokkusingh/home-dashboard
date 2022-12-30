@@ -18,7 +18,7 @@ export default class AppNavbar extends Component {
     render() {
         return <Navbar className="card-panel teal lighten-1" expand="md">
             <NavbarBrand href="/">
-              <img alt="logo" src="/logo512.png" style={{ height: 55, width: 55 }} />
+              <img alt="logo" src="/logo512.png" style={{ height: 40, width: 40 }} />
             </NavbarBrand>
             <NavbarText>Home Dashboard</NavbarText>
         </Navbar>
