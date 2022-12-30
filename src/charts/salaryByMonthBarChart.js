@@ -20,7 +20,7 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
       const height = 220;
       const width = 300;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-      const numberOfYaxisTicks = 6;
+      const numberOfYaxisTicks = 7;
 
       const colorScale = d3.scaleLinear()
         .domain([500000,2500000])
@@ -49,7 +49,7 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
          .padding(0.1);
 
     const yScale = d3.scaleLinear()
-       .domain([0, 3000000])
+       .domain([0, 3500000])
        .range([height, 0]);
 
     // Setting up the axis
