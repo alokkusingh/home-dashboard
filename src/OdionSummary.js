@@ -3,8 +3,7 @@ import { Container, Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
-import OdionExpensesPiChart from "./charts/odionExpensesPiChart";
-import OdionFundingsPiChart from "./charts/odionFundingsPiChart";
+import DrawPiChart from "./charts/drawPiChart";
 
 class OdionSummary extends Component {
 
@@ -17,13 +16,18 @@ class OdionSummary extends Component {
       transactionModalShow: false,
       accountTransactionsRows: "",
       monthlyInterests: [],
+      monthlyInterestsAdarsh: [],
       monthlyMaxGains: [],
       monthlySavings: [],
       monthlyOdions: [],
+      monthlyAdarsh: [],
       monthlyMiscs: [],
       expenses: [],
       fundings: [],
-      total: 0
+      fundingsProperty: [],
+      expensesAdarsh: [],
+      total: 0,
+      totalAdarsh: 0
     };
   }
 
@@ -59,7 +63,10 @@ class OdionSummary extends Component {
     });
     const expenses = [];
     const fundings = [];
+    const fundingsProperty = [];
+    const expensesAdarsh = [];
     var total = 0;
+    var totalAdarsh = 0;
     body.accountBalances.map(record => {
           if (record.account === 'INTEREST') {
              expenses.push({
@@ -95,17 +102,53 @@ class OdionSummary extends Component {
                'amount': Math.abs(record.balance)
             });
           }
+          if (record.account === 'INTEREST_ADARSH') {
+             expensesAdarsh.push({
+               'head': 'Interest Adarsh',
+               'amount': Math.abs(record.balance)
+            });
+            totalAdarsh += Math.abs(record.balance);
+          }
+          if (record.account === 'ADARSH') {
+             expensesAdarsh.push({
+               'head': 'Adarsh',
+               'amount': Math.abs(record.balance)
+            });
+            totalAdarsh += Math.abs(record.balance);
+          }
        }
      );
+
+
+
      this.setState({
          fundings: fundings
      });
      this.setState({
          expenses: expenses
      });
+      this.setState({
+          expensesAdarsh: expensesAdarsh
+      });
      this.setState({
          total: total
      });
+      this.setState({
+          totalAdarsh: totalAdarsh
+      });
+
+      fundingsProperty.push({
+         'head': 'Odion',
+         'amount': total
+      });
+      fundingsProperty.push({
+         'head': 'Adarsh',
+         'amount': totalAdarsh
+      });
+      this.setState({
+          fundingsProperty: fundingsProperty
+      });
+
      const monthlyResponse = await fetch('/home/api/odion/monthly/transaction');
      const bodyMonthly = await monthlyResponse.json();
      const interests = bodyMonthly.accountMonthTransaction.INTEREST;
@@ -120,6 +163,18 @@ class OdionSummary extends Component {
      );
      this.setState({ monthlyInterests: monthlyInterests });
 
+    const interestsAdarsh = bodyMonthly.accountMonthTransaction.INTEREST_ADARSH;
+    const monthlyInterestsAdarsh = [];
+    Object.keys(interestsAdarsh).forEach(
+        yearMonth => {
+           monthlyInterestsAdarsh.push({
+             'month': yearMonth,
+             'amount': interestsAdarsh[yearMonth]
+           });
+        }
+    );
+    this.setState({ monthlyInterestsAdarsh: monthlyInterestsAdarsh });
+
      const sbiMaxGain = bodyMonthly.accountMonthTransaction.SBI_MAX_GAIN;
      const monthlyMaxGains = [];
      Object.keys(sbiMaxGain).forEach(
@@ -131,7 +186,6 @@ class OdionSummary extends Component {
           }
      );
      this.setState({ monthlyMaxGains: monthlyMaxGains });
-
 
      const saving = bodyMonthly.accountMonthTransaction.SAVING;
      const monthlySavings = [];
@@ -157,6 +211,18 @@ class OdionSummary extends Component {
      );
      this.setState({ monthlyOdions: monthlyOdions });
 
+      const adarsh = bodyMonthly.accountMonthTransaction.ADARSH;
+      const monthlyAdarsh = [];
+      Object.keys(adarsh).forEach(
+           yearMonth => {
+              monthlyAdarsh.push({
+                'month': yearMonth,
+                'amount': adarsh[yearMonth]
+              });
+           }
+      );
+      this.setState({ monthlyAdarsh: monthlyAdarsh })
+
      const misc = bodyMonthly.accountMonthTransaction.MISC;
      const monthlyMiscs = [];
      Object.keys(misc).forEach(
@@ -176,13 +242,19 @@ class OdionSummary extends Component {
       transactionModalShow,
       accountTransactionsRows,
       monthlyInterests,
+      monthlyInterestsAdarsh,
       monthlyMaxGains,
       monthlySavings,
       monthlyOdions,
+      monthlyAdarsh,
       monthlyMiscs,
+      monthyAdarsh,
       expenses,
       fundings,
-      total
+      fundingsProperty,
+      total,
+      expensesAdarsh,
+      totalAdarsh
     } = this.state;
 
     const accountsBalanceList = accountsBalance.map(record => {
@@ -205,6 +277,8 @@ class OdionSummary extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
+
+
 
     const monthlyMaxGainRows = monthlyMaxGains.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
@@ -230,11 +304,24 @@ class OdionSummary extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
+
+     const monthlyInterestAdarshRows = monthlyInterestsAdarsh.map(record => {
+         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                 </tr>
+     });
+    const monthlyAdarshRows = monthlyAdarsh.map(record => {
+        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                </tr>
+    });
     return (
             <div id="cards" align="center" >
               <Row>
                <Col m={6} s={6} l={6}>
-                <Card className="teal lighten-4" textClassName="black-text">
+                <Card className="teal lighten-4" textClassName="black-text" title="Account Balance">
                     <div>
                     <Table className="mt-4" hover>
                         <thead>
@@ -267,41 +354,24 @@ class OdionSummary extends Component {
                     </div>
                     </Card>
                    </Col>
+                   <Col m={6} s={6} l={6}>
+                      <Card className="teal lighten-4" textClassName="black-text" title="Funding by Source">
+                        <div>
+                          <DrawPiChart data={fundings} total={total + totalAdarsh} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain']} />
+                        </div>
+                      </Card>
+                   </Col>
                     <Col m={6} s={6} l={6}>
-                       <Card className="teal lighten-4" textClassName="black-text">
+                       <Card className="teal lighten-4" textClassName="black-text" title="Funding by Property">
                          <div>
-                           <OdionExpensesPiChart data={expenses} total={total} />
-                         </div>
-                       </Card>
-                    </Col>
-                    <Col m={6} s={6} l={6}>
-                       <Card className="teal lighten-4" textClassName="black-text">
-                         <div>
-                           <OdionFundingsPiChart data={fundings} total={total} />
+                           <DrawPiChart data={fundingsProperty} total={total + totalAdarsh} divContainer="funding-property-pie-container" heads={['Odion', 'Adarsh']} />
                          </div>
                        </Card>
                     </Col>
                 </Row>
                 <Row>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Interest">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyInterestRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Max Gain">
+                   <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Max Gain Monthly Transactions">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
@@ -318,7 +388,7 @@ class OdionSummary extends Component {
                      </Card>
                   </Col>
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Saving">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Saving Monthly Transactions">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
@@ -334,6 +404,34 @@ class OdionSummary extends Component {
                        </div>
                      </Card>
                   </Col>
+                </Row>
+                <Row>
+                  <Col m={6} s={6} l={6}>
+                     <Card className="teal lighten-4" textClassName="black-text" title="Odion Expense by Head">
+                       <div>
+                         <DrawPiChart data={expenses} total={total} divContainer="Odion-expenses-pie-container" heads={['Odion', 'Interest', 'Miscellaneous']} />
+                       </div>
+                     </Card>
+                  </Col>
+
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Interest Odion">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyInterestRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
+
                   <Col m={6} s={6} l={6}>
                     <Card className="teal lighten-4" textClassName="black-text" title="Odion">
                        <div>
@@ -363,6 +461,49 @@ class OdionSummary extends Component {
                            </thead>
                            <tbody>
                              {monthlyMiscRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
+                </Row>
+                <Row>
+                 <Col m={6} s={6} l={6}>
+                     <Card className="teal lighten-4" textClassName="black-text" title="Adarsh Expense by Head">
+                       <div>
+                         <DrawPiChart data={expensesAdarsh} total={totalAdarsh} divContainer="adarsh-expenses-pie-container" heads={['Adarsh', 'Interest Adarsh', 'Miscellaneous']} />
+                       </div>
+                     </Card>
+                  </Col>
+                  <Col>
+                     <Card className="teal lighten-4" textClassName="black-text" title="Interest Adarsh">
+                        <div>
+                          <Table striped bordered hover size="sm">
+                            <thead>
+                              <tr>
+                                <th width="10%" style={{textAlign: "center"}}>Month</th>
+                                <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {monthlyInterestAdarshRows}
+                            </tbody>
+                          </Table>
+                        </div>
+                      </Card>
+                  </Col>
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Adarsh">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyAdarshRows}
                            </tbody>
                          </Table>
                        </div>

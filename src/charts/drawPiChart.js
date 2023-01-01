@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import * as d3 from 'd3';
 import { NumberFormatNoDecimal } from "../utils/NumberFormatNoDecimal";
 
-function OdionExpensesPiChart({data, total}) {
+function DrawPiChart({data, total, divContainer, heads}) {
    const outerRadius = 105;
    const innerRadius = 60;
    const margin = {
@@ -17,20 +17,19 @@ function OdionExpensesPiChart({data, total}) {
    });
 
    function drawChart() {
-     const heads = ['Odion', 'Interest', 'Miscellaneous'];
 
       var myColor = d3.scaleOrdinal()
               .domain(heads)
               .range(d3.schemeSet2);
 
      // Remove the old svg
-     d3.select('#odion-expenses-pie-container')
+     d3.select('#' + divContainer)
        .select('svg')
        .remove();
 
      // Create new svg
      const svg = d3
-       .select('#odion-expenses-pie-container')
+       .select('#' + divContainer)
        .append('svg')
        .attr('width', width)
        .attr('height', height)
@@ -53,15 +52,6 @@ function OdionExpensesPiChart({data, total}) {
        .selectAll()
        .data(pieGenerator(data))
        .enter();
-
-     svg.append('text')
-           .attr('x', width/2 - 130 )
-           .attr('y', -120)
-           .style('text-anchor', 'middle')
-           .style('color', 'teal')
-           .style('font-family', 'Helvetica')
-           .style('font-size', 14)
-           .text('Expenses by head')
 
         //append legends
         var legend = svg.append('g')
@@ -118,7 +108,7 @@ function OdionExpensesPiChart({data, total}) {
         .style('font-family', "Courier New");
    }
 
-   return <div id="odion-expenses-pie-container" />;
+   return <div id={divContainer} />;
  }
 
-export default OdionExpensesPiChart;
+export default DrawPiChart;
