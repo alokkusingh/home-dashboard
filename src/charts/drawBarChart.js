@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react'
 import * as d3 from 'd3';
 
-function SalaryByMonthBarChart({ salaryByYearMap }) {
+function DrawBarChart({ dataMap, divContainer, domain,  numberOfYaxisTicks, colorDomain}) {
 
-  const salaryByYearMapSorted = new Map([...salaryByYearMap].sort())
+  const dataMapMapSorted = new Map([...dataMap].sort())
   var dataArr = [];
-  salaryByYearMapSorted.forEach(function(value, key) {
-    dataArr.push({
-       'year': key,
+  dataMapMapSorted.forEach(function(value, key) {
+    if (key !== undefined) {
+      dataArr.push({
+       'head': key,
        'amount': value
-    });
+      });
+    }
   });
 
   useEffect(() => {
@@ -20,21 +22,20 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
       const height = 220;
       const width = 300;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-      const numberOfYaxisTicks = 7;
 
       const colorScale = d3.scaleLinear()
-        .domain([500000,2500000])
+        .domain(colorDomain)
         .range(['orange', 'green'])
         .clamp(true)
 
      // Remove the old svg
-     d3.select('#sal-by-month-bar-container')
+     d3.select('#' + divContainer)
         .select('svg')
         .remove();
 
      // Create new svg
      const svg = d3
-        .select('#sal-by-month-bar-container')
+        .select('#' + divContainer)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -43,28 +44,19 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
 
      // Setting the scale
     const xScale = d3.scaleBand()
-         .domain(dataArr.map((record) => record.year))
+         .domain(dataArr.map((record) => record.head))
          //.domain(getDaysOfMonthDomain())
          .range([0, width])
          .padding(0.1);
 
     const yScale = d3.scaleLinear()
-       .domain([0, 3500000])
+       .domain(domain)
        .range([height, 0]);
 
     // Setting up the axis
     const xAxis = (g) =>
       g.attr("transform", `translate(0, ${height - margin.bottom})`)
-        .call(
-          d3
-            .axisBottom(xScale)
-            .tickValues(
-              d3
-                .ticks(...d3.extent(xScale.domain()), width / 20)
-                .filter((v) => xScale(v) !== undefined)
-            )
-            .tickSizeOuter(0)
-        );
+        .call(d3.axisBottom(xScale));
 
     const yAxis = d3
        .axisLeft(yScale)
@@ -84,17 +76,6 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
     svg.append('g')
         .call(yAxis);
 
-    // Setting Text
-              // Title
-   svg.append('text')
-      .attr('x', width/2 + 10)
-      .attr('y', -20)
-      .style('text-anchor', 'middle')
-      .style('color', 'teal')
-      .style('font-family', 'Helvetica')
-      .style('font-size', 18)
-      .text('Salary by year')
-
       svg
         .append('g')
         .selectAll(".bar")
@@ -103,7 +84,7 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
         .append("rect")
             .attr("class", "bar")
             .attr("fill", function(d) { return colorScale(d.amount); })
-            .attr("x", function(d) { return xScale(d.year); })
+            .attr("x", function(d) { return xScale(d.head); })
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
             .attr("height", (d) => yScale(0) - yScale(d.amount))
@@ -145,7 +126,7 @@ function SalaryByMonthBarChart({ salaryByYearMap }) {
      }
    }
 
-   return <div id="sal-by-month-bar-container" />;
+   return <div id={divContainer} />;
 }
 
-export default SalaryByMonthBarChart;
+export default DrawBarChart;

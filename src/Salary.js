@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import { Container, Table, Row, Col } from 'reactstrap';
-import { parseISO } from 'date-fns';
+import { Table, Row, Col } from 'reactstrap';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
-import SalaryByCompanyPiChart from './charts/salaryByCompanyPiChart';
-import SalaryByMonthBarChart from './charts/salaryByMonthBarChart';
-import TaxByYearBarChart from './charts/taxByYearBarChart';
+import DrawPiChart from "./charts/drawPiChart";
+import DrawBarChart from "./charts/drawBarChart";
 
 class Salary extends Component {
 
@@ -26,7 +24,7 @@ class Salary extends Component {
       boschByMonth: [],
       jpmcTotal: 0,
       jpmcByMonth: [],
-      taxByYear: [],
+      taxByYear: "",
       monthlySummary: []
     };
   }
@@ -83,8 +81,12 @@ class Salary extends Component {
 
     const responseTaxByYear = await fetch('/home/api/tax/all');
     const bodyResponseTaxByYear = await responseTaxByYear.json();
+    const taxByYearMap = new Map();
+    bodyResponseTaxByYear.taxes.map(record => {
+      taxByYearMap.set(record.financialYear, Math.abs(record.paidAmount));
+    });
     this.setState({
-        taxByYear: bodyResponseTaxByYear.taxes
+        taxByYear: taxByYearMap
     });
 
      const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04');
@@ -120,8 +122,6 @@ class Salary extends Component {
          </tr>
     }
 
-    const title = "Salary";
-
     // Prepare Monthly Salary Summary
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
@@ -143,12 +143,12 @@ class Salary extends Component {
 
     // Prepares Salary by Company
     let companySalaryChartDataText = '[' +
-    '{ "company":"Subex" , "amount":' + subexTotal +'},' +
-    '{ "company":"Evolving" , "amount":' + evolTotal +'},' +
-    '{ "company":"Wipro" , "amount":' + wiproTotal +'},' +
-    '{ "company":"Yodlee" , "amount":' + yodleeTotal +'},' +
-    '{ "company":"Bosch" , "amount":' + boschTotal +'},' +
-    '{ "company":"JPMC" , "amount":' + jpmcTotal +' } ]';
+    '{ "head":"Subex" , "amount":' + subexTotal +'},' +
+    '{ "head":"Evolving" , "amount":' + evolTotal +'},' +
+    '{ "head":"Wipro" , "amount":' + wiproTotal +'},' +
+    '{ "head":"Yodlee" , "amount":' + yodleeTotal +'},' +
+    '{ "head":"Bosch" , "amount":' + boschTotal +'},' +
+    '{ "head":"JPMC" , "amount":' + jpmcTotal +' } ]';
     const companySalaryChartDataObject = JSON.parse(companySalaryChartDataText);
 
     // Prepare Salary by Year
@@ -174,23 +174,23 @@ class Salary extends Component {
          <div id="cards" align="center" >
                 <Row>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary by Company">
                             <div>
-                                <SalaryByCompanyPiChart data={companySalaryChartDataObject} total={total} />
+                                <DrawPiChart data={companySalaryChartDataObject} total={total} divContainer="salary-by-company-pie-container" heads={['Subex', 'Evolving', 'Wipro', 'Yodlee', 'Bosch', 'JPMC']} />
                             </div>
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary by Year (in bank)">
                             <div>
-                                <SalaryByMonthBarChart salaryByYearMap={salaryByYearMap} />
+                                <DrawBarChart dataMap={salaryByYearMap} domain={[0, 3500000]} colorDomain={[500000,2500000]} numberOfYaxisTicks="7" divContainer="salary-by-year-bar-container" />
                             </div>
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Tax Paid Yearly">
                             <div>
-                                <TaxByYearBarChart dataArr={taxByYear} />
+                                <DrawBarChart dataMap={taxByYear} domain={[0, 1000000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="10" divContainer="tax-by-year-bar-container" />
                             </div>
                         </Card>
                     </Col>
