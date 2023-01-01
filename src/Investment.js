@@ -1,14 +1,9 @@
 import React, { Component } from 'react'
 import { Container, Table, Row, Col } from 'reactstrap';
-import { parseISO } from 'date-fns';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
-import InvestmentLineChart from './charts/investmentLineChart';
-import InvestmentLineChartPF from './charts/investmentLineChartPF';
-import InvestmentLineChartNPS from './charts/investmentLineChartNPS';
-import InvestmentLineChartLIC from './charts/investmentLineChartLIC';
-import InvestmentLineChartShare from './charts/investmentLineChartShare';
+import DrawLineChartShare from './charts/drawLineChart';
 
 class Investment extends Component {
 
@@ -107,45 +102,45 @@ class Investment extends Component {
          <div id="cards" align="center" >
                 <Row>
                     <Col m={12} s={12} l={12}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Years Investment">
                             <div>
-                                <InvestmentLineChart investmentType="total" data={totalMonthlyInvestment}  />
+                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[800000, 4000000]} divContainer="total-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
                 </Row>
                 <Row>
                     <Col m={12} s={12} l={12}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year PF Investment">
                             <div>
-                                <InvestmentLineChartPF investmentType="PF" data={pfMonthlyInvestment}  />
+                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[500000, 2800000]} divContainer="PF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
                 </Row>
                 <Row>
                     <Col m={12} s={12} l={12}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year NPS Investment">
                             <div>
-                                <InvestmentLineChartNPS investmentType="NPS" data={npsMonthlyInvestment}  />
+                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[1000, 700000]} divContainer="NPS-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
                 </Row>
                 <Row>
                     <Col m={12} s={12} l={12}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year LIC Investment">
                             <div>
-                                <InvestmentLineChartLIC investmentType="LIC" data={licMonthlyInvestment}  />
+                                <DrawLineChartShare data={licMonthlyInvestment} domain={[200000, 700000]} divContainer="LIC-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
                 </Row>
                 <Row>
                     <Col m={12} s={12} l={12}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Share Investment">
                             <div>
-                                <InvestmentLineChartShare investmentType="Share" data={shareMonthlyInvestment}  />
+                                <DrawLineChartShare data={shareMonthlyInvestment} domain={[0, 5000]} divContainer="Share-investment-line-container" />
                             </div>
                         </Card>
                     </Col>

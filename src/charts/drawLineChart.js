@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import { parseISO } from 'date-fns';
 import * as d3 from 'd3';
 
-function InvestmentLineChartPF({ investmentType, data }) {
+function DrawLineChart({ data, divContainer, domain }) {
 
     var yearsBackFromNow = new Date();
     var today = new Date();
@@ -59,12 +59,12 @@ function InvestmentLineChartPF({ investmentType, data }) {
     }, [filteredData]);
 
     function drawChart() {
-       const height = 380;
+       const height = 580;
        const width = 1200;
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
        const numberOfYaxisTicks = 30;
 
-       var allGroup = ["invested: " + Math.round(maxInvestmentAmount/100000) + "L", "value: " + Math.round(maxAsOnValue/100000) + "L"]
+       var allGroup = ["invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", "value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L"]
        // A color scale: one color for each group
        var myColor = d3.scaleOrdinal()
          .domain(allGroup)
@@ -72,13 +72,13 @@ function InvestmentLineChartPF({ investmentType, data }) {
 
 
        // Remove the old svg
-       d3.select('#investment-line-container-' + investmentType)
+       d3.select('#' + divContainer)
           .select('svg')
           .remove();
 
        // Create new svg
        const svg = d3
-          .select('#investment-line-container-' + investmentType)
+          .select('#' + divContainer)
           .append('svg')
           .attr('width', width)
           .attr('height', height)
@@ -92,7 +92,7 @@ function InvestmentLineChartPF({ investmentType, data }) {
 
 
        const yScale = d3.scaleLinear()
-          .domain([500000, maxAsOnValue + 10000])
+          .domain(domain)
           .range([height, 0]);
 
       // Setting up the axis
@@ -118,17 +118,6 @@ function InvestmentLineChartPF({ investmentType, data }) {
        svg.append('g')
            .call(yAxis);
 
-       // Setting Text
-          // Title
-       svg.append('text')
-          .attr('x', width/2 + 10)
-          .attr('y', -20)
-          .style('text-anchor', 'middle')
-          .style('color', 'teal')
-          .style('font-family', 'Helvetica')
-          .style('font-size', 18)
-          .text('Last ' + numberOfYears + ' years ' + investmentType + ' investment');
-
        //append legends
        var legend = svg.append('g')
            .selectAll('g.legend')
@@ -153,8 +142,8 @@ function InvestmentLineChartPF({ investmentType, data }) {
            .style('font-size', '.9em')
            .text(d => d)
 
-       drawLineAndDots("invested: " + Math.round(maxInvestmentAmount/100000) + "L", contributionArray);
-       drawLineAndDots("value: " +Math.round(maxAsOnValue/100000) + "L", investmentValueArray);
+       drawLineAndDots("invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", contributionArray);
+       drawLineAndDots("value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L", investmentValueArray);
 
        // Draw grid lines
        drawHorizontalLines();
@@ -240,8 +229,8 @@ function InvestmentLineChartPF({ investmentType, data }) {
 
        }
    }
-   return <div id='investment-line-container-PF' />;
+   return <div id={divContainer} />;
 }
 
-export default InvestmentLineChartPF;
+export default DrawLineChart;
 
