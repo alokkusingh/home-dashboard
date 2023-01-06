@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
 import { Button, Icon } from 'semantic-ui-react';
+import './css/App.css';
 
 class RefreshGoogleSheets extends Component {
 
@@ -29,7 +30,7 @@ class RefreshGoogleSheets extends Component {
       } =  this.state;
 
       return (
-          <div style={{float: 'middle'}}>
+          <div className="center">
             <Button.Group basic size='small'>
                 <Button id='expense' onClick={this.refreshSheet}>
                   <Icon name='refresh'/>
