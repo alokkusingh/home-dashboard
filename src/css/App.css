@@ -37,6 +37,15 @@
   transform: translate(-50%, -50%);
 }
 
+.rightButton {
+  margin: 0;
+  position: absolute;
+  right: 1.5%;
+  top: 20%;
+  width: 100px;
+  height: 40px;
+}
+
 
 @keyframes App-logo-spin {
   from {
