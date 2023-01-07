@@ -39,7 +39,6 @@ function App() {
             console.log("Data: " );
             console.log(data);
             if (data.id !== undefined) {
-              alert("Welcome " + res.profileObj.name + "!");
               setProfile(res.profileObj);
             } else {
               logOut();
