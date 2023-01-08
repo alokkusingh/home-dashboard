@@ -59,9 +59,14 @@ function App() {
 
     const logOut = () => {
         setProfile(null);
-        gapi.auth2.getAuthInstance().disconnect();
+        try {
+          gapi.auth2.getAuthInstance().disconnect();
+        } catch(err) {
+           console.log("Log Out Error");
+         }
     };
 
+    try {
     if(profile === undefined || profile.length === 0) {
       return <div className="center">
           <GoogleLogin
@@ -75,6 +80,18 @@ function App() {
       </div>
     } else {
       console.log("Already Logged In");
+    }
+    } catch(error) {
+      return <div className="center">
+          <GoogleLogin
+              clientId={clientId}
+              buttonText="Sign in with Google"
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+              cookiePolicy={'single_host_origin'}
+              //isSignedIn={true}
+          />
+      </div>
     }
 
     return (
