@@ -41,8 +41,8 @@ function App() {
             if (data.id !== undefined) {
               setProfile(res.profileObj);
             } else {
-              logOut();
               alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
+              logOut();
             }
           })
           .catch(error => {
@@ -58,7 +58,6 @@ function App() {
     };
 
     const logOut = () => {
-        console.log("Logged out: " + profile.name);
         setProfile(null);
         gapi.auth2.getAuthInstance().disconnect();
     };
