@@ -69,6 +69,9 @@ function App() {
     try {
     if(profile === undefined || profile.length === 0) {
       return <div className="center">
+          <img alt="Home Dashboard" src="/logo512.png" style={{ height: 100, width: 100 }} />
+          <br />
+          <br />
           <GoogleLogin
               clientId={clientId}
               buttonText="Sign in with Google"
@@ -83,6 +86,9 @@ function App() {
     }
     } catch(error) {
       return <div className="center">
+          <img alt="Home Dashboard" src="/logo512.png" style={{ height: 100, width: 100 }} />
+          <br />
+          <br />
           <GoogleLogin
               clientId={clientId}
               buttonText="Sign in with Google"
