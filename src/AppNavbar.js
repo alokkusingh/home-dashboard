@@ -7,12 +7,12 @@ function AppNavbar(clientId, logOut) {
 
         return <Navbar className="card-panel teal lighten-1" expand="md">
             <NavbarBrand href="/">
-              <img alt="Home Dashboard" src="/logo512.png" style={{ height: 40, width: 40 }} />
-              <div style={{float: 'right'}}>
-                <GoogleLogout clientId={clientId} buttonText="Log out" onLogoutSuccess={logOut} className="rightButton"/>
+              <div className="left">
+                <img alt="Home Dashboard" src="/logo512.png" style={{ height: 40, width: 40 }} />
+                <NavbarText> Home Dashboard</NavbarText>
               </div>
+              <GoogleLogout clientId={clientId} buttonText="Log out" onLogoutSuccess={logOut} className="rightButton"/>
             </NavbarBrand>
-            <NavbarText>Home Dashboard</NavbarText>
         </Navbar>
 }
 

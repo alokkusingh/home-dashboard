@@ -31,7 +31,7 @@
 .center {
   margin: 0;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
@@ -41,8 +41,17 @@
   margin: 0;
   position: absolute;
   right: 1.5%;
-  top: 20%;
-  width: 100px;
+  top: 15%;
+  width: 110px;
+  height: 40px;
+}
+
+.left {
+  margin: 10;
+  position: absolute;
+  left: 1.5%;
+  top: 0%;
+  width: 80px;
   height: 40px;
 }
 
