@@ -194,9 +194,6 @@ class HomeCards extends Component {
 
       return (
           <div>
-             <Dimmer active={dimmerActive}>
-               <Loader size='medium'>Loading</Loader>
-             </Dimmer>
               <div id="cards" align="center" >
               <Row>
                 <Col m={2} s={2} l={2}>
