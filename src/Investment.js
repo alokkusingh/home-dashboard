@@ -19,7 +19,15 @@ class Investment extends Component {
   }
 
   async componentDidMount() {
-     const responseInvestments = await fetch('/home/api/investment/all');
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+     const responseInvestments = await fetch('/home/api/investment/all', requestOptions);
      const bodyInvestments = await responseInvestments.json();
 
      const totalMonthlyInvestment = [];

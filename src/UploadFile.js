@@ -47,10 +47,12 @@ class UploadFile extends Component {
       });
 
       async function uploadFile(data) {
+
         const response =  await fetch('/home/etl/file/upload', {
             method: 'POST',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('ID_TOKEN')
             },
             body: data
         });

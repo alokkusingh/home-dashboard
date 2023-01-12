@@ -91,7 +91,15 @@ class HomeCards extends Component {
   };
 
   async componentDidMount() {
-    const response = await fetch('/home/api/expense/current_month_by_day');
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
+    const response = await fetch('/home/api/expense/current_month_by_day', requestOptions);
     const body = await response.json();
     this.setState({
         monthExpensesByDay: body.expenses,
@@ -106,19 +114,19 @@ class HomeCards extends Component {
         totalMonthExpense: sum
     });
 
-    const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month');
+    const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
     const bodySumByCat = await responseSumByCatMonth.json();
     this.setState({
         expensesByCategory: bodySumByCat.expenseCategorySums
     });
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly');
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records
      });
 
-      const responseCategories = await fetch('/home/api/expense/categories/names');
+      const responseCategories = await fetch('/home/api/expense/categories/names', requestOptions);
        const categories = await responseCategories.json();
        this.setState({
            expCategories: categories

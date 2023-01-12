@@ -15,9 +15,17 @@ class RefreshGoogleSheets extends Component {
   }
 
   refreshSheet = (e) => {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
     console.log(e);
     console.log(e.currentTarget.getAttribute("id"));
-    fetch("/home/etl/gsheet/refresh/" + e.currentTarget.getAttribute("id"))
+    fetch("/home/etl/gsheet/refresh/" + e.currentTarget.getAttribute("id"), requestOptions)
         .then(response => {
             console.log(response);
         }

@@ -40,6 +40,7 @@ function App() {
             console.log(data);
             if (data.id !== undefined) {
               setProfile(res.profileObj);
+              sessionStorage.setItem("ID_TOKEN", res.tokenObj.id_token);
             } else {
               alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
               logOut();
@@ -59,6 +60,7 @@ function App() {
 
     const logOut = () => {
         setProfile(null);
+        sessionStorage.setItem("ID_TOKEN", "");
         try {
           gapi.auth2.getAuthInstance().disconnect();
         } catch(err) {

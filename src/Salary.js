@@ -30,7 +30,15 @@ class Salary extends Component {
   }
 
   async componentDidMount() {
-    const responseSalaryByCompany = await fetch('/home/api/bank/salary/bycompany');
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+
+    const responseSalaryByCompany = await fetch('/home/api/bank/salary/bycompany', requestOptions);
     const bodySalaryByCompany = await responseSalaryByCompany.json();
     this.setState({
         total: bodySalaryByCompany.total
@@ -79,7 +87,7 @@ class Salary extends Component {
       }
     }
 
-    const responseTaxByYear = await fetch('/home/api/tax/all');
+    const responseTaxByYear = await fetch('/home/api/tax/all', requestOptions);
     const bodyResponseTaxByYear = await responseTaxByYear.json();
     const taxByYearMap = new Map();
     bodyResponseTaxByYear.taxes.map(record => {
@@ -89,7 +97,7 @@ class Salary extends Component {
         taxByYear: taxByYearMap
     });
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04');
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records

@@ -34,7 +34,15 @@ class OdionSummary extends Component {
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("id"))
 
-    fetch("/home/api/odion/transactions/" + event.target.getAttribute("id"))
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
+    fetch("/home/api/odion/transactions/" + event.target.getAttribute("id"), requestOptions)
         .then(response => response.json())
         .then(transactionsJson => {
             const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
@@ -56,7 +64,14 @@ class OdionSummary extends Component {
   };
 
   async componentDidMount() {
-    const response = await fetch('/home/api/odion/accounts');
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+    const response = await fetch('/home/api/odion/accounts', requestOptions);
     const body = await response.json();
     this.setState({
         accountsBalance: body.accountBalances
@@ -149,7 +164,7 @@ class OdionSummary extends Component {
           fundingsProperty: fundingsProperty
       });
 
-     const monthlyResponse = await fetch('/home/api/odion/monthly/transaction');
+     const monthlyResponse = await fetch('/home/api/odion/monthly/transaction', requestOptions);
      const bodyMonthly = await monthlyResponse.json();
      const interests = bodyMonthly.accountMonthTransaction.INTEREST;
      const monthlyInterests = [];

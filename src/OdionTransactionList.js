@@ -19,7 +19,14 @@ class OdionTransactionList extends Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('/home/api/odion/transactions');
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+    const response = await fetch('/home/api/odion/transactions', requestOptions);
     const body = await response.json();
     this.setState({
         transactions: body.transactions

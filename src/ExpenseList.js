@@ -38,8 +38,15 @@ class ExpenseList extends Component {
 
   async componentDidMount() {
 
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
       // Default set Expenses for all months
-      const response = await fetch('/home/api/expense');
+      const response = await fetch('/home/api/expense', requestOptions);
       const body = await response.json();
       this.setState({
           expenses: body.expenses,
@@ -47,7 +54,7 @@ class ExpenseList extends Component {
           lastTransactionDate: body.lastTransactionDate
       });
 
-      const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month');
+      const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
       const bodySumByCat = await responseSumByCatMonth.json();
       this.setState({
           expensesByCategory: bodySumByCat.expenseCategorySums
@@ -64,20 +71,20 @@ class ExpenseList extends Component {
       this.setState({ dimmerActive: false })
 
       // Default set Expense Category - Grocery
-      const catExpResponse = await fetch("/home/api/expense/monthly/categories/" + this.state.categoryDropDownValue);
+      const catExpResponse = await fetch("/home/api/expense/monthly/categories/" + this.state.categoryDropDownValue, requestOptions);
       const catExpResponseJson = await catExpResponse.json();
       this.setState(
            { expensesForCategory: catExpResponseJson.expenseCategorySums }
       );
 
-      const responseCategories = await fetch('/home/api/expense/categories/names');
+      const responseCategories = await fetch('/home/api/expense/categories/names', requestOptions);
       const categories = await responseCategories.json();
       this.setState({
           categories: categories
       });
       categories.push('ALL')
 
-      const responseMonths = await fetch('/home/api/expense/months');
+      const responseMonths = await fetch('/home/api/expense/months', requestOptions);
       const months = await responseMonths.json();
       var monthsArr = [];
       months.forEach(
@@ -101,8 +108,15 @@ class ExpenseList extends Component {
 
   changeCategoryValue = (e) => {
       this.setState({categoryDropDownValue: e.currentTarget.textContent});
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-      fetch("/home/api/expense/monthly/categories/" + e.currentTarget.getAttribute("id"))
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+
+      fetch("/home/api/expense/monthly/categories/" + e.currentTarget.getAttribute("id"), requestOptions)
           .then(response => response.json())
           .then(expensesJson => {
               console.table(expensesJson.expenses);
@@ -154,8 +168,15 @@ class ExpenseList extends Component {
   changeExpMonthValue = (e) => {
       const yearMonth = e.currentTarget.getAttribute("id");
       this.setState({monthExpDropDownValue: e.currentTarget.textContent});
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-      fetch("/home/api/expense?yearMonth=" + yearMonth)
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+
+      fetch("/home/api/expense?yearMonth=" + yearMonth, requestOptions)
           .then(response => response.json())
           .then(expensesJson => {
               console.table(expensesJson.expenses);
@@ -168,7 +189,15 @@ class ExpenseList extends Component {
 
   showExpenseCategoryModal = (event) => {
       console.log("event: ", event.target.getAttribute("tranId"))
-      fetch("/home/api/expense?yearMonth=" + event.target.getAttribute("tranId") + "&category=" + this.state.categoryDropDownValue)
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+
+      fetch("/home/api/expense?yearMonth=" + event.target.getAttribute("tranId") + "&category=" + this.state.categoryDropDownValue, requestOptions)
           .then(response => response.json())
           .then(expensesJson => {
               const expenseCategoryMonthRows = expensesJson.expenses.map( expense => {

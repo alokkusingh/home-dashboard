@@ -21,9 +21,17 @@ class TransactionList extends Component {
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("id"))
 
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
     let tranDetails = [];
 
-    fetch("/home/api/bank/transactions/" + event.target.getAttribute("id"))
+    fetch("/home/api/bank/transactions/" + event.target.getAttribute("id"), requestOptions)
         .then(response => response.json())
         .then(data => {
               tranDetails[1] = data.id;
@@ -46,7 +54,14 @@ class TransactionList extends Component {
   };
 
   async componentDidMount() {
-    const response = await fetch('/home/api/bank/transactions');
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+    const response = await fetch('/home/api/bank/transactions', requestOptions);
     const body = await response.json();
     this.setState({
         transactions: body.transactions,
@@ -56,7 +71,15 @@ class TransactionList extends Component {
   }
 
   downloadTransactions = () => {
-  		fetch('/home/etl/report/download')
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders
+      };
+
+  		fetch('/home/etl/report/download', requestOptions)
   			.then(response => {
   				response.blob().then(blob => {
   					let url = window.URL.createObjectURL(blob);
