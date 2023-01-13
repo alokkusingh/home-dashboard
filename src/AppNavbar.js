@@ -11,7 +11,7 @@ function AppNavbar(clientId, logOut) {
                 <img alt="Home Dashboard" src="/logo512.png" style={{ height: 40, width: 40 }} />
                 <NavbarText> Home Dashboard</NavbarText>
               </div>
-              <GoogleLogout clientId={clientId} buttonText="Log out" onLogoutSuccess={logOut} className="rightButton"/>
+              <GoogleLogout clientId={clientId} buttonText="Log out" onLogoutSuccess={logOut} className="logoutButton"/>
             </NavbarBrand>
         </Navbar>
 }

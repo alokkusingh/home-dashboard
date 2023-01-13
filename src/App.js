@@ -39,8 +39,8 @@ function App() {
             console.log("Data: " );
             console.log(data);
             if (data.id !== undefined) {
-              setProfile(res.profileObj);
               sessionStorage.setItem("ID_TOKEN", res.tokenObj.id_token);
+              setProfile(res.profileObj);
             } else {
               alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
               logOut();
