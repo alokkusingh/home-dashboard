@@ -38,6 +38,16 @@ class Salary extends Component {
         headers: myHeaders
       };
 
+    const responseTaxByYear = await fetch('/home/api/tax/all', requestOptions);
+    const bodyResponseTaxByYear = await responseTaxByYear.json();
+    const taxByYearMap = new Map();
+    bodyResponseTaxByYear.taxes.map(record => {
+      taxByYearMap.set(record.financialYear, Math.abs(record.paidAmount));
+    });
+    this.setState({
+        taxByYear: taxByYearMap
+    });
+
     const responseSalaryByCompany = await fetch('/home/api/bank/salary/bycompany', requestOptions);
     const bodySalaryByCompany = await responseSalaryByCompany.json();
     this.setState({
@@ -86,16 +96,6 @@ class Salary extends Component {
         });
       }
     }
-
-    const responseTaxByYear = await fetch('/home/api/tax/all', requestOptions);
-    const bodyResponseTaxByYear = await responseTaxByYear.json();
-    const taxByYearMap = new Map();
-    bodyResponseTaxByYear.taxes.map(record => {
-      taxByYearMap.set(record.financialYear, Math.abs(record.paidAmount));
-    });
-    this.setState({
-        taxByYear: taxByYearMap
-    });
 
      const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
