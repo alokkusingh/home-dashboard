@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Row, Col } from 'reactstrap';
+import { Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
@@ -25,7 +25,9 @@ class Salary extends Component {
       jpmcTotal: 0,
       jpmcByMonth: [],
       taxByYear: "",
-      monthlySummary: []
+      monthlySummary: [],
+      monthDetailsModalShow: false,
+      monthDetailsRows: []
     };
   }
 
@@ -104,6 +106,38 @@ class Salary extends Component {
      });
   }
 
+  showMonthDetailsModal = (event) => {
+    console.log("event: ", event.target.getAttribute("id"))
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
+    fetch("/home/api/investment/month/" + event.target.getAttribute("id"), requestOptions)
+        .then(response => response.json())
+        .then(recordsJson => {
+            const monthDetailsRows = recordsJson.map( record => {
+                return <tr>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{record.head}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
+                 </tr>
+            });
+            this.setState({ monthDetailsRows: monthDetailsRows });
+            this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow });
+        }
+    );
+  };
+
+  hideMonthDetailsModal = () => {
+    this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow});
+  };
+
+
   render() {
     const {
           total,
@@ -120,7 +154,9 @@ class Salary extends Component {
           jpmcTotal,
           jpmcByMonth,
           taxByYear,
-          monthlySummary
+          monthlySummary,
+          monthDetailsModalShow,
+          monthDetailsRows
     } = this.state;
 
     function prepareSalaryRow(record) {
@@ -132,12 +168,13 @@ class Salary extends Component {
 
     // Prepare Monthly Salary Summary
      const monthlySummaryList = monthlySummary.map(record => {
-          return <tr key={'' + record.year + record.month} onClick={this.showModal}>
-                   <td id={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td id={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc)}</td>
-                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc - Math.round(record.incomeAmount) - record.taxAmount)}</td>
-                   <td id={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
+          var yearMonth = '' + record.year + '-' + (record.month < 10 ? '0' + record.month : record.month) ;
+          return <tr key={yearMonth} onClick={this.showMonthDetailsModal}>
+                   <td id={yearMonth} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc)}</td>
+                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc - Math.round(record.incomeAmount) - record.taxAmount)}</td>
+                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
                </tr>
       });
 
@@ -221,6 +258,21 @@ class Salary extends Component {
                                   {monthlySummaryList}
                                   </tbody>
                               </Table>
+                              <Modal isOpen={monthDetailsModalShow} onClose={this.hideMonthDetailsModal} contentLabel="DailyRecords">
+                                <ModalHeader toggle={this.hideMonthDetailsModal}/>
+                                <Table striped bordered hover>
+                                   <thead >
+                                     <tr>
+                                       <th>Head</th>
+                                       <th>Contribution</th>
+                                       <th>Value As On Month</th>
+                                     </tr>
+                                   </thead>
+                                   <tbody>
+                                     {monthDetailsRows}
+                                   </tbody>
+                                 </Table>
+                              </Modal>
                             </div>
                         </Card>
                     </Col>
