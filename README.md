@@ -60,16 +60,47 @@ sequenceDiagram
   participant homeapi as Home API Service
   participant homeetl as Home ETL Service
   participant db as MySQL
+  participant sheet as Google Sheet
+  participant backup as Github
   web->>idp: Get ID Token for Home Service?
-  alt is login success
+  alt login success
     idp->>web: ID Token (including email)
     web->>authorizer: Validate ID Token
-    alt is user authorized
-      authorizer->>web:User Authorized
-    else is user not authorized
+    authorizer->>authorizer: Validate Token Integrity
+    authorizer->>authorizer: Validate Email
+    alt user authorized
+      authorizer->>web:User ID and Email
+      web->>homeapi:Get Metrics
+      alt has access to API
+        homeapi->>db:Get Records
+        db->>homeapi:Records
+        homeapi->>homeapi:Aggregate Metrics
+        homeapi->>web:Metrics
+      else dont have access to API
+        homeapi->>web:Unauthorized Access
+      end
+      web->>homeetl:Upload Statement
+      alt has access to API
+        homeetl->>homeetl:Parse File
+        homeetl->>db:Add Records
+        homeetl->>web:Success
+      else dont have access to API
+        homeetl->>web:Unauthorized Access
+      end
+      web->>homeetl:Refresh data
+      alt has access to API
+        homeetl->>sheet:Get Sheet Records
+        sheet->>homeetl:Records
+        homeetl->>db:Delete Records
+        homeetl->>db:Add Records
+        homeetl->>web:Success
+      else dont have access to API
+        homeetl->>web:Unauthorized Access
+      end
+    else user not authorized
       authorizer->>web:User Not Authorized 
     end
-  else is login failed
+  else login failed
     idp->>web: Login failed
   end
 ```
