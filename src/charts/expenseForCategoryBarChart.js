@@ -41,7 +41,7 @@ function ExpenseForCategoryBarChart({ data }) {
 
       var domainMax = maxAmount > 100000 ? 100000 : maxAmount;
       const colorScale = d3.scaleLinear()
-        .domain([minAmount, domainAvg, domainMax])
+        .domain([50000, domainAvg, domainMax])
         .range(['green', 'orange', 'red'])
         .clamp(true)
 
