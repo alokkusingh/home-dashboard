@@ -22,6 +22,7 @@ class OdionSummary extends Component {
       monthlyOdions: [],
       monthlyAdarsh: [],
       monthlyMiscs: [],
+      monthlyMiscsAdarsh: [],
       expenses: [],
       fundings: [],
       fundingsProperty: [],
@@ -124,6 +125,13 @@ class OdionSummary extends Component {
             });
             totalAdarsh += Math.abs(record.balance);
           }
+          if (record.account === 'MISC_ADARSH') {
+             expensesAdarsh.push({
+               'head': 'Misc Adarsh',
+               'amount': Math.abs(record.balance)
+            });
+            totalAdarsh += Math.abs(record.balance);
+          }
           if (record.account === 'ADARSH') {
              expensesAdarsh.push({
                'head': 'Adarsh',
@@ -189,6 +197,18 @@ class OdionSummary extends Component {
         }
     );
     this.setState({ monthlyInterestsAdarsh: monthlyInterestsAdarsh });
+
+      const miscsAdarsh = bodyMonthly.accountMonthTransaction.MISC_ADARSH;
+      const monthlyMiscsAdarsh = [];
+      Object.keys(miscsAdarsh).forEach(
+          yearMonth => {
+             monthlyMiscsAdarsh.push({
+               'month': yearMonth,
+               'amount': miscsAdarsh[yearMonth]
+             });
+          }
+      );
+      this.setState({ monthlyMiscsAdarsh: monthlyMiscsAdarsh });
 
      const sbiMaxGain = bodyMonthly.accountMonthTransaction.SBI_MAX_GAIN;
      const monthlyMaxGains = [];
@@ -258,6 +278,7 @@ class OdionSummary extends Component {
       accountTransactionsRows,
       monthlyInterests,
       monthlyInterestsAdarsh,
+      monthlyMiscsAdarsh,
       monthlyMaxGains,
       monthlySavings,
       monthlyOdions,
@@ -332,6 +353,13 @@ class OdionSummary extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
+     const monthlyMiscsAdarshRows = monthlyMiscsAdarsh.map(record => {
+         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                 </tr>
+     });
+
     return (
             <div id="cards" align="center" >
               <Row>
@@ -465,7 +493,7 @@ class OdionSummary extends Component {
                      </Card>
                   </Col>
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Miscellaneous">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Odion">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
@@ -519,6 +547,23 @@ class OdionSummary extends Component {
                            </thead>
                            <tbody>
                              {monthlyAdarshRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Adarsh">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyMiscsAdarshRows}
                            </tbody>
                          </Table>
                        </div>
