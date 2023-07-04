@@ -14,7 +14,8 @@ class Investment extends Component {
       pfMonthlyInvestment: [],
       npsMonthlyInvestment: [],
       licMonthlyInvestment: [],
-      shareMonthlyInvestment: []
+      shareMonthlyInvestment: [],
+      investmentReturnList: []
     };
   }
 
@@ -93,6 +94,15 @@ class Investment extends Component {
          shareMonthlyInvestment: shareMonthlyInvestment
       });
     }
+
+    const responseInvestmentsReturn = await fetch('/home/api/investment/return', requestOptions);
+    const bodyInvestmentsReturn = await responseInvestmentsReturn.json();
+    console.log(bodyInvestmentsReturn);
+    const investmentReturnList = bodyInvestmentsReturn.investmentsRorMetrics;
+
+    this.setState({
+             investmentReturnList: investmentReturnList
+          });
   }
 
   render() {
@@ -101,13 +111,130 @@ class Investment extends Component {
       pfMonthlyInvestment,
       npsMonthlyInvestment,
       licMonthlyInvestment,
-      shareMonthlyInvestment
+      shareMonthlyInvestment,
+      investmentReturnList
     } = this.state;
 
-    console.table(pfMonthlyInvestment)
+
+    const investmentReturnListMock = [
+      {
+      "metric": "Cumulative Return (%)",
+      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
+      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
+      },
+      {
+      "metric": "Average Return (%)",
+      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
+      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
+      },
+      {
+      "metric": "RoR - 2023",
+      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
+      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
+      },
+      {
+      "metric": "RoR - 2022",
+      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
+      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
+      },
+      {
+      "metric": "RoR - 2021",
+      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
+      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
+      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
+      }
+    ]
+    const returnOnInvestmentRows = investmentReturnList.map(
+      investment => {
+          return <tr key={investment.metric} >
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.metric}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.ror}</td>
+          </tr>
+      }
+    );
+
+console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
 
     return (
          <div id="cards" align="center" >
+             <Row>
+              <Col m={6} s={6} l={6}>
+               <Card className="teal lighten-4" textClassName="black-text" title="Investment Returns">
+                   <div>
+                   <Table className="mt-4" hover bordered>
+                       <thead>
+                         <tr>
+                           <th rowspan="2" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Head</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>PF</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>NPS</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>LIC</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Share</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Total</th>
+                         </tr>
+                        <tr>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                        </tr>
+                       </thead>
+                       <tbody>
+                       {returnOnInvestmentRows}
+                       </tbody>
+                   </Table>
+                   </div>
+                   </Card>
+                  </Col>
+                </Row>
                 <Row>
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Years Investment">
