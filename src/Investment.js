@@ -162,26 +162,26 @@ class Investment extends Component {
       investment => {
           return <tr key={investment.metric} >
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.metric}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.pf === null? 0:investment.pf.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.ror}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.inv}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.ror}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null? 0:investment.lic.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.ror}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.inv}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.ror}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.ror}</td>
           </tr>
       }
     );
@@ -198,33 +198,33 @@ console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
                        <thead>
                          <tr>
                            <th rowspan="2" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Head</th>
-                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>PF</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>PF</th>
                            <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>NPS</th>
-                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>LIC</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>LIC</th>
                            <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Share</th>
-                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Total</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Total</th>
                          </tr>
                         <tr>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Ret (%)</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Ret (%)</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
-                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Ret (%)</th>
                         </tr>
                        </thead>
                        <tbody>
