@@ -88,9 +88,9 @@ function ExpenseVsIncomeLineChart({ data }) {
 
     function drawChart() {
        const height = 220;
-       const width = 450;
-       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-       const numberOfYaxisTicks = 7;
+       const width = 380;
+       const margin = { top: 0, right: 10, bottom: 80, left: 10 };
+       const numberOfYaxisTicks = 8;
 
        var allGroup = ["income", "expense", "transfer", "investment"]
        // A color scale: one color for each group
@@ -117,9 +117,8 @@ function ExpenseVsIncomeLineChart({ data }) {
             .domain([minDate, maxDate])
             .range([0, width]);
 
-
        const yScale = d3.scaleLinear()
-          .domain([0, maxIncomeAmount + 10000])
+          .domain([0, 800000])
           .range([height, 0]);
 
       // Setting up the axis
@@ -181,13 +180,13 @@ function ExpenseVsIncomeLineChart({ data }) {
            .attr("class", "legend");
 
        legend.append("circle")
-           .attr("cx", width - 420)
+           .attr("cx", width - 370)
            .attr('cy', (d, i) => i * 18 + 10)
            .attr("r", 4)
            .style("fill", d => myColor(d));
 
        legend.append("text")
-           .attr("x", width - 400)
+           .attr("x", width - 350)
            .attr("y", (d, i) => i * 18 + 12)
            .attr("dx", "-.8em")
            .attr("dy", ".15em")
@@ -202,7 +201,8 @@ function ExpenseVsIncomeLineChart({ data }) {
        drawLineAndDots("investment", investmentArray);
 
        // Draw grid lines
-       drawHorizontalLines();
+       drawHorizontalLines(numberOfYaxisTicks, .2);
+       drawHorizontalLines(numberOfYaxisTicks * 2, .1);
        drawVerticalLines();
 
        function drawLineAndDots(type, data) {
@@ -216,7 +216,7 @@ function ExpenseVsIncomeLineChart({ data }) {
                return xScale(d.date);
              })
             .attr('cy', function(d) { return yScale(d.amount); })
-            .attr('r', 3)
+            .attr('r', 2)
             .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
             .style('fill', function(d){ return myColor(type) });
 
@@ -230,15 +230,15 @@ function ExpenseVsIncomeLineChart({ data }) {
                 .y(function(d) { return yScale(d.amount) })
               )
               .attr("stroke", function(d){ return myColor(type) })
-              .style("stroke-width", 2)
+              .style("stroke-width", 1)
               .style("fill", "none");
        }
 
-       function drawHorizontalLines() {
+       function drawHorizontalLines(lines, drawWidth) {
           // preparing data for horizontal lines
           const horizontalDataGridPoints = [];
 
-          const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
+          const yIncrBy = height  / lines;
 
           for (var y = 0; y < height ; y = y + yIncrBy) {
              horizontalDataGridPoints.push(
@@ -250,14 +250,14 @@ function ExpenseVsIncomeLineChart({ data }) {
              );
           }
 
-          horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
+          horizontalDataGridPoints.forEach(grid => drawGridLines(grid, drawWidth));
        }
 
        function drawVerticalLines() {
          // preparing data for vertical lines
          const verticalDataGridPoints = [];
 
-         const xIncrBy = (width) / 11;
+         const xIncrBy = (width) / 11.5;
          for (var x = 0; x < width ; x = x + xIncrBy) {
             verticalDataGridPoints.push(
               [{
@@ -267,10 +267,10 @@ function ExpenseVsIncomeLineChart({ data }) {
                }]
             );
          }
-         verticalDataGridPoints.forEach(grid => drawGridLines(grid));
+         verticalDataGridPoints.forEach(grid => drawGridLines(grid, .4));
       }
 
-       function drawGridLines(dataGrid) {
+       function drawGridLines(dataGrid, strokeWidth) {
           svg
              .append('g')
              .append("path")
@@ -280,7 +280,7 @@ function ExpenseVsIncomeLineChart({ data }) {
                  .y(function(d) { return d.y })
                )
                .attr("stroke", 'grey')
-               .style("stroke-width", .2)
+               .style("stroke-width", strokeWidth)
                .style("fill", "none");
        }
    }
