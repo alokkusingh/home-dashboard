@@ -100,7 +100,7 @@ class Salary extends Component {
       }
     }
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2022-01', requestOptions);
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-01', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records
