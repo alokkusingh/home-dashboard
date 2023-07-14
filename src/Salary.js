@@ -5,6 +5,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import DrawPiChart from "./charts/drawPiChart";
 import DrawBarChart from "./charts/drawBarChart";
+import DrawSalaryBarChart from "./charts/drawSalaryBarChart";
 
 class Salary extends Component {
 
@@ -99,7 +100,7 @@ class Salary extends Component {
       }
     }
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-04', requestOptions);
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2022-01', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records
@@ -107,8 +108,6 @@ class Salary extends Component {
   }
 
   showMonthDetailsModal = (event) => {
-    console.log("event: ", event.target.getAttribute("id"))
-
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
@@ -215,6 +214,33 @@ class Salary extends Component {
     aggregateSalaryByMonth(boschByMonth, salaryByYearMap);
     aggregateSalaryByMonth(jpmcByMonth, salaryByYearMap);
 
+    function aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap) {
+       for (let monthRecord of monthlySummary) {
+          let yearTotal = ctcByYearMap.get(monthRecord.year);
+          let taxYearTotal = taxByYearMap.get(monthRecord.year);
+          let invYearTotal = invByYearMap.get(monthRecord.year);
+          if (yearTotal === undefined) {
+             yearTotal = 0;
+          }
+          if (taxYearTotal === undefined) {
+             taxYearTotal = 0;
+          }
+          if (invYearTotal === undefined) {
+             invYearTotal = 0;
+          }
+          yearTotal = yearTotal + monthRecord.ctc;
+          taxYearTotal = taxYearTotal + monthRecord.taxAmount;
+          invYearTotal = invYearTotal + monthRecord.investmentAmount;
+          ctcByYearMap.set(monthRecord.year, yearTotal);
+          taxByYearMap.set(monthRecord.year, taxYearTotal);
+          invByYearMap.set(monthRecord.year, invYearTotal);
+       }
+    }
+    const ctcByYearMap = new Map();
+    const taxByYearMap = new Map();
+    const invByYearMap = new Map();
+    aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap);
+
     return (
          <div id="cards" align="center" >
                 <Row>
@@ -226,16 +252,25 @@ class Salary extends Component {
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary by Year (in bank)">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary by Year">
                             <div>
-                                <DrawBarChart dataMap={salaryByYearMap} domain={[0, 3500000]} colorDomain={[500000,2500000]} numberOfYaxisTicks="7" divContainer="salary-by-year-bar-container" />
+                                <DrawSalaryBarChart
+                                  inHandMap={salaryByYearMap}
+                                  ctcMap={ctcByYearMap}
+                                  taxMap={taxByYearMap}
+                                  invMap={invByYearMap}
+                                  domain={[0, 6000000]} c
+                                  olorDomain={[500000,2500000]}
+                                  numberOfYaxisTicks="6"
+                                  divContainer="salary-by-year-bar-container"
+                                />
                             </div>
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Tax Paid Yearly">
                             <div>
-                                <DrawBarChart dataMap={taxByYear} domain={[0, 1300000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="10" divContainer="tax-by-year-bar-container" />
+                                <DrawBarChart dataMap={taxByYear} domain={[0, 1200000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="6" divContainer="tax-by-year-bar-container" />
                             </div>
                         </Card>
                     </Col>
