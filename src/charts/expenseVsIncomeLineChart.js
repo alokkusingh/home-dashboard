@@ -98,7 +98,6 @@ function ExpenseVsIncomeLineChart({ data }) {
          .domain(allGroup)
          .range(d3.schemeSet2);
 
-
        // Remove the old svg
        d3.select('#summary-line-container')
           .select('svg')
@@ -207,19 +206,19 @@ function ExpenseVsIncomeLineChart({ data }) {
        drawVerticalLines();
 
        function drawLineAndDots(type, data) {
-            // Draw the dots for income
-            svg.append('g')
-              .selectAll('dot')
-              .data(data)
-              .enter()
-              .append('circle')
-              .attr('cx', function(d, i) {
-                 return xScale(d.date);
-               })
-              .attr('cy', function(d) { return yScale(d.amount); })
-              .attr('r', 3)
-              .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
-              .style('fill', function(d){ return myColor(type) });
+          // Draw the dots for income
+          svg.append('g')
+            .selectAll('dot')
+            .data(data)
+            .enter()
+            .append('circle')
+            .attr('cx', function(d, i) {
+               return xScale(d.date);
+             })
+            .attr('cy', function(d) { return yScale(d.amount); })
+            .attr('r', 3)
+            .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
+            .style('fill', function(d){ return myColor(type) });
 
           // Draw the line - for income
           svg
@@ -242,13 +241,13 @@ function ExpenseVsIncomeLineChart({ data }) {
           const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
 
           for (var y = 0; y < height ; y = y + yIncrBy) {
-               horizontalDataGridPoints.push(
-                   [{
-                        'x': 0, 'y': y
-                    },{
-                        'x': width, 'y': y
-                    }]
-               );
+             horizontalDataGridPoints.push(
+               [{
+                    'x': 0, 'y': y
+                },{
+                    'x': width, 'y': y
+                }]
+             );
           }
 
           horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
@@ -258,32 +257,31 @@ function ExpenseVsIncomeLineChart({ data }) {
          // preparing data for vertical lines
          const verticalDataGridPoints = [];
 
-         const xIncrBy = width / 11;
+         const xIncrBy = (width) / 11;
          for (var x = 0; x < width ; x = x + xIncrBy) {
-              verticalDataGridPoints.push(
-                  [{
-                       'x': x, 'y': height
-                   },{
-                       'x': x, 'y': 0
-                   }]
-              );
+            verticalDataGridPoints.push(
+              [{
+                   'x': x, 'y': height
+               },{
+                   'x': x, 'y': 0
+               }]
+            );
          }
          verticalDataGridPoints.forEach(grid => drawGridLines(grid));
       }
 
        function drawGridLines(dataGrid) {
-            svg
-               .append('g')
-               .append("path")
-                 .datum(dataGrid)
-                 .attr("d", d3.line()
-                   .x(function(d) { return d.x })
-                   .y(function(d) { return d.y })
-                 )
-                 .attr("stroke", 'grey')
-                 .style("stroke-width", .2)
-                 .style("fill", "none");
-
+          svg
+             .append('g')
+             .append("path")
+               .datum(dataGrid)
+               .attr("d", d3.line()
+                 .x(function(d) { return d.x })
+                 .y(function(d) { return d.y })
+               )
+               .attr("stroke", 'grey')
+               .style("stroke-width", .2)
+               .style("fill", "none");
        }
    }
 
