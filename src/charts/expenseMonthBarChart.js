@@ -38,9 +38,9 @@ function ExpenseMonthBarChart({ data }) {
 
  function drawChart() {
       const height = 220;
-      const width = 300;
+      const width = 380;
       const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-      const numberOfYaxisTicks = 10;
+      const numberOfYaxisTicks = 11;
 
       const colorScale = d3.scaleLinear()
         .domain([0,5000,15000])
@@ -184,13 +184,14 @@ function ExpenseMonthBarChart({ data }) {
             .attr("height", (d) => yScale(0) - yScale(d.amount))
 
 
-      drawHorizontalLines();
+      drawHorizontalLines(numberOfYaxisTicks * 2, .1);
+      drawHorizontalLines(numberOfYaxisTicks, .2);
 
-      function drawHorizontalLines() {
+      function drawHorizontalLines(ticks, strokeWidth) {
         // preparing data for horizontal lines
         const horizontalDataGridPoints = [];
 
-        const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
+        const yIncrBy = height  / ticks ;
 
         for (var y = 0; y < height ; y = y + yIncrBy) {
              horizontalDataGridPoints.push(
@@ -202,10 +203,10 @@ function ExpenseMonthBarChart({ data }) {
              );
         }
 
-        horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
+        horizontalDataGridPoints.forEach(grid => drawGridLines(grid, strokeWidth));
      }
 
-      function drawGridLines(dataGrid) {
+      function drawGridLines(dataGrid, strokeWidth) {
           svg
              .append('g')
              .append("path")
@@ -215,7 +216,7 @@ function ExpenseMonthBarChart({ data }) {
                  .y(function(d) { return d.y })
                )
                .attr("stroke", 'grey')
-               .style("stroke-width", .2)
+               .style("stroke-width", strokeWidth)
                .style("fill", "none");
 
      }
