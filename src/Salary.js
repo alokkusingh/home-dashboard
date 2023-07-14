@@ -100,7 +100,7 @@ class Salary extends Component {
       }
     }
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2021-01', requestOptions);
+     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2007-06', requestOptions);
      const bodyMonthlySummary = await responseMonthlySummary.json();
      this.setState({
          monthlySummary: bodyMonthlySummary.records
@@ -277,7 +277,7 @@ class Salary extends Component {
                 </Row>
                 <Row>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary Summary Since April 2021">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary Summary">
                             <div>
                               <Table striped bordered hover size="sm">
                                   <thead>
@@ -336,7 +336,7 @@ class Salary extends Component {
                         </Card>
                     </Col>
                     <Col m={2} s={2} l={2}>
-                        <Card className="card teal lighten-4" textClassName="black-text" title="Robert BOSCH">
+                        <Card className="card teal lighten-4" textClassName="black-text" title="BOSCH">
                            <Table striped bordered hover size="sm">
                                 <thead>
                                   <tr>
@@ -351,7 +351,7 @@ class Salary extends Component {
                         </Card>
                     </Col>
                     <Col m={2} s={2} l={2}>
-                        <Card className="card teal lighten-4" textClassName="black-text" title="Envestnet Yodlee">
+                        <Card className="card teal lighten-4" textClassName="black-text" title="Yodlee">
                            <Table striped bordered hover size="sm">
                                 <thead>
                                   <tr>
@@ -382,7 +382,7 @@ class Salary extends Component {
 
                     </Col>
                     <Col m={2} s={2} l={2}>
-                        <Card className="card teal lighten-4" textClassName="black-text" title="Evolving Systems">
+                        <Card className="card teal lighten-4" textClassName="black-text" title="Evolving">
                            <Table striped bordered hover size="sm">
                                 <thead>
                                   <tr>
