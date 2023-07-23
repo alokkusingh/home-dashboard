@@ -124,13 +124,17 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
        .attr('alignment-baseline', 'middle')
        //.text((d) => d.data.category + ' (' + d.data.amount + ')')
        .text((d) => d.data.amount)
-       .style('stroke', 'teal')
-       .style('font-size', '10px')
-       .style('font-family', "Courier New")
+       //.style('stroke', 'black')
+       .style('font-size', '.8em')
+       .style('font-family', "Patrick Hand SC")
        .attr('transform', (d) => {
          const [x, y] = arcGenerator.centroid(d);
-         return `translate(${x}, ${y})`;
+         var rotation = d.endAngle < Math.PI ? (d.startAngle / 2 + d.endAngle / 2) * 180 / Math.PI : (d.startAngle / 2 + d.endAngle / 2 + Math.PI) * 180 / Math.PI;
+         //return `translate(${x}, ${y})`;
+         //return "translate(" + [x,y] + ")";
+         return "translate(" + [x, y] + ") rotate(-90) rotate(" + rotation + ")";
        });
+       //.attr("transform", "rotate(-65)");
 
      // Append total amount in center
       arc
