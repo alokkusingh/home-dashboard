@@ -8,6 +8,7 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
   data.forEach(function(record) {
         sum += record.amount;
   });
+  data = data.sort((a, b) => a.amount > b.amount ? -1 : 1);
 
    const outerRadius = 105;
    const innerRadius = 60;
