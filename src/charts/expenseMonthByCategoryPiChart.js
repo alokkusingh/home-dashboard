@@ -30,9 +30,19 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
    function drawChart() {
      //const categories = ["Bills", "Fuel", "Milk", "Maintenance", "Travel", "House Help", "Food Outside", "Accessories", "Grocery", "Education", "Medical", "Grooming", "Appliances", "Gift", "Entertainment", "Baby Care", "Furniture", "Other"];
 
-      var myColor = d3.scaleOrdinal()
+      var myColorX = d3.scaleOrdinal()
               .domain(categories)
               .range(d3.schemeSet2);
+
+      // https://reactnative.dev/docs/colors
+      var myColor = [
+        "palevioletred", "gold", "#69b3a2", "#F9CAC8",
+        "yellow", "lightgrey", "orange", "lightblue",
+        "tan", "#8884d8", "goldenrod", "bisque",
+        "#82ca9d", "lightsalmon", "cadetblue", "burlywood",
+        "darkgoldenrod", "lightcoral", "azure", "aliceblue",
+        "steelblue", "greenyellow", "olive"
+      ];
 
      // Remove the old svg
      d3.select('#pie-container')
@@ -86,8 +96,8 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
         legend.append("circle")
             .attr("cx", width - 107)
             .attr('cy', (d, i) => i * 14 - 55)
-            .attr("r", 4)
-            .style("fill", d => myColor(d));
+            .attr("r", 5)
+            .style("fill", (d, i) => myColor[i]);
 
         legend.append("text")
             .attr("x", width - 87)
@@ -103,7 +113,7 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
      arc
        .append('path')
        .attr('d', arcGenerator)
-       .style('fill', (d, i) => myColor(d.data.category))
+       .style('fill', (d, i) => myColor[i])
        .style('stroke', '#ffffff')
        .style('stroke-width', 0);
 
