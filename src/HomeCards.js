@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseMonthBarChart from './charts/expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChart';
@@ -183,12 +184,12 @@ class HomeCards extends Component {
 
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
-                   <td id={'' + record.year + record.month + 0} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td id={'' + record.year + record.month + 1} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td id={'' + record.year + record.month + 2} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.expenseAmount))}</td>
-                   <td id={'' + record.year + record.month + 3} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.transferAmount))}</td>
-                   <td id={'' + record.year + record.month + 4} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.investmentAmount))}</td>
-                   <td id={'' + record.year + record.month + 5} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
+                   <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount))}</td>
+                   <td id={'' + record.year + record.month + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
+                   <td id={'' + record.year + record.month + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>
+                   <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
                </tr>
       });
 
@@ -287,12 +288,12 @@ class HomeCards extends Component {
                         <Table striped bordered hover size="sm">
                               <thead>
                                 <tr>
-                                  <th width="20%" style={{textAlign: "center"}}>Month</th>
-                                  <th width="20%" style={{textAlign: "right"}}>Income</th>
-                                  <th width="20%" style={{textAlign: "right"}}>Expense</th>
-                                  <th width="20%" style={{textAlign: "right"}}>Transfer</th>
-                                  <th width="20%" style={{textAlign: "right"}}>Investment</th>
-                                  <th width="20%" style={{textAlign: "right"}}>Saving</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Month</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Inc</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Exp</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Tra</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Inv</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Svg</th>
                                 </tr>
                               </thead>
                               <tbody>

@@ -37,16 +37,21 @@ function ExpenseMonthBarChart({ data }) {
   }, [data]);
 
  function drawChart() {
-      const height = 220;
-      const width = 380;
-      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+      //const height = 220;
+      //const width = 380;
+      //const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+      var margin = {top: 0, right: 0, bottom: 0, left: 0},
+          outerWidth = 320,
+          outerHeight = 220,
+          width = outerWidth - margin.left - margin.right,
+          height = outerHeight - margin.top - margin.bottom;
+
       const numberOfYaxisTicks = 11;
 
       const colorScale = d3.scaleLinear()
         .domain([0,5000,15000])
         .range(['green', 'orange', 'red'])
         .clamp(true)
-
 
       const parseD3Time = d3.timeFormat('%d')
 
@@ -95,17 +100,19 @@ function ExpenseMonthBarChart({ data }) {
      const svg = d3
         .select('#month-exp-bar-container')
         .append('svg')
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', outerWidth)
+        .attr('height', outerHeight)
         .style('background', 'white')
-        .style('overflow', 'visible');
+        .style('overflow', 'visible')
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
      // Setting the scale
     const xScale = d3.scaleBand()
          //.domain(dataArr.map((record) => record.date))
          .domain(getDaysOfMonthDomain())
          .range([0, width])
-         .padding(0.1);
+         .padding(0.05);
 
     const yScale = d3.scaleLinear()
        .domain([0, maxExpenseAmount + 1000])

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import * as d3 from 'd3';
 import { NumberFormatNoDecimal } from "../utils/NumberFormatNoDecimal";
+import { NumberFormatNoCurrency } from "../utils/NumberFormatNoCurrency";
 
 function DrawPiChart({data, total, divContainer, heads}) {
    const outerRadius = 105;
@@ -88,7 +89,7 @@ function DrawPiChart({data, total, divContainer, heads}) {
        .append('text')
        .attr('text-anchor', 'middle')
        .attr('alignment-baseline', 'middle')
-       .text((d) => d.data.amount)
+       .text((d) => NumberFormatNoCurrency(d.data.amount))
        .style('stroke', 'teal')
        .style('font-size', '10px')
        .style('font-family', "Courier New")

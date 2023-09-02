@@ -87,9 +87,14 @@ function ExpenseVsIncomeLineChart({ data }) {
     }, [filteredData]);
 
     function drawChart() {
-       const height = 220;
-       const width = 380;
-       const margin = { top: 0, right: 10, bottom: 80, left: 10 };
+//       const height = 220;
+//       const width = 380;
+//       const margin = { top: 0, right: 10, bottom: 80, left: 10 };
+       var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                 outerWidth = 320,
+                 outerHeight = 220,
+                 width = outerWidth - margin.left - margin.right,
+                 height = outerHeight - margin.top - margin.bottom;
        const numberOfYaxisTicks = 8;
 
        var allGroup = ["income", "expense", "transfer", "investment"]
@@ -107,8 +112,8 @@ function ExpenseVsIncomeLineChart({ data }) {
        const svg = d3
           .select('#summary-line-container')
           .append('svg')
-          .attr('width', width)
-          .attr('height', height)
+          .attr('width', outerWidth)
+          .attr('height', outerHeight)
           .style('background', 'white')
           .style('overflow', 'visible');
 
@@ -180,13 +185,13 @@ function ExpenseVsIncomeLineChart({ data }) {
            .attr("class", "legend");
 
        legend.append("circle")
-           .attr("cx", width - 370)
+           .attr("cx", width - 310)
            .attr('cy', (d, i) => i * 18 + 10)
-           .attr("r", 4)
+           .attr("r", 3)
            .style("fill", d => myColor(d));
 
        legend.append("text")
-           .attr("x", width - 350)
+           .attr("x", width - 300)
            .attr("y", (d, i) => i * 18 + 12)
            .attr("dx", "-.8em")
            .attr("dy", ".15em")
@@ -216,7 +221,7 @@ function ExpenseVsIncomeLineChart({ data }) {
                return xScale(d.date);
              })
             .attr('cy', function(d) { return yScale(d.amount); })
-            .attr('r', 2)
+            .attr('r', 1.5)
             .attr('transform', `translate(0, 0)`)  // translate has x axis and y axis
             .style('fill', function(d){ return myColor(type) });
 
