@@ -90,13 +90,16 @@ function DrawPiChart({data, total, divContainer, heads}) {
        .attr('text-anchor', 'middle')
        .attr('alignment-baseline', 'middle')
        .text((d) => NumberFormatNoCurrency(d.data.amount))
-       .style('stroke', 'teal')
-       .style('font-size', '10px')
-       .style('font-family', "Courier New")
-       .attr('transform', (d) => {
-         const [x, y] = arcGenerator.centroid(d);
-         return `translate(${x}, ${y})`;
-       });
+       //.style('stroke', 'teal')
+       .style('font-size', '.8em')
+        .style('font-family', "Patrick Hand SC")
+        .attr('transform', (d) => {
+          const [x, y] = arcGenerator.centroid(d);
+          var rotation = d.endAngle < Math.PI ? (d.startAngle / 2 + d.endAngle / 2) * 180 / Math.PI : (d.startAngle / 2 + d.endAngle / 2 + Math.PI) * 180 / Math.PI;
+          //return `translate(${x}, ${y})`;
+          //return "translate(" + [x,y] + ")";
+          return "translate(" + [x, y] + ") rotate(-90) rotate(" + rotation + ")";
+        });
 
     // Append total amount in center
      arc

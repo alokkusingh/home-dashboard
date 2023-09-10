@@ -239,7 +239,7 @@ console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Years Investment">
                             <div>
-                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[800000, 4000000]} divContainer="total-investment-line-container" />
+                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[800000, 5000000]} divContainer="total-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -248,7 +248,7 @@ console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year PF Investment">
                             <div>
-                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[500000, 2800000]} divContainer="PF-investment-line-container" />
+                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[500000, 3500000]} divContainer="PF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
