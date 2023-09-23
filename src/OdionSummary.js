@@ -3,6 +3,7 @@ import { Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
 
 class OdionSummary extends Component {
@@ -11,6 +12,7 @@ class OdionSummary extends Component {
     super(props);
     this.state = {
       accountsBalance: [],
+      headAccountBalances: "",
       count: 0,
       lastTransactionDate: "",
       transactionModalShow: false,
@@ -75,7 +77,8 @@ class OdionSummary extends Component {
     const response = await fetch('/home/api/odion/accounts', requestOptions);
     const body = await response.json();
     this.setState({
-        accountsBalance: body.accountBalances
+        accountsBalance: body.accountBalances,
+        headAccountBalances: body.headAccountBalances
     });
     const expenses = [];
     const fundings = [];
@@ -274,6 +277,7 @@ class OdionSummary extends Component {
   render() {
     const {
       accountsBalance,
+      headAccountBalances,
       transactionModalShow,
       accountTransactionsRows,
       monthlyInterests,
@@ -293,19 +297,45 @@ class OdionSummary extends Component {
       totalAdarsh
     } = this.state;
 
-    const accountsBalanceList = accountsBalance.map(record => {
-        if (record.balance < 0)
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(Math.abs(record.balance))}</td>
-                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-                </tr>
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.balance)}</td>
-                </tr>
-    });
+//    const accountsBalanceRows = accountsBalance.map(record => {
+//        if (record.balance < 0)
+//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
+//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
+//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(Math.abs(record.balance))}</td>
+//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
+//                </tr>
+//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
+//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
+//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
+//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.balance)}</td>
+//                </tr>
+//    });
+    let accountsBalanceRows = [];
+    for (const [head, accountsBalance] of Object.entries(headAccountBalances)) {
+      console.log(head, accountsBalance);
+        accountsBalanceRows.push(<tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>
+              <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap', fontWeight: 'bold'}}>{head}</td>
+              <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+              <td id={head} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+              <td id={head} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+            </tr>);
+        accountsBalance.map(record => {
+          if (record.balance < 0) {
+            accountsBalanceRows.push(<tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
+                  <td id={record.account} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+                  <td id={record.account} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
+                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoCurrency(Math.abs(record.balance))}</td>
+                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoCurrency(0)}</td>
+                </tr>);
+          } else { accountsBalanceRows.push(<tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
+                  <td id={record.account} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+                  <td id={record.account} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
+                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoCurrency(0)}</td>
+                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoCurrency(record.balance)}</td>
+                </tr>);
+          }
+      });
+    }
 
     const monthlyInterestRows = monthlyInterests.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
@@ -313,9 +343,6 @@ class OdionSummary extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
-
-
-
     const monthlyMaxGainRows = monthlyMaxGains.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
@@ -340,25 +367,24 @@ class OdionSummary extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
-
-     const monthlyInterestAdarshRows = monthlyInterestsAdarsh.map(record => {
-         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                 </tr>
-     });
+    const monthlyInterestAdarshRows = monthlyInterestsAdarsh.map(record => {
+        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                </tr>
+    });
     const monthlyAdarshRows = monthlyAdarsh.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
-     const monthlyMiscsAdarshRows = monthlyMiscsAdarsh.map(record => {
-         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                 </tr>
-     });
+    const monthlyMiscsAdarshRows = monthlyMiscsAdarsh.map(record => {
+        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                </tr>
+    });
 
     return (
             <div id="cards" align="center" >
@@ -369,13 +395,14 @@ class OdionSummary extends Component {
                     <Table className="mt-4" hover>
                         <thead>
                           <tr>
+                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Head</th>
                             <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Account</th>
                             <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Debit</th>
                             <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Credit</th>
                           </tr>
                         </thead>
                         <tbody>
-                        {accountsBalanceList}
+                        {accountsBalanceRows}
                         </tbody>
                     </Table>
                     <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="AccountTransactions">
