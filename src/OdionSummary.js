@@ -121,6 +121,12 @@ class OdionSummary extends Component {
                'amount': Math.abs(record.balance)
             });
           }
+          if (record.account === 'BOB_ADVANTAGE') {
+             fundings.push({
+               'head': 'BoB Advantage',
+               'amount': Math.abs(record.balance)
+            });
+          }
           if (record.account === 'INTEREST_ADARSH') {
              expensesAdarsh.push({
                'head': 'Interest Adarsh',
@@ -390,7 +396,7 @@ class OdionSummary extends Component {
             <div id="cards" align="center" >
               <Row>
                <Col m={6} s={6} l={6}>
-                <Card className="teal lighten-4" textClassName="black-text" title="Account Balance">
+                <Card className="teal lighten-4" textClassName="black-text" title="Account Statement">
                     <div>
                     <Table className="mt-4" hover>
                         <thead>
@@ -427,7 +433,7 @@ class OdionSummary extends Component {
                    <Col m={6} s={6} l={6}>
                       <Card className="teal lighten-4" textClassName="black-text" title="Funding by Source">
                         <div>
-                          <DrawPiChart data={fundings} total={total + totalAdarsh} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain']} />
+                          <DrawPiChart data={fundings} total={total + totalAdarsh} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain', 'BoB Advantage']} />
                         </div>
                       </Card>
                    </Col>
