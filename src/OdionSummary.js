@@ -13,6 +13,8 @@ class OdionSummary extends Component {
     this.state = {
       accountsBalance: [],
       headAccountBalances: "",
+      balanceByHeadDebit: [],
+      balanceByHeadCredit: [],
       count: 0,
       lastTransactionDate: "",
       transactionModalShow: false,
@@ -76,9 +78,27 @@ class OdionSummary extends Component {
     };
     const response = await fetch('/home/api/odion/accounts', requestOptions);
     const body = await response.json();
+
+    const balanceByHeadCredit = [];
+    const balanceByHeadDebit = [];
+    for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
+      var totalCredit = 0;
+      var totalDebit = 0;
+      accountsBalance.map(record => {
+          if (record.balance < 0) {
+            totalDebit += record.balance;
+          } else {
+            totalCredit += record.balance;
+          }
+      });
+      balanceByHeadDebit[head] = Math.abs(totalDebit);
+      balanceByHeadCredit[head] = Math.abs(totalCredit);
+    }
     this.setState({
         accountsBalance: body.accountBalances,
-        headAccountBalances: body.headAccountBalances
+        headAccountBalances: body.headAccountBalances,
+        balanceByHeadCredit: balanceByHeadCredit,
+        balanceByHeadDebit: balanceByHeadDebit
     });
     const expenses = [];
     const fundings = [];
@@ -284,6 +304,8 @@ class OdionSummary extends Component {
     const {
       accountsBalance,
       headAccountBalances,
+      balanceByHeadCredit,
+      balanceByHeadDebit,
       transactionModalShow,
       accountTransactionsRows,
       monthlyInterests,
@@ -322,8 +344,8 @@ class OdionSummary extends Component {
         accountsBalanceRows.push(<tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>
               <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap', fontWeight: 'bold'}}>{head}</td>
               <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
-              <td id={head} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
-              <td id={head} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
+              <td id={head} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap', fontWeight: 'bold'}}>{NumberFormatNoCurrency(balanceByHeadDebit[head])}</td>
+              <td id={head} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap', fontWeight: 'bold'}}>{NumberFormatNoCurrency(balanceByHeadCredit[head])}</td>
             </tr>);
         accountsBalance.map(record => {
           if (record.balance < 0) {
@@ -438,7 +460,7 @@ class OdionSummary extends Component {
                       </Card>
                    </Col>
                     <Col m={6} s={6} l={6}>
-                       <Card className="teal lighten-4" textClassName="black-text" title="Funding by Property">
+                       <Card className="teal lighten-4" textClassName="black-text" title="Funded in Property">
                          <div>
                            <DrawPiChart data={fundingsProperty} total={total + totalAdarsh} divContainer="funding-property-pie-container" heads={['Odion', 'Adarsh']} />
                          </div>
