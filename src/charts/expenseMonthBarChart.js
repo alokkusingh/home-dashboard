@@ -191,27 +191,22 @@ function ExpenseMonthBarChart({ data }) {
             .attr("height", (d) => yScale(0) - yScale(d.amount))
 
 
-      drawHorizontalLines(numberOfYaxisTicks * 2, .1);
-      drawHorizontalLines(numberOfYaxisTicks, .2);
+      //drawHorizontalLines(numberOfYaxisTicks/2, .2);
+      drawHorizontalLines(numberOfYaxisTicks, .1);
 
-      function drawHorizontalLines(ticks, strokeWidth) {
-        // preparing data for horizontal lines
-        const horizontalDataGridPoints = [];
+      function drawHorizontalLines(numberOfTicks, strokeWidth) {
+          svg.append("g")
+                   .attr("class", "grid")
+                   //.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
+                   .attr("stroke-width", strokeWidth)
+                   .attr("fill", "none")
+                   .call(d3.axisLeft(yScale)
+                           .tickSize(-width)
+                           .tickFormat("")
+                           .ticks(numberOfTicks)
 
-        const yIncrBy = height  / ticks ;
-
-        for (var y = 0; y < height ; y = y + yIncrBy) {
-             horizontalDataGridPoints.push(
-                 [{
-                      'x': 0, 'y': y
-                  },{
-                      'x': width, 'y': y
-                  }]
-             );
-        }
-
-        horizontalDataGridPoints.forEach(grid => drawGridLines(grid, strokeWidth));
-     }
+                   );
+       }
 
       function drawGridLines(dataGrid, strokeWidth) {
           svg

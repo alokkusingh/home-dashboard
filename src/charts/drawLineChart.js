@@ -4,20 +4,15 @@ import * as d3 from 'd3';
 
 function DrawLineChart({ data, divContainer, domain }) {
 
-    var yearsBackFromNow = new Date();
-    var today = new Date();
-    var numberOfYears = 5;
+    let yearsBackFromNow = new Date();
+    let today = new Date();
+    let numberOfYears = 5;
     yearsBackFromNow.setFullYear(yearsBackFromNow.getFullYear() - numberOfYears);
 
+    let filteredData = data.filter(function(record) {
+       let date = parseISO(record.yearMonth);
 
-    var filteredData = data.filter(function(record) {
-       var date = parseISO(record.yearMonth);
-
-       if (date <= yearsBackFromNow) {
-           return false;
-       } else {
-           return true;
-       }
+       return date > yearsBackFromNow;
     });
 
     filteredData.sort((a,b) => {
@@ -30,8 +25,8 @@ function DrawLineChart({ data, divContainer, domain }) {
           return 0;
     });
 
-    var maxAsOnValue = 0;
-    var maxInvestmentAmount = 0;
+    let maxAsOnValue = 0;
+    let maxInvestmentAmount = 0;
     const contributionArray = [];
     const investmentValueArray = [];
     filteredData.forEach(function(record) {
@@ -64,12 +59,11 @@ function DrawLineChart({ data, divContainer, domain }) {
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
        const numberOfYaxisTicks = 30;
 
-       var allGroup = ["invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", "value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L"]
+       let allGroup = ["Value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L", "Invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L"]
        // A color scale: one color for each group
-       var myColor = d3.scaleOrdinal()
+       let myColor = d3.scaleOrdinal()
          .domain(allGroup)
          .range(d3.schemeSet2);
-
 
        // Remove the old svg
        d3.select('#' + divContainer)
@@ -88,8 +82,7 @@ function DrawLineChart({ data, divContainer, domain }) {
        // Setting the scale
        const xScale = d3.scaleTime()
             .domain([yearsBackFromNow, today])
-            .range([0, width]);
-
+            .range([width, 0]);
 
        const yScale = d3.scaleLinear()
           .domain(domain)
@@ -103,7 +96,7 @@ function DrawLineChart({ data, divContainer, domain }) {
       const yAxis = d3
           .axisLeft(yScale)
           .tickFormat(function(d){ return d/100000 + 'L'; })
-          .ticks(numberOfYaxisTicks);
+          .ticks(numberOfYaxisTicks/2);
 
        svg.append('g')
           .call(xAxis)
@@ -119,7 +112,7 @@ function DrawLineChart({ data, divContainer, domain }) {
            .call(yAxis);
 
        //append legends
-       var legend = svg.append('g')
+       let legend = svg.append('g')
            .selectAll('g.legend')
            .data(allGroup)
            .enter()
@@ -127,13 +120,13 @@ function DrawLineChart({ data, divContainer, domain }) {
            .attr("class", "legend");
 
        legend.append("circle")
-           .attr("cx", width - 800)
+           .attr("cx", width - 950)
            .attr('cy', (d, i) => i * 18 + 10)
            .attr("r", 4)
            .style("fill", d => myColor(d));
 
        legend.append("text")
-           .attr("x", width - 780)
+           .attr("x", width - 930)
            .attr("y", (d, i) => i * 18 + 12)
            .attr("dx", "-.8em")
            .attr("dy", ".15em")
@@ -142,11 +135,12 @@ function DrawLineChart({ data, divContainer, domain }) {
            .style('font-size', '.9em')
            .text(d => d)
 
-       drawLineAndDots("invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", contributionArray);
-       drawLineAndDots("value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L", investmentValueArray);
+       drawLineAndDots("Value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L", investmentValueArray);
+       drawLineAndDots("Invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", contributionArray);
 
        // Draw grid lines
-       drawHorizontalLines();
+       drawHorizontalLines(numberOfYaxisTicks/2, 0.2);
+       drawHorizontalLines(numberOfYaxisTicks, 0.1);
        drawVerticalLines();
 
        function drawLineAndDots(type, data) {
@@ -178,23 +172,18 @@ function DrawLineChart({ data, divContainer, domain }) {
               .style("fill", "none");
        }
 
-       function drawHorizontalLines() {
-          // preparing data for horizontal lines
-          const horizontalDataGridPoints = [];
+       function drawHorizontalLines(numberOfTicks, strokeWidth) {
+          svg.append("g")
+                   .attr("class", "grid")
+                   //.attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
+                   .attr("stroke-width", strokeWidth)
+                   .attr("fill", "none")
+                   .call(d3.axisLeft(yScale)
+                           .tickSize(-width)
+                           .tickFormat("")
+                           .ticks(numberOfTicks)
 
-          const yIncrBy = height  / (numberOfYaxisTicks * 2) ;
-
-          for (var y = 0; y < height ; y = y + yIncrBy) {
-               horizontalDataGridPoints.push(
-                   [{
-                        'x': 0, 'y': y
-                    },{
-                        'x': width, 'y': y
-                    }]
-               );
-          }
-
-          horizontalDataGridPoints.forEach(grid => drawGridLines(grid));
+                   );
        }
 
        function drawVerticalLines() {

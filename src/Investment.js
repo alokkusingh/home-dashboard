@@ -186,7 +186,7 @@ class Investment extends Component {
       }
     );
 
-console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
+//console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
 
     return (
          <div id="cards" align="center" >
@@ -257,7 +257,7 @@ console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year NPS Investment">
                             <div>
-                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[1000, 900000]} divContainer="NPS-investment-line-container" />
+                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[5000, 1080000]} divContainer="NPS-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -275,7 +275,7 @@ console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Share Investment">
                             <div>
-                                <DrawLineChartShare data={shareMonthlyInvestment} domain={[0, 5000]} divContainer="Share-investment-line-container" />
+                                <DrawLineChartShare data={shareMonthlyInvestment} domain={[0, 10000]} divContainer="Share-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
