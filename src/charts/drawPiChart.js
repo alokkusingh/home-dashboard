@@ -5,7 +5,7 @@ import { NumberFormatNoCurrency } from "../utils/NumberFormatNoCurrency";
 
 function DrawPiChart({data, total, divContainer, heads}) {
    const outerRadius = 105;
-   const innerRadius = 60;
+   const innerRadius = 50;
    const margin = {
      top: 5, left: 20, bottom: 5, right: 20,
    };
