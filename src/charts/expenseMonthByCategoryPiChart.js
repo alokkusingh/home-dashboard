@@ -69,7 +69,7 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
      const pieGenerator = d3
        .pie()
        .padAngle(0)
-       .value((d) => d.amount);
+       .value((d) => Math.round(d.amount));
 
      const arc = svg
        .selectAll()
@@ -124,7 +124,7 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
        .attr('text-anchor', 'middle')
        .attr('alignment-baseline', 'middle')
        //.text((d) => d.data.category + ' (' + d.data.amount + ')')
-       .text((d) => d.data.amount)
+       .text((d) => Math.round(d.data.amount))
        //.style('stroke', 'black')
        .style('font-size', '.8em')
        .style('font-family', "Patrick Hand SC")
