@@ -221,7 +221,7 @@ class HomeCards extends Component {
               </Row>
               <Row >
                 <Col m={2} s={2} l={2}>
-                    <Card className="card-panel teal lighten-4" textClassName="black-text" title="This Month Expenses by Day" >
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" title="Expenses by Day" >
                        <Table striped bordered hover scrollable size="sm">
                             <thead>
                               <tr>
@@ -252,7 +252,7 @@ class HomeCards extends Component {
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
-                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="This Month Expenses by Category" >
+                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Expenses by Category" >
                        <Table striped bordered hover size="sm">
                             <thead>
                               <tr>

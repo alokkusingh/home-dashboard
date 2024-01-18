@@ -123,7 +123,7 @@ function ExpenseVsIncomeLineChart({ data }) {
             .range([0, width]);
 
        const yScale = d3.scaleLinear()
-          .domain([0, 800000])
+          .domain([-100000, 850000])
           .range([height, 0]);
 
       // Setting up the axis
@@ -157,7 +157,7 @@ function ExpenseVsIncomeLineChart({ data }) {
           .style('color', 'teal')
           .style('font-family', 'Helvetica')
           .style('font-size', 18)
-          .text('Last 18 months summary');
+          .text('Last 24 months summary');
 
           // X label - not needed
 /*       svg.append('text')
