@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Table, Row, Col } from 'reactstrap';
+import { Container, Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
+import { NumberFormatNoCurrencyFraction2 } from "./utils/NumberFormatNoCurrencyFraction2";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import DrawLineChartShare from './charts/drawLineChart';
 
@@ -15,7 +17,9 @@ class Investment extends Component {
       npsMonthlyInvestment: [],
       licMonthlyInvestment: [],
       shareMonthlyInvestment: [],
-      investmentReturnList: []
+      investmentReturnList: [],
+      investmentSummaryRecords: [],
+      investmentHeadRecordsRows: []
     };
   }
 
@@ -30,6 +34,24 @@ class Investment extends Component {
     };
      const responseInvestments = await fetch('/home/api/investment/all', requestOptions);
      const bodyInvestments = await responseInvestments.json();
+
+     const investmentSummaryRecords = [];
+     for (var head in bodyInvestments.investmentsByType) {
+      investmentSummaryRecords.push(
+        {
+            "head": head,
+            "investmentAmount": bodyInvestments.investmentsByType[head],
+            "investmentValue": bodyInvestments.investmentsValueByType[head]
+        }
+      );
+     }
+     investmentSummaryRecords.push(
+       {
+           "head": 'Total',
+           "investmentAmount": bodyInvestments.investmentAmount,
+           "investmentValue": bodyInvestments.asOnValue
+       }
+     );
 
      const totalMonthlyInvestment = [];
      const pfMonthlyInvestment = [];
@@ -91,7 +113,8 @@ class Investment extends Component {
          pfMonthlyInvestment: pfMonthlyInvestment,
          licMonthlyInvestment: licMonthlyInvestment,
          npsMonthlyInvestment: npsMonthlyInvestment,
-         shareMonthlyInvestment: shareMonthlyInvestment
+         shareMonthlyInvestment: shareMonthlyInvestment,
+         investmentSummaryRecords: investmentSummaryRecords
       });
     }
 
@@ -105,6 +128,37 @@ class Investment extends Component {
           });
   }
 
+  showInvestmentheadRecordsModal = (event) => {
+    console.log(event);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
+    fetch("/home/api/investment/head/" + event.target.getAttribute("id"), requestOptions)
+        .then(response => response.json())
+        .then(recordsJson => {
+            const investmentHeadRecordsRows = recordsJson.map( record => {
+                return <tr>
+                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
+                 </tr>
+            });
+            this.setState({ investmentHeadRecordsRows: investmentHeadRecordsRows });
+            this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow });
+        }
+    );
+  };
+
+  hideInvestmentheadRecordsModal = () => {
+    this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow});
+  };
+
   render() {
     const {
       totalMonthlyInvestment,
@@ -112,7 +166,10 @@ class Investment extends Component {
       npsMonthlyInvestment,
       licMonthlyInvestment,
       shareMonthlyInvestment,
-      investmentReturnList
+      investmentReturnList,
+      investmentSummaryRecords,
+      investmentHeadRecordsRows,
+      monthDetailsModalShow
     } = this.state;
 
 
@@ -158,6 +215,18 @@ class Investment extends Component {
       "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
       }
     ]
+    const investmentSummaryRecordRows = investmentSummaryRecords.map(
+      investment => {
+         return <tr key={investment.head} onClick={this.showInvestmentheadRecordsModal}>
+                 <td id={investment.head} style={{textAlign: "center", fontSize: '.8rem'}}>{investment.head}</td>
+                 <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrency(investment.investmentAmount)}</td>
+                 <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrency(investment.investmentValue)}</td>
+                 <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrency(investment.investmentValue - investment.investmentAmount)}</td>
+                 <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrencyFraction2((investment.investmentValue - investment.investmentAmount) * 100 / investment.investmentAmount)}</td>
+                </tr>
+      }
+    );
+
     const returnOnInvestmentRows = investmentReturnList.map(
       investment => {
           return <tr key={investment.metric} >
@@ -190,7 +259,45 @@ class Investment extends Component {
 
     return (
          <div id="cards" align="center" >
-             <Row>
+            <Row>
+              <Col m={6} s={6} l={6}>
+                <Card className="teal lighten-4" textClassName="black-text" title="Investment Summary">
+                   <div>
+                   <Table className="mt-4" hover bordered>
+                       <thead>
+                        <tr>
+                           <th width="10%" style={{textAlign: "center"}}>Head</th>
+                           <th width="20%" style={{textAlign: "center"}}>Amount</th>
+                           <th width="20%" style={{textAlign: "center"}}>Value</th>
+                           <th width="20%" style={{textAlign: "center"}}>Return</th>
+                           <th width="10%" style={{textAlign: "center"}}>Ret (%)</th>
+                        </tr>
+                       </thead>
+                       <tbody>
+                          {investmentSummaryRecordRows}
+                       </tbody>
+                   </Table>
+                   <Modal isOpen={monthDetailsModalShow} onClose={this.hideInvestmentheadRecordsModal} contentLabel="HeadRecords">
+                     <ModalHeader toggle={this.hideInvestmentheadRecordsModal}/>
+                     <Table striped bordered hover>
+                        <thead >
+                          <tr>
+                            <th style={{textAlign: "center"}}>Year</th>
+                            <th style={{textAlign: "center"}}>Month</th>
+                            <th style={{textAlign: "center"}}>Contribution</th>
+                            <th style={{textAlign: "center"}}>Value As On Month</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {investmentHeadRecordsRows}
+                        </tbody>
+                      </Table>
+                   </Modal>
+                   </div>
+                 </Card>
+               </Col>
+            </Row>
+            <Row>
               <Col m={6} s={6} l={6}>
                <Card className="teal lighten-4" textClassName="black-text" title="Investment Returns">
                    <div>
