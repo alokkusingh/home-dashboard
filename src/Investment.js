@@ -17,6 +17,7 @@ class Investment extends Component {
       npsMonthlyInvestment: [],
       licMonthlyInvestment: [],
       shareMonthlyInvestment: [],
+      mfMonthlyInvestment: [],
       investmentReturnList: [],
       investmentSummaryRecords: [],
       investmentHeadRecordsRows: []
@@ -58,6 +59,7 @@ class Investment extends Component {
      const licMonthlyInvestment = [];
      const npsMonthlyInvestment = [];
      const shareMonthlyInvestment = [];
+     const mfMonthlyInvestment = [];
 
     for (let monthInvestment of bodyInvestments.monthInvestments) {
       let yearMonth = monthInvestment.yearMonth;
@@ -106,6 +108,15 @@ class Investment extends Component {
           });
         }
 
+        if (investment.head === 'MF') {
+          mfMonthlyInvestment.push({
+              'yearMonth': yearMonth,
+              'investmentAmount': investment.investmentAmount,
+              'asOnInvestment': investment.asOnInvestment,
+              'asOnValue': investment.asOnValue
+          });
+        }
+
       }
 
       this.setState({
@@ -114,6 +125,7 @@ class Investment extends Component {
          licMonthlyInvestment: licMonthlyInvestment,
          npsMonthlyInvestment: npsMonthlyInvestment,
          shareMonthlyInvestment: shareMonthlyInvestment,
+         mfMonthlyInvestment: mfMonthlyInvestment,
          investmentSummaryRecords: investmentSummaryRecords
       });
     }
@@ -143,6 +155,7 @@ class Investment extends Component {
         .then(recordsJson => {
             const investmentHeadRecordsRows = recordsJson.map( record => {
                 return <tr>
+                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.head}</td>
                     <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
                     <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
@@ -166,6 +179,7 @@ class Investment extends Component {
       npsMonthlyInvestment,
       licMonthlyInvestment,
       shareMonthlyInvestment,
+      mfMonthlyInvestment,
       investmentReturnList,
       investmentSummaryRecords,
       investmentHeadRecordsRows,
@@ -282,6 +296,7 @@ class Investment extends Component {
                      <Table striped bordered hover>
                         <thead >
                           <tr>
+                            <th style={{textAlign: "center"}}>Head</th>
                             <th style={{textAlign: "center"}}>Year</th>
                             <th style={{textAlign: "center"}}>Month</th>
                             <th style={{textAlign: "center"}}>Contribution</th>
@@ -383,6 +398,15 @@ class Investment extends Component {
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Share Investment">
                             <div>
                                 <DrawLineChartShare data={shareMonthlyInvestment} domain={[0, 100000]} divContainer="Share-investment-line-container" />
+                            </div>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col m={12} s={12} l={12}>
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Mutual Fund Investment">
+                            <div>
+                                <DrawLineChartShare data={mfMonthlyInvestment} domain={[0, 100000]} divContainer="MF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
