@@ -159,6 +159,7 @@ class Investment extends Component {
                     <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
                     <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contributionAsOnMonth)}</td>
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
                  </tr>
             });
@@ -300,7 +301,8 @@ class Investment extends Component {
                             <th style={{textAlign: "center"}}>Year</th>
                             <th style={{textAlign: "center"}}>Month</th>
                             <th style={{textAlign: "center"}}>Contribution</th>
-                            <th style={{textAlign: "center"}}>Value As On Month</th>
+                            <th style={{textAlign: "center"}}>Sub Total</th>
+                            <th style={{textAlign: "center"}}>Current Value</th>
                           </tr>
                         </thead>
                         <tbody>

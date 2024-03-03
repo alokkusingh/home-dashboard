@@ -22,6 +22,7 @@ class OdionSummary extends Component {
       monthlyInterests: [],
       monthlyInterestsAdarsh: [],
       monthlyMaxGains: [],
+      monthlyBob: [],
       monthlySavings: [],
       monthlyOdions: [],
       monthlyAdarsh: [],
@@ -32,7 +33,9 @@ class OdionSummary extends Component {
       fundingsProperty: [],
       expensesAdarsh: [],
       total: 0,
-      totalAdarsh: 0
+      totalAdarsh: 0,
+      months: [],
+      accountMonthTransaction: ""
     };
   }
 
@@ -171,8 +174,6 @@ class OdionSummary extends Component {
        }
      );
 
-
-
      this.setState({
          fundings: fundings
      });
@@ -203,6 +204,9 @@ class OdionSummary extends Component {
 
      const monthlyResponse = await fetch('/home/api/odion/monthly/transaction', requestOptions);
      const bodyMonthly = await monthlyResponse.json();
+     this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
+
+
      const interests = bodyMonthly.accountMonthTransaction.INTEREST;
      const monthlyInterests = [];
      Object.keys(interests).forEach(
@@ -251,17 +255,32 @@ class OdionSummary extends Component {
      );
      this.setState({ monthlyMaxGains: monthlyMaxGains });
 
+     const bobAttribute = bodyMonthly.accountMonthTransaction.BOB_ADVANTAGE;
+     const monthlyBob = [];
+      Object.keys(bobAttribute).forEach(
+           yearMonth => {
+              monthlyBob.push({
+                'month': yearMonth,
+                'amount': bobAttribute[yearMonth]
+              });
+           }
+      );
+      this.setState({ monthlyBob: monthlyBob });
+
      const saving = bodyMonthly.accountMonthTransaction.SAVING;
      const monthlySavings = [];
+     const months = [];
      Object.keys(saving).forEach(
           yearMonth => {
              monthlySavings.push({
                'month': yearMonth,
                'amount': saving[yearMonth]
              });
+             months.push(yearMonth);
           }
      );
      this.setState({ monthlySavings: monthlySavings });
+     this.setState({ months: months });
 
      const odion = bodyMonthly.accountMonthTransaction.ODION;
      const monthlyOdions = [];
@@ -312,6 +331,7 @@ class OdionSummary extends Component {
       monthlyInterestsAdarsh,
       monthlyMiscsAdarsh,
       monthlyMaxGains,
+      monthlyBob,
       monthlySavings,
       monthlyOdions,
       monthlyAdarsh,
@@ -322,7 +342,9 @@ class OdionSummary extends Component {
       fundingsProperty,
       total,
       expensesAdarsh,
-      totalAdarsh
+      totalAdarsh,
+      months,
+      accountMonthTransaction
     } = this.state;
 
 //    const accountsBalanceRows = accountsBalance.map(record => {
@@ -338,9 +360,9 @@ class OdionSummary extends Component {
 //                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.balance)}</td>
 //                </tr>
 //    });
+
     let accountsBalanceRows = [];
     for (const [head, accountsBalance] of Object.entries(headAccountBalances)) {
-      console.log(head, accountsBalance);
         accountsBalanceRows.push(<tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>
               <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap', fontWeight: 'bold'}}>{head}</td>
               <td id={head} style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}></td>
@@ -365,6 +387,23 @@ class OdionSummary extends Component {
       });
     }
 
+    const monthTransactionsRows = months.map(month => {
+        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(month), 'MMM yyyy')}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.SAVING[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.SBI_MAX_GAIN[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.BOB_ADVANTAGE[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.ADARSH[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.MISC_ADARSH[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.INTEREST_ADARSH[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.ODION[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.MISC[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.INTEREST[month])}</td>
+                </tr>
+    });
+    console.log (monthTransactionsRows);
+
+
     const monthlyInterestRows = monthlyInterests.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
@@ -372,6 +411,12 @@ class OdionSummary extends Component {
                 </tr>
     });
     const monthlyMaxGainRows = monthlyMaxGains.map(record => {
+        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
+                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
+                </tr>
+    });
+    const monthlyBobRows = monthlyBob.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
@@ -485,6 +530,23 @@ class OdionSummary extends Component {
                        </div>
                      </Card>
                   </Col>
+                 <Col m={6} s={6} l={6}>
+                  <Card className="teal lighten-4" textClassName="black-text" title="BoB Monthly Transactions">
+                     <div>
+                       <Table striped bordered hover size="sm">
+                         <thead>
+                           <tr>
+                             <th width="10%" style={{textAlign: "center"}}>Month</th>
+                             <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           {monthlyBobRows}
+                         </tbody>
+                       </Table>
+                     </div>
+                   </Card>
+                </Col>
                   <Col m={6} s={6} l={6}>
                     <Card className="teal lighten-4" textClassName="black-text" title="Saving Monthly Transactions">
                        <div>
@@ -501,6 +563,38 @@ class OdionSummary extends Component {
                          </Table>
                        </div>
                      </Card>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col m={6} s={6} l={6}>
+                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Transactions">
+                         <div>
+                           <Table striped bordered hover size="sm">
+                             <thead>
+                               <tr>
+                                 <th rowspan="2" width="10%" style={{textAlign: "center"}}>Month</th>
+                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>Funding</th>
+                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Adarsh</th>
+                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Odion</th>
+                               </tr>
+                               <tr>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>Saving</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>SBI MG</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>BoB</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Adarsh</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Misc</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Interest</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Odion</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Misc</th>
+                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Interest</th>
+                               </tr>
+                             </thead>
+                             <tbody>
+                               {monthTransactionsRows}
+                             </tbody>
+                           </Table>
+                         </div>
+                      </Card>
                   </Col>
                 </Row>
                 <Row>

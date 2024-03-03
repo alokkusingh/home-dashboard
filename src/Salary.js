@@ -270,7 +270,7 @@ class Salary extends Component {
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Tax Paid Yearly">
                             <div>
-                                <DrawBarChart dataMap={taxByYear} domain={[0, 1200000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="6" divContainer="tax-by-year-bar-container" />
+                                <DrawBarChart dataMap={taxByYear} domain={[0, 1600000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="6" divContainer="tax-by-year-bar-container" />
                             </div>
                         </Card>
                     </Col>
