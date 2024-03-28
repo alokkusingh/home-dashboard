@@ -30,10 +30,12 @@ function ExpenseForYearCategoryBarChart({ data }) {
   });
 
  function drawChart() {
-      const height = 220;
-      const width = 700;
-      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
       const numberOfYaxisTicks = 10;
+      var margin = {top: 0, right: 0, bottom: 0, left: 0},
+                outerWidth = 320,
+                outerHeight = 220,
+                width = outerWidth - margin.left - margin.right,
+                height = outerHeight - margin.top - margin.bottom;
 
       var domainAvg = total/count;
       const colorScale = d3.scaleLinear()

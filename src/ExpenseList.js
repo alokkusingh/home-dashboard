@@ -344,7 +344,7 @@ class ExpenseList extends Component {
                       </div>
                   </Card>
               </Col>
-              <Col m={6} s={6} l={6}>
+              <Col m={3} s={3} l={6}>
                   <div align="left" >
                   <ButtonDropdown direction="right" isOpen={yearCategoryDropdownOpenForBar} toggle={this.toggleYearCategoryForBar}>
                       <DropdownToggle caret size="sm">

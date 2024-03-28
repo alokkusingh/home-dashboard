@@ -10,8 +10,12 @@ function ExpenseForCategoryBarChart({ data }) {
   var minAmount = 500;
   var total = 0;
   var count = 0;
+  var numberOfMonthsToDisplay = 24;
   Object.keys(data).forEach(
     key => {
+      if (count > numberOfMonthsToDisplay) {
+        return;
+      }
       if (data[key] != 0) {
         var ym = key.split("-");
         var date = null;
@@ -38,10 +42,15 @@ function ExpenseForCategoryBarChart({ data }) {
   });
 
  function drawChart() {
-      const height = 220;
-      const width = 700;
-      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+//      const height = 220;
+//      const width = 700;
+//      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
       const numberOfYaxisTicks = 10;
+      var margin = {top: 0, right: 0, bottom: 0, left: 0},
+          outerWidth = 320,
+          outerHeight = 220,
+          width = outerWidth - margin.left - margin.right,
+          height = outerHeight - margin.top - margin.bottom;
 
       var domainAvg = total/count;
 
