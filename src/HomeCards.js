@@ -284,7 +284,7 @@ class HomeCards extends Component {
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
-                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Monthly Fund Flow" >
+                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Monthly Money Flow" >
                         <Table striped bordered hover size="sm">
                               <thead>
                                 <tr>

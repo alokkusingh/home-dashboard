@@ -8,6 +8,7 @@ import { NumberFormat } from "./utils/NumberFormat";
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
+import ExpenseForYearCategoryBarChart from "./charts/expenseForYearCategoryBarChart";
 import { Dimmer, Loader } from 'semantic-ui-react'
 
 class ExpenseList extends Component {
@@ -19,14 +20,18 @@ class ExpenseList extends Component {
       expensesForCategory: [],
       expensesForSelectedCategoryForBar: [],
       expensesByCategory: [],
+      expensesForSelectedYearCategoryForBar: [],
+      expensesByYearCategory: [],
       categories: [],
       months: [],
       count: 0,
       lastTransactionDate: "",
       categoryDropDownValue: 'Grocery',
       categoryDropDownValueForBar: 'ALL',
+      yearCategoryDropDownValueForBar: 'ALL',
       categoryDropdownOpen: false,
       categoryDropdownOpenForBar: false,
+      yearCategoryDropdownOpenForBar: false,
       monthExpDropDownValue: 'All Months',
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
@@ -68,6 +73,21 @@ class ExpenseList extends Component {
       this.setState(
           { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
       );
+
+      const responseSumByCatYear = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
+      const bodySumByYearCat = await responseSumByCatYear.json();
+      this.setState({
+          expensesByYearCategory: bodySumByYearCat.expenseCategorySums
+      });
+
+      var expensesForSelectedYearCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+        expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
+        return expensesForSelectedCategory;
+      }, {});
+      this.setState(
+          { expensesForSelectedYearCategoryForBar: expensesForSelectedYearCategory }
+      )
+
       this.setState({ dimmerActive: false })
 
       // Default set Expense Category - Grocery
@@ -133,6 +153,12 @@ class ExpenseList extends Component {
       });
   }
 
+  toggleYearCategoryForBar = () => {
+      this.setState({
+          yearCategoryDropdownOpenForBar: !this.state.yearCategoryDropdownOpenForBar
+      });
+  }
+
   changeCategoryValueForBar = (e) => {
       const selectedOption = e.currentTarget.textContent;
       this.setState({categoryDropDownValueForBar: selectedOption});
@@ -156,6 +182,30 @@ class ExpenseList extends Component {
 
       this.setState(
           { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
+      );
+  }
+
+  changeYearCategoryValueForBar = (e) => {
+      const selectedOption = e.currentTarget.textContent;
+      this.setState({yearCategoryDropDownValueForBar: selectedOption});
+
+      let expensesForSelectedCategory = [];
+      if (selectedOption === "ALL") {
+          expensesForSelectedCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+          expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
+          return expensesForSelectedCategory;
+        }, {});
+      } else {
+          expensesForSelectedCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+          if (selectedOption === expense.category) {
+              expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
+          }
+          return expensesForSelectedCategory;
+        }, {});
+      }
+
+      this.setState(
+          { expensesForSelectedYearCategoryForBar: expensesForSelectedCategory }
       );
   }
 
@@ -227,11 +277,14 @@ class ExpenseList extends Component {
       months,
       categoryDropDownValue,
       categoryDropDownValueForBar,
+      yearCategoryDropDownValueForBar,
       categoryDropdownOpen,
       categoryDropdownOpenForBar,
+      yearCategoryDropdownOpenForBar,
       expensesForCategory,
       expensesByCategory,
       expensesForSelectedCategoryForBar,
+      expensesForSelectedYearCategoryForBar,
       monthExpDropdownOpen,
       monthExpDropDownValue,
       monthExpByCatDropDownValue,
@@ -291,29 +344,22 @@ class ExpenseList extends Component {
                       </div>
                   </Card>
               </Col>
-              <Col m={3} s={3} l={3}>
-                 <div align="left" >
-                 <ButtonDropdown direction="right" >
+              <Col m={6} s={6} l={6}>
+                  <div align="left" >
+                  <ButtonDropdown direction="right" isOpen={yearCategoryDropdownOpenForBar} toggle={this.toggleYearCategoryForBar}>
                       <DropdownToggle caret size="sm">
-                         Some Filter
+                          {yearCategoryDropDownValueForBar}
                       </DropdownToggle>
+                      <DropdownMenu>
+                          {categories.map(e => {
+                              return <DropdownItem id={e} key={e} onClick={this.changeYearCategoryValueForBar}>{e}</DropdownItem>
+                          })}
+                      </DropdownMenu>
                   </ButtonDropdown>
                   </div>
                   <Card className="card-panel teal lighten-4" textClassName="black-text">
                       <div>
-                      <h3>Coming soon...</h3>
-                      </div>
-                  </Card>
-              </Col>
-              <Col m={3} s={3} l={3}>
-                 <ButtonDropdown direction="right" >
-                      <DropdownToggle caret size="sm">
-                         Some Filter
-                      </DropdownToggle>
-                  </ButtonDropdown>
-                  <Card className="card-panel teal lighten-4" textClassName="black-text">
-                      <div>
-                      <h3>Coming soon...</h3>
+                        <ExpenseForYearCategoryBarChart data={expensesForSelectedYearCategoryForBar} />
                       </div>
                   </Card>
               </Col>

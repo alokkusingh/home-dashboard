@@ -1,9 +1,8 @@
 import React, {useEffect} from 'react'
 import * as d3 from 'd3';
 import { formatYearMonth } from "../utils/FormatYearMonth";
-import { format, parseISO } from 'date-fns';
 
-function ExpenseForCategoryBarChart({ data }) {
+function ExpenseForYearCategoryBarChart({ data }) {
 
   var dataArr = [];
   var maxAmount = 1000;
@@ -13,15 +12,8 @@ function ExpenseForCategoryBarChart({ data }) {
   Object.keys(data).forEach(
     key => {
       if (data[key] != 0) {
-        var ym = key.split("-");
-        var date = null;
-         if(ym[1] < 10) {
-           date = parseISO(ym[0] + "0" + ym[1]);
-         } else {
-           date = parseISO(ym[0] + "" + ym[1]);
-         }
         dataArr.push({
-         'month': date,
+         'month': key,
          'amount': data[key]
         });
 
@@ -44,22 +36,19 @@ function ExpenseForCategoryBarChart({ data }) {
       const numberOfYaxisTicks = 10;
 
       var domainAvg = total/count;
-
-
-      var domainMax = maxAmount > 100000 ? 100000 : maxAmount;
       const colorScale = d3.scaleLinear()
-        .domain([50000, domainAvg, domainMax])
+        .domain([minAmount, domainAvg, maxAmount])
         .range(['green', 'orange', 'red'])
         .clamp(true)
 
      // Remove the old svg
-     d3.select('#exp-for-category-bar-container')
+     d3.select('#exp-for-year-category-bar-container')
         .select('svg')
         .remove();
 
      // Create new svg
      const svg = d3
-        .select('#exp-for-category-bar-container')
+        .select('#exp-for-year-category-bar-container')
         .append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -68,9 +57,9 @@ function ExpenseForCategoryBarChart({ data }) {
 
      // Setting the scale
     const xScale = d3.scaleBand()
-         .domain(dataArr.map((record) => format(record.month, "MMM yy")))
+         .domain(dataArr.map((record) => record.month))
          //.domain(getDaysOfMonthDomain())
-         .range([0, width])
+         .range([width, 0])
          .padding(0.1);
 
     const yScale = d3.scaleLinear()
@@ -84,7 +73,7 @@ function ExpenseForCategoryBarChart({ data }) {
 
     const yAxis = d3
        .axisLeft(yScale)
-       .tickFormat(function(d){ return d/1000 + 'K'; })
+       .tickFormat(function(d){ return d/100000 + 'L'; })
        .ticks(numberOfYaxisTicks);
 
     svg.append('g')
@@ -109,7 +98,7 @@ function ExpenseForCategoryBarChart({ data }) {
       .style('color', 'teal')
       .style('font-family', 'Helvetica')
       .style('font-size', 18)
-      .text('Expense by month')
+      .text('Expense by year')
 
       svg
         .append('g')
@@ -119,7 +108,7 @@ function ExpenseForCategoryBarChart({ data }) {
         .append("rect")
             .attr("class", "bar")
             .attr("fill", function(d) { return colorScale(d.amount); })
-            .attr("x", function(d) { return xScale(format(d.month, "MMM yy")); })
+            .attr("x", function(d) { return xScale(d.month); })
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
             .attr("height", (d) => yScale(0) - yScale(d.amount))
@@ -156,7 +145,7 @@ function ExpenseForCategoryBarChart({ data }) {
      }
    }
 
-   return <div id="exp-for-category-bar-container" />;
+   return <div id="exp-for-year-category-bar-container" />;
 }
 
-export default ExpenseForCategoryBarChart;
+export default ExpenseForYearCategoryBarChart;
