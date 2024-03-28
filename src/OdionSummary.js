@@ -321,7 +321,6 @@ class OdionSummary extends Component {
 
   render() {
     const {
-      accountsBalance,
       headAccountBalances,
       balanceByHeadCredit,
       balanceByHeadDebit,
@@ -336,7 +335,6 @@ class OdionSummary extends Component {
       monthlyOdions,
       monthlyAdarsh,
       monthlyMiscs,
-      monthyAdarsh,
       expenses,
       fundings,
       fundingsProperty,

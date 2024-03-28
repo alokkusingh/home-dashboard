@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Container, Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
+import { Table, Row, Col, Modal, ModalHeader } from 'reactstrap';
 import { Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { NumberFormatNoCurrencyFraction2 } from "./utils/NumberFormatNoCurrencyFraction2";
-import { formatYearMonth } from "./utils/FormatYearMonth";
 import DrawLineChartShare from './charts/drawLineChart';
 
 class Investment extends Component {

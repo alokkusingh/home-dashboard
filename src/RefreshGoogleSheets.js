@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
-import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
+import React, { Component } from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 import './css/App.css';
 

@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react'
 import * as d3 from 'd3';
-import { formatYearMonth } from "../utils/FormatYearMonth";
 import { format, parseISO } from 'date-fns';
 
 function ExpenseForCategoryBarChart({ data }) {
@@ -16,7 +15,7 @@ function ExpenseForCategoryBarChart({ data }) {
       if (count > numberOfMonthsToDisplay) {
         return;
       }
-      if (data[key] != 0) {
+      if (data[key] !== 0) {
         var ym = key.split("-");
         var date = null;
          if(ym[1] < 10) {
@@ -42,9 +41,6 @@ function ExpenseForCategoryBarChart({ data }) {
   });
 
  function drawChart() {
-//      const height = 220;
-//      const width = 700;
-//      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
       const numberOfYaxisTicks = 10;
       var margin = {top: 0, right: 0, bottom: 0, left: 0},
           outerWidth = 320,

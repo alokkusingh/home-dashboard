@@ -6,13 +6,11 @@ import * as d3 from 'd3';
 function ExpenseMonthBarChart({ data }) {
 
   // format the data
-  var sum = 0;
-  var maxExpenseAmount = 0, maxIncomeAmount = 0;
+  var maxExpenseAmount = 0;
   var minDate = null, maxDate = null;
   var dataArr = [];
   data.forEach(function(record) {
       var date = parseISO(record.date);
-      sum += record.amount;
 
       if (maxExpenseAmount < record.amount) {
           maxExpenseAmount = record.amount;

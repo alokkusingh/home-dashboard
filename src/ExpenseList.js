@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { Container, Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
-import { ButtonDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import AppNavbar from './AppNavbar';
+import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
-import { NumberFormat } from "./utils/NumberFormat";
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
@@ -28,10 +26,8 @@ class ExpenseList extends Component {
       lastTransactionDate: "",
       categoryDropDownValue: 'Grocery',
       categoryDropDownValueForBar: 'ALL',
-      yearCategoryDropDownValueForBar: 'ALL',
       categoryDropdownOpen: false,
       categoryDropdownOpenForBar: false,
-      yearCategoryDropdownOpenForBar: false,
       monthExpDropDownValue: 'All Months',
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
@@ -153,36 +149,53 @@ class ExpenseList extends Component {
       });
   }
 
-  toggleYearCategoryForBar = () => {
-      this.setState({
-          yearCategoryDropdownOpenForBar: !this.state.yearCategoryDropdownOpenForBar
-      });
-  }
-
   changeCategoryValueForBar = (e) => {
       const selectedOption = e.currentTarget.textContent;
       this.setState({categoryDropDownValueForBar: selectedOption});
 
-      let expensesForSelectedCategory = [];
-      if (selectedOption === "ALL") {
-          expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
-          var ym = expense.year + '-' + expense.month;
-          expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
-          return expensesForSelectedCategory;
-        }, {});
-      } else {
-          expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
-          var ym = expense.year + '-' + expense.month;
-          if (selectedOption === expense.category) {
-              expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
-          }
-          return expensesForSelectedCategory;
-        }, {});
+      {
+        let expensesForSelectedCategory = [];
+        if (selectedOption === "ALL") {
+            expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+            var ym = expense.year + '-' + expense.month;
+            expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
+            return expensesForSelectedCategory;
+          }, {});
+        } else {
+            expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+            var ym = expense.year + '-' + expense.month;
+            if (selectedOption === expense.category) {
+                expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
+            }
+            return expensesForSelectedCategory;
+          }, {});
+        }
+
+        this.setState(
+            { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
+        );
       }
 
-      this.setState(
-          { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
-      );
+      {
+        let expensesForSelectedCategory = [];
+        if (selectedOption === "ALL") {
+            expensesForSelectedCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+            expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
+            return expensesForSelectedCategory;
+          }, {});
+        } else {
+            expensesForSelectedCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+            if (selectedOption === expense.category) {
+                expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
+            }
+            return expensesForSelectedCategory;
+          }, {});
+        }
+
+        this.setState(
+            { expensesForSelectedYearCategoryForBar: expensesForSelectedCategory }
+        );
+      }
   }
 
   changeYearCategoryValueForBar = (e) => {
@@ -280,7 +293,6 @@ class ExpenseList extends Component {
       yearCategoryDropDownValueForBar,
       categoryDropdownOpen,
       categoryDropdownOpenForBar,
-      yearCategoryDropdownOpenForBar,
       expensesForCategory,
       expensesByCategory,
       expensesForSelectedCategoryForBar,
@@ -345,18 +357,6 @@ class ExpenseList extends Component {
                   </Card>
               </Col>
               <Col m={3} s={3} l={6}>
-                  <div align="left" >
-                  <ButtonDropdown direction="right" isOpen={yearCategoryDropdownOpenForBar} toggle={this.toggleYearCategoryForBar}>
-                      <DropdownToggle caret size="sm">
-                          {yearCategoryDropDownValueForBar}
-                      </DropdownToggle>
-                      <DropdownMenu>
-                          {categories.map(e => {
-                              return <DropdownItem id={e} key={e} onClick={this.changeYearCategoryValueForBar}>{e}</DropdownItem>
-                          })}
-                      </DropdownMenu>
-                  </ButtonDropdown>
-                  </div>
                   <Card className="card-panel teal lighten-4" textClassName="black-text">
                       <div>
                         <ExpenseForYearCategoryBarChart data={expensesForSelectedYearCategoryForBar} />
