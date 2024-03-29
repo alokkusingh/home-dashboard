@@ -4,7 +4,7 @@ import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
 
-class OdionTransactionList extends Component {
+class EstateTransactionList extends Component {
 
   constructor(props) {
     super(props);
@@ -72,4 +72,4 @@ class OdionTransactionList extends Component {
     );
   }
 }
-export default OdionTransactionList;
+export default EstateTransactionList;

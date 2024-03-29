@@ -6,7 +6,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
 
-class OdionSummary extends Component {
+class Odion extends Component {
 
   constructor(props) {
     super(props);
@@ -459,142 +459,6 @@ class OdionSummary extends Component {
 
     return (
             <div id="cards" align="center" >
-              <Row>
-               <Col m={6} s={6} l={6}>
-                <Card className="teal lighten-4" textClassName="black-text" title="Account Statement">
-                    <div>
-                    <Table className="mt-4" hover>
-                        <thead>
-                          <tr>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Head</th>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Account</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Debit</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Credit</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {accountsBalanceRows}
-                        </tbody>
-                    </Table>
-                    <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="AccountTransactions">
-                      <ModalHeader toggle={this.hideModal}/>
-                      <Table striped bordered hover>
-                         <thead >
-                           <tr>
-                             <th>Date</th>
-                             <th>Particular</th>
-                             <th>Debit</th>
-                             <th>Credit</th>
-                           </tr>
-                         </thead>
-                         <tbody>
-                           {accountTransactionsRows}
-                         </tbody>
-                       </Table>
-                    </Modal>
-                    </div>
-                    </Card>
-                   </Col>
-                   <Col m={6} s={6} l={6}>
-                      <Card className="teal lighten-4" textClassName="black-text" title="Funding by Source">
-                        <div>
-                          <DrawPiChart data={fundings} total={total + totalAdarsh} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain', 'BoB Advantage']} />
-                        </div>
-                      </Card>
-                   </Col>
-                    <Col m={6} s={6} l={6}>
-                       <Card className="teal lighten-4" textClassName="black-text" title="Funded in Property">
-                         <div>
-                           <DrawPiChart data={fundingsProperty} total={total + totalAdarsh} divContainer="funding-property-pie-container" heads={['Odion', 'Adarsh']} />
-                         </div>
-                       </Card>
-                    </Col>
-                </Row>
-                <Row>
-                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Max Gain Monthly Transactions">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyMaxGainRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                 <Col m={6} s={6} l={6}>
-                  <Card className="teal lighten-4" textClassName="black-text" title="BoB Monthly Transactions">
-                     <div>
-                       <Table striped bordered hover size="sm">
-                         <thead>
-                           <tr>
-                             <th width="10%" style={{textAlign: "center"}}>Month</th>
-                             <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                           </tr>
-                         </thead>
-                         <tbody>
-                           {monthlyBobRows}
-                         </tbody>
-                       </Table>
-                     </div>
-                   </Card>
-                </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Saving Monthly Transactions">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlySavingRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col m={6} s={6} l={6}>
-                      <Card className="teal lighten-4" textClassName="black-text" title="Monthly Transactions">
-                         <div>
-                           <Table striped bordered hover size="sm">
-                             <thead>
-                               <tr>
-                                 <th rowspan="2" width="10%" style={{textAlign: "center"}}>Month</th>
-                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>Funding</th>
-                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Adarsh</th>
-                                 <th colspan="3" width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Odion</th>
-                               </tr>
-                               <tr>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>Saving</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>SBI MG</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightgrey"}}>BoB</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Adarsh</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Misc</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightblue"}}>Interest</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Odion</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Misc</th>
-                                 <th width="10%" style={{textAlign: "center", backgroundColor: "lightpink"}}>Interest</th>
-                               </tr>
-                             </thead>
-                             <tbody>
-                               {monthTransactionsRows}
-                             </tbody>
-                           </Table>
-                         </div>
-                      </Card>
-                  </Col>
-                </Row>
                 <Row>
                   <Col m={6} s={6} l={6}>
                      <Card className="teal lighten-4" textClassName="black-text" title="Odion Expense by Head">
@@ -657,68 +521,8 @@ class OdionSummary extends Component {
                      </Card>
                   </Col>
                 </Row>
-                <Row>
-                 <Col m={6} s={6} l={6}>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Adarsh Expense by Head">
-                       <div>
-                         <DrawPiChart data={expensesAdarsh} total={totalAdarsh} divContainer="adarsh-expenses-pie-container" heads={['Adarsh', 'Interest Adarsh', 'Miscellaneous']} />
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Interest Adarsh">
-                        <div>
-                          <Table striped bordered hover size="sm">
-                            <thead>
-                              <tr>
-                                <th width="10%" style={{textAlign: "center"}}>Month</th>
-                                <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {monthlyInterestAdarshRows}
-                            </tbody>
-                          </Table>
-                        </div>
-                      </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Adarsh">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyAdarshRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Adarsh">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyMiscsAdarshRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                </Row>
             </div>
     );
   }
 }
-export default OdionSummary;
+export default Odion;

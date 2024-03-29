@@ -8,8 +8,11 @@ import Salary from './Salary';
 import Investment from './Investment';
 import UploadFile from './UploadFile';
 import RefreshGoogleSheets from './RefreshGoogleSheets';
-import OdionTransactionList from './OdionTransactionList';
-import OdionSummary from './OdionSummary';
+import EstateTransactionList from './EstateTransactionList';
+import EstateSummary from './EstateSummary';
+import Odion from './Odion';
+import AdarshTropica from './AdarshTropica';
+import Jyothi from './Jyothi';
 
 export default class MenuBarWithContent extends Component {
   state = { activeItem: 'Summary' }
@@ -43,11 +46,20 @@ export default class MenuBarWithContent extends Component {
       if (page === 'Refresh') {
         return <RefreshGoogleSheets />;
       }
-      if (page === 'o-Trans') {
-        return <OdionTransactionList />;
+      if (page === 'e-Trans') {
+        return <EstateTransactionList />;
       }
-      if (page === 'o-Summary') {
-        return <OdionSummary />;
+      if (page === 'e-Summary') {
+        return <EstateSummary />;
+      }
+      if (page === 'Odion') {
+        return <Odion />;
+      }
+      if (page === 'AdarshTropics') {
+        return <AdarshTropica />;
+      }
+      if (page === 'Jyothi') {
+        return <Jyothi />;
       }
 
       return <TbdPage />;
@@ -111,14 +123,26 @@ export default class MenuBarWithContent extends Component {
 
             <Menu.Header>
               <Icon name='building outline'/>
-              Odion
+              Estate
             </Menu.Header>
             <Menu.Menu>
-              <Menu.Item name='o-Summary' active={activeItem === 'o-Summary'} onClick={this.handleItemClick} >
+              <Menu.Item name='e-Summary' active={activeItem === 'e-Summary'} onClick={this.handleItemClick} >
                 <Icon name='chart pie'/>
                 Summary
               </Menu.Item>
-              <Menu.Item name='o-Trans' active={activeItem === 'o-Trans'} onClick={this.handleItemClick} >
+              <Menu.Item name='Odion' active={activeItem === 'Odion'} onClick={this.handleItemClick} >
+                <Icon name='chart pie'/>
+                Odion
+              </Menu.Item>
+              <Menu.Item name='AdarshTropics' active={activeItem === 'AdarshTropics'} onClick={this.handleItemClick} >
+                <Icon name='chart pie'/>
+                Adarsh Tropics
+              </Menu.Item>
+              <Menu.Item name='Jyothi' active={activeItem === 'Jyothi'} onClick={this.handleItemClick} >
+                <Icon name='chart pie'/>
+                Jyothi
+              </Menu.Item>
+              <Menu.Item name='e-Trans' active={activeItem === 'e-Trans'} onClick={this.handleItemClick} >
                 <Icon name='list ol'/>
                 Transactions
               </Menu.Item>
@@ -174,8 +198,6 @@ export default class MenuBarWithContent extends Component {
                 Document
               </Menu.Item>
             </Menu.Menu>
-
-
 
           </Menu>
         </Grid.Column>
