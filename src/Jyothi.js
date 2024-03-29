@@ -20,20 +20,15 @@ class Jyothi extends Component {
       transactionModalShow: false,
       accountTransactionsRows: "",
       monthlyInterests: [],
-      monthlyInterestsAdarsh: [],
       monthlyMaxGains: [],
       monthlyBob: [],
       monthlySavings: [],
-      monthlyOdions: [],
-      monthlyAdarsh: [],
+      monthlyJyothi: [],
       monthlyMiscs: [],
-      monthlyMiscsAdarsh: [],
       expenses: [],
       fundings: [],
       fundingsProperty: [],
-      expensesAdarsh: [],
       total: 0,
-      totalAdarsh: 0,
       months: [],
       accountMonthTransaction: ""
     };
@@ -106,7 +101,6 @@ class Jyothi extends Component {
     const expenses = [];
     const fundings = [];
     const fundingsProperty = [];
-    const expensesAdarsh = [];
     var total = 0;
     var totalAdarsh = 0;
     body.accountBalances.map(record => {
@@ -171,15 +165,9 @@ class Jyothi extends Component {
      this.setState({
          expenses: expenses
      });
-      this.setState({
-          expensesAdarsh: expensesAdarsh
-      });
      this.setState({
          total: total
      });
-      this.setState({
-          totalAdarsh: totalAdarsh
-      });
 
       fundingsProperty.push({
          'head': 'Jyothi',
@@ -194,6 +182,18 @@ class Jyothi extends Component {
      this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
 
 
+    const jyothi = bodyMonthly.accountMonthTransaction.JYOTHI;
+     const monthlyJyothi = [];
+     Object.keys(jyothi).forEach(
+         yearMonth => {
+            monthlyJyothi.push({
+              'month': yearMonth,
+              'amount': jyothi[yearMonth]
+            });
+         }
+     );
+     this.setState({ monthlyJyothi: monthlyJyothi });
+
      const interests = bodyMonthly.accountMonthTransaction.INTEREST_JYOTHI;
      const monthlyInterests = [];
      Object.keys(interests).forEach(
@@ -206,17 +206,17 @@ class Jyothi extends Component {
      );
      this.setState({ monthlyInterests: monthlyInterests });
 
-      const miscsAdarsh = bodyMonthly.accountMonthTransaction.MISC_JYOTHI;
-      const monthlyMiscsAdarsh = [];
-      Object.keys(miscsAdarsh).forEach(
+      const miscs = bodyMonthly.accountMonthTransaction.MISC_JYOTHI;
+      const monthlyMiscs = [];
+      Object.keys(miscs).forEach(
           yearMonth => {
-             monthlyMiscsAdarsh.push({
+             monthlyMiscs.push({
                'month': yearMonth,
-               'amount': miscsAdarsh[yearMonth]
+               'amount': miscs[yearMonth]
              });
           }
       );
-      this.setState({ monthlyMiscsAdarsh: monthlyMiscsAdarsh });
+      this.setState({ monthlyMiscs: monthlyMiscs });
 
      const sbiMaxGain = bodyMonthly.accountMonthTransaction.SBI_MAX_GAIN;
      const monthlyMaxGains = [];
@@ -256,42 +256,6 @@ class Jyothi extends Component {
      );
      this.setState({ monthlySavings: monthlySavings });
      this.setState({ months: months });
-
-     const odion = bodyMonthly.accountMonthTransaction.ODION;
-     const monthlyOdions = [];
-     Object.keys(odion).forEach(
-          yearMonth => {
-             monthlyOdions.push({
-               'month': yearMonth,
-               'amount': odion[yearMonth]
-             });
-          }
-     );
-     this.setState({ monthlyOdions: monthlyOdions });
-
-      const adarsh = bodyMonthly.accountMonthTransaction.ADARSH;
-      const monthlyAdarsh = [];
-      Object.keys(adarsh).forEach(
-           yearMonth => {
-              monthlyAdarsh.push({
-                'month': yearMonth,
-                'amount': adarsh[yearMonth]
-              });
-           }
-      );
-      this.setState({ monthlyAdarsh: monthlyAdarsh })
-
-     const misc = bodyMonthly.accountMonthTransaction.MISC;
-     const monthlyMiscs = [];
-     Object.keys(misc).forEach(
-          yearMonth => {
-             monthlyMiscs.push({
-               'month': yearMonth,
-               'amount': misc[yearMonth]
-             });
-          }
-     );
-     this.setState({ monthlyMiscs: monthlyMiscs });
   }
 
   render() {
@@ -300,8 +264,8 @@ class Jyothi extends Component {
       balanceByHeadCredit,
       balanceByHeadDebit,
       monthlyInterests,
-      monthlyOdions,
       monthlyMiscs,
+      monthlyJyothi,
       expenses,
       total,
       months,
@@ -340,12 +304,9 @@ class Jyothi extends Component {
                   <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.SAVING[month])}</td>
                   <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.SBI_MAX_GAIN[month])}</td>
                   <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.BOB_ADVANTAGE[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.ADARSH[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.MISC_ADARSH[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.INTEREST_ADARSH[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.ODION[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.MISC[month])}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.INTEREST[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.JYOTHI[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.MISC_JYOTHI[month])}</td>
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(accountMonthTransaction.INTEREST_JYOTHI[month])}</td>
                 </tr>
     });
     console.log (monthTransactionsRows);
@@ -357,7 +318,7 @@ class Jyothi extends Component {
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
                 </tr>
     });
-    const monthlyOdionRows = monthlyOdions.map(record => {
+    const monthlyJyothiRows = monthlyJyothi.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
@@ -374,15 +335,32 @@ class Jyothi extends Component {
             <div id="cards" align="center" >
                 <Row>
                   <Col m={6} s={6} l={6}>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Odion Expense by Head">
+                     <Card className="teal lighten-4" textClassName="black-text" title="Expense by Head">
                        <div>
-                         <DrawPiChart data={expenses} total={total} divContainer="Odion-expenses-pie-container" heads={['Odion', 'Interest', 'Miscellaneous']} />
+                         <DrawPiChart data={expenses} total={total} divContainer="jyothi-expenses-pie-container" heads={['Jyothi', 'Interest', 'Miscellaneous']} />
                        </div>
                      </Card>
                   </Col>
 
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Interest Odion">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Jyothi Builders">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyJyothiRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Interest">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
@@ -398,26 +376,8 @@ class Jyothi extends Component {
                        </div>
                      </Card>
                   </Col>
-
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Odion">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyOdionRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Odion">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Miscellaneous">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>

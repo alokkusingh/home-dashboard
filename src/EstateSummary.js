@@ -23,17 +23,23 @@ class EstateSummary extends Component {
       monthlyInterestsAdarsh: [],
       monthlyMaxGains: [],
       monthlyBob: [],
+      monthlyLicHfl: [],
+      monthlyHdfcHfl: [],
       monthlySavings: [],
       monthlyOdions: [],
       monthlyAdarsh: [],
+      monthlyJyothi: [],
       monthlyMiscs: [],
       monthlyMiscsAdarsh: [],
+      monthlyMiscsJyothi: [],
       expenses: [],
       fundings: [],
       fundingsProperty: [],
       expensesAdarsh: [],
+      expensesJyothi: [],
       total: 0,
       totalAdarsh: 0,
+      totalJyothi: 0,
       months: [],
       accountMonthTransaction: ""
     };
@@ -107,8 +113,10 @@ class EstateSummary extends Component {
     const fundings = [];
     const fundingsProperty = [];
     const expensesAdarsh = [];
+    const expensesJyothi = [];
     var total = 0;
     var totalAdarsh = 0;
+    var totalJyothi = 0;
     body.accountBalances.map(record => {
           if (record.account === 'INTEREST') {
              expenses.push({
@@ -150,6 +158,18 @@ class EstateSummary extends Component {
                'amount': Math.abs(record.balance)
             });
           }
+          if (record.account === 'LIC_HFL') {
+             fundings.push({
+               'head': 'LIC HFL',
+               'amount': Math.abs(record.balance)
+            });
+          }
+          if (record.account === 'HDFC_HFL') {
+             fundings.push({
+               'head': 'HDFC HFL',
+               'amount': Math.abs(record.balance)
+            });
+          }
           if (record.account === 'INTEREST_ADARSH') {
              expensesAdarsh.push({
                'head': 'Interest Adarsh',
@@ -171,6 +191,27 @@ class EstateSummary extends Component {
             });
             totalAdarsh += Math.abs(record.balance);
           }
+          if (record.account === 'INTEREST_JYOTHI') {
+             expensesJyothi.push({
+               'head': 'Interest Jyothi',
+               'amount': Math.abs(record.balance)
+            });
+            totalJyothi += Math.abs(record.balance);
+          }
+          if (record.account === 'MISC_JYOTHI') {
+             expensesJyothi.push({
+               'head': 'Misc Jyothi',
+               'amount': Math.abs(record.balance)
+            });
+            totalJyothi += Math.abs(record.balance);
+          }
+          if (record.account === 'JYOTHI') {
+             expensesJyothi.push({
+               'head': 'Jyothi',
+               'amount': Math.abs(record.balance)
+            });
+            totalJyothi += Math.abs(record.balance);
+          }
        }
      );
 
@@ -183,11 +224,17 @@ class EstateSummary extends Component {
       this.setState({
           expensesAdarsh: expensesAdarsh
       });
+      this.setState({
+          expensesJyothi: expensesJyothi
+      });
      this.setState({
          total: total
      });
       this.setState({
           totalAdarsh: totalAdarsh
+      });
+      this.setState({
+          totalJyothi: totalJyothi
       });
 
       fundingsProperty.push({
@@ -198,6 +245,10 @@ class EstateSummary extends Component {
          'head': 'Adarsh',
          'amount': totalAdarsh
       });
+      fundingsProperty.push({
+         'head': 'Jyothi',
+         'amount': totalJyothi
+      })
       this.setState({
           fundingsProperty: fundingsProperty
       });
@@ -231,6 +282,18 @@ class EstateSummary extends Component {
     );
     this.setState({ monthlyInterestsAdarsh: monthlyInterestsAdarsh });
 
+    const interestsJyothi = bodyMonthly.accountMonthTransaction.INTEREST_JYOTHI;
+    const monthlyInterestsJyothi = [];
+    Object.keys(interestsJyothi).forEach(
+        yearMonth => {
+           monthlyInterestsJyothi.push({
+             'month': yearMonth,
+             'amount': interestsJyothi[yearMonth]
+           });
+        }
+    );
+    this.setState({ monthlyInterestsJyothi: monthlyInterestsJyothi });
+
       const miscsAdarsh = bodyMonthly.accountMonthTransaction.MISC_ADARSH;
       const monthlyMiscsAdarsh = [];
       Object.keys(miscsAdarsh).forEach(
@@ -242,6 +305,18 @@ class EstateSummary extends Component {
           }
       );
       this.setState({ monthlyMiscsAdarsh: monthlyMiscsAdarsh });
+
+      const miscsJyothi = bodyMonthly.accountMonthTransaction.MISC_JYOTHI;
+      const monthlyMiscsJyothi = [];
+      Object.keys(miscsJyothi).forEach(
+          yearMonth => {
+             monthlyMiscsJyothi.push({
+               'month': yearMonth,
+               'amount': miscsJyothi[yearMonth]
+             });
+          }
+      );
+      this.setState({ monthlyMiscsJyothi: monthlyMiscsJyothi });
 
      const sbiMaxGain = bodyMonthly.accountMonthTransaction.SBI_MAX_GAIN;
      const monthlyMaxGains = [];
@@ -266,6 +341,30 @@ class EstateSummary extends Component {
            }
       );
       this.setState({ monthlyBob: monthlyBob });
+
+       const licHflAttribute = bodyMonthly.accountMonthTransaction.LIC_HFL;
+       const monthlyLicHfl = [];
+        Object.keys(licHflAttribute).forEach(
+             yearMonth => {
+                monthlyLicHfl.push({
+                  'month': yearMonth,
+                  'amount': licHflAttribute[yearMonth]
+                });
+             }
+        );
+        this.setState({ monthlyLicHfl: monthlyLicHfl });
+
+       const hdfcHflAttribute = bodyMonthly.accountMonthTransaction.HDFC_HFL;
+       const monthlyHdfcHfl = [];
+        Object.keys(hdfcHflAttribute).forEach(
+             yearMonth => {
+                monthlyHdfcHfl.push({
+                  'month': yearMonth,
+                  'amount': hdfcHflAttribute[yearMonth]
+                });
+             }
+        );
+        this.setState({ monthlyHdfcHfl: monthlyHdfcHfl });
 
      const saving = bodyMonthly.accountMonthTransaction.SAVING;
      const monthlySavings = [];
@@ -306,6 +405,18 @@ class EstateSummary extends Component {
       );
       this.setState({ monthlyAdarsh: monthlyAdarsh })
 
+      const jyothi = bodyMonthly.accountMonthTransaction.JYOTHI;
+      const monthlyJyothi = [];
+      Object.keys(jyothi).forEach(
+           yearMonth => {
+              monthlyJyothi.push({
+                'month': yearMonth,
+                'amount': jyothi[yearMonth]
+              });
+           }
+      );
+      this.setState({ monthlyJyothi: monthlyJyothi })
+
      const misc = bodyMonthly.accountMonthTransaction.MISC;
      const monthlyMiscs = [];
      Object.keys(misc).forEach(
@@ -326,38 +437,17 @@ class EstateSummary extends Component {
       balanceByHeadDebit,
       transactionModalShow,
       accountTransactionsRows,
-      monthlyInterests,
-      monthlyInterestsAdarsh,
-      monthlyMiscsAdarsh,
       monthlyMaxGains,
       monthlyBob,
       monthlySavings,
-      monthlyOdions,
-      monthlyAdarsh,
-      monthlyMiscs,
-      expenses,
       fundings,
       fundingsProperty,
       total,
-      expensesAdarsh,
       totalAdarsh,
+      totalJyothi,
       months,
       accountMonthTransaction
     } = this.state;
-
-//    const accountsBalanceRows = accountsBalance.map(record => {
-//        if (record.balance < 0)
-//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(Math.abs(record.balance))}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-//                </tr>
-//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.balance)}</td>
-//                </tr>
-//    });
 
     let accountsBalanceRows = [];
     for (const [head, accountsBalance] of Object.entries(headAccountBalances)) {
@@ -402,12 +492,6 @@ class EstateSummary extends Component {
     console.log (monthTransactionsRows);
 
 
-    const monthlyInterestRows = monthlyInterests.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
     const monthlyMaxGainRows = monthlyMaxGains.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
@@ -421,36 +505,6 @@ class EstateSummary extends Component {
                 </tr>
     });
     const monthlySavingRows = monthlySavings.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyOdionRows = monthlyOdions.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyMiscRows = monthlyMiscs.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyInterestAdarshRows = monthlyInterestsAdarsh.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyAdarshRows = monthlyAdarsh.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyMiscsAdarshRows = monthlyMiscsAdarsh.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
@@ -498,14 +552,14 @@ class EstateSummary extends Component {
                    <Col m={6} s={6} l={6}>
                       <Card className="teal lighten-4" textClassName="black-text" title="Funding by Source">
                         <div>
-                          <DrawPiChart data={fundings} total={total + totalAdarsh} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain', 'BoB Advantage']} />
+                          <DrawPiChart data={fundings} total={total + totalAdarsh + totalJyothi} divContainer="funding-source-pie-container" heads={['Saving', 'SBI Max Gain', 'BoB Advantage']} />
                         </div>
                       </Card>
                    </Col>
                     <Col m={6} s={6} l={6}>
                        <Card className="teal lighten-4" textClassName="black-text" title="Funded in Property">
                          <div>
-                           <DrawPiChart data={fundingsProperty} total={total + totalAdarsh} divContainer="funding-property-pie-container" heads={['Odion', 'Adarsh']} />
+                           <DrawPiChart data={fundingsProperty} total={total + totalAdarsh + totalJyothi} divContainer="funding-property-pie-container" heads={['Odion', 'Adarsh', 'Jyothi']} />
                          </div>
                        </Card>
                     </Col>

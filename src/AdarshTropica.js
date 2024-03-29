@@ -461,14 +461,31 @@ class AdarshTropica extends Component {
             <div id="cards" align="center" >
                 <Row>
                  <Col m={6} s={6} l={6}>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Adarsh Expense by Head">
+                     <Card className="teal lighten-4" textClassName="black-text" title="Expenses by Head">
                        <div>
                          <DrawPiChart data={expensesAdarsh} total={totalAdarsh} divContainer="adarsh-expenses-pie-container" heads={['Adarsh', 'Interest Adarsh', 'Miscellaneous']} />
                        </div>
                      </Card>
                   </Col>
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Adarsh Builder">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyAdarshRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
                   <Col>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Interest Adarsh">
+                     <Card className="teal lighten-4" textClassName="black-text" title="Interest">
                         <div>
                           <Table striped bordered hover size="sm">
                             <thead>
@@ -485,24 +502,7 @@ class AdarshTropica extends Component {
                       </Card>
                   </Col>
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Adarsh">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyAdarshRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Adarsh">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Miscellaneous">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>

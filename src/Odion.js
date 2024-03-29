@@ -461,7 +461,7 @@ class Odion extends Component {
             <div id="cards" align="center" >
                 <Row>
                   <Col m={6} s={6} l={6}>
-                     <Card className="teal lighten-4" textClassName="black-text" title="Odion Expense by Head">
+                     <Card className="teal lighten-4" textClassName="black-text" title="Expenses by Head">
                        <div>
                          <DrawPiChart data={expenses} total={total} divContainer="Odion-expenses-pie-container" heads={['Odion', 'Interest', 'Miscellaneous']} />
                        </div>
@@ -469,7 +469,25 @@ class Odion extends Component {
                   </Col>
 
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Interest Odion">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Odion Developer">
+                       <div>
+                         <Table striped bordered hover size="sm">
+                           <thead>
+                             <tr>
+                               <th width="10%" style={{textAlign: "center"}}>Month</th>
+                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {monthlyOdionRows}
+                           </tbody>
+                         </Table>
+                       </div>
+                     </Card>
+                  </Col>
+
+                  <Col m={6} s={6} l={6}>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Interest">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
@@ -487,24 +505,7 @@ class Odion extends Component {
                   </Col>
 
                   <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Odion">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlyOdionRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Miscs Odion">
+                    <Card className="teal lighten-4" textClassName="black-text" title="Miscellaneous">
                        <div>
                          <Table striped bordered hover size="sm">
                            <thead>
