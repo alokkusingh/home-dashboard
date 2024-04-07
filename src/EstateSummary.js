@@ -34,6 +34,8 @@ class EstateSummary extends Component {
       monthlyMiscsJyothi: [],
       expenses: [],
       fundings: [],
+      loans: [],
+      loanTotal: 0,
       fundingsProperty: [],
       expensesAdarsh: [],
       expensesJyothi: [],
@@ -111,6 +113,8 @@ class EstateSummary extends Component {
     });
     const expenses = [];
     const fundings = [];
+    const loans = [];
+    var loanTotal = 0;
     const fundingsProperty = [];
     const expensesAdarsh = [];
     const expensesJyothi = [];
@@ -151,24 +155,44 @@ class EstateSummary extends Component {
                'head': 'SBI Max Gain',
                'amount': Math.abs(record.balance)
             });
+             loans.push({
+               'head': 'SBI Max Gain',
+               'amount': Math.abs(record.balance)
+            });
+            loanTotal += Math.abs(record.balance);
           }
           if (record.account === 'BOB_ADVANTAGE') {
              fundings.push({
                'head': 'BoB Advantage',
                'amount': Math.abs(record.balance)
             });
+             loans.push({
+               'head': 'BoB Advantage',
+               'amount': Math.abs(record.balance)
+            });
+            loanTotal += Math.abs(record.balance);
           }
           if (record.account === 'LIC_HFL') {
              fundings.push({
                'head': 'LIC HFL',
                'amount': Math.abs(record.balance)
             });
+             loans.push({
+               'head': 'LIC HFL',
+               'amount': Math.abs(record.balance)
+            });
+            loanTotal += Math.abs(record.balance);
           }
           if (record.account === 'HDFC_HFL') {
              fundings.push({
                'head': 'HDFC HFL',
                'amount': Math.abs(record.balance)
             });
+             loans.push({
+               'head': 'HDFC HFL',
+               'amount': Math.abs(record.balance)
+            });
+            loanTotal += Math.abs(record.balance);
           }
           if (record.account === 'INTEREST_ADARSH') {
              expensesAdarsh.push({
@@ -217,6 +241,12 @@ class EstateSummary extends Component {
 
      this.setState({
          fundings: fundings
+     });
+     this.setState({
+         loans: loans
+     });
+     this.setState({
+         loanTotal: loanTotal
      });
      this.setState({
          expenses: expenses
@@ -441,6 +471,8 @@ class EstateSummary extends Component {
       monthlyBob,
       monthlySavings,
       fundings,
+      loans,
+      loanTotal,
       fundingsProperty,
       total,
       totalAdarsh,
@@ -563,6 +595,13 @@ class EstateSummary extends Component {
                          </div>
                        </Card>
                     </Col>
+                   <Col m={6} s={6} l={6}>
+                      <Card className="teal lighten-4" textClassName="black-text" title="Loans">
+                        <div>
+                          <DrawPiChart data={loans} total={loanTotal} divContainer="loans-pie-container" heads={['SBI Max Gain', 'BoB Advantage', 'LIC HFL', 'HDFC HFL']} />
+                        </div>
+                      </Card>
+                   </Col>
                 </Row>
                <Row>
                   <Col m={6} s={6} l={6}>
