@@ -139,7 +139,7 @@ function DrawLineChart({ data, divContainer, domain }) {
        drawLineAndDots("Invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L", contributionArray);
 
        // Draw grid lines
-       drawHorizontalLines(numberOfYaxisTicks/2, 0.2);
+       //drawHorizontalLines(numberOfYaxisTicks/2, 0.2);
        drawHorizontalLines(numberOfYaxisTicks, 0.1);
        drawVerticalLines();
 

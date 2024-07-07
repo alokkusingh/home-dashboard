@@ -29,15 +29,15 @@ class UploadFile extends Component {
       .then(response => {
         console.log(response.uploadType);
         if (response.uploadType === 'TaxGoogleSheet')
-          this.props.history.push('/salary');
+          this.props.history.push('/');
         else if (response.uploadType === 'InvestmentGoogleSheet')
-          this.props.history.push('/salary');
+          this.props.history.push('/');
         else if (response.uploadType === 'ExpenseGoogleSheet')
-         this.props.history.push('/expenses');
+         this.props.history.push('/');
         else if (response.uploadType === 'HDFCExportedStatement')
-         this.props.history.push('/transactions');
+         this.props.history.push('/');
         else if (response.uploadType === 'KotakExportedStatement')
-         this.props.history.push('/transactions');
+         this.props.history.push('/');
         else
           this.props.history.push('/');
       }).catch((error) => {

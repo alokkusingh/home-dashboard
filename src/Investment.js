@@ -186,49 +186,6 @@ class Investment extends Component {
       monthDetailsModalShow
     } = this.state;
 
-
-    const investmentReturnListMock = [
-      {
-      "metric": "Cumulative Return (%)",
-      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
-      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
-      },
-      {
-      "metric": "Average Return (%)",
-      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
-      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
-      },
-      {
-      "metric": "RoR - 2023",
-      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
-      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
-      },
-      {
-      "metric": "RoR - 2022",
-      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
-      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
-      },
-      {
-      "metric": "RoR - 2021",
-      "pf": {"beg": "2500000", "end": "3500000", "inv": "200000", "ror":"11"},
-      "nps": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "lic": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "share": {"beg": "1", "end": "2", "inv": "3", "ror":"4"},
-      "total": {"beg": "1", "end": "2", "inv": "3", "ror":"4"}
-      }
-    ]
     const investmentSummaryRecordRows = investmentSummaryRecords.map(
       investment => {
          return <tr key={investment.head} onClick={this.showInvestmentheadRecordsModal}>
@@ -248,23 +205,27 @@ class Investment extends Component {
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:NumberFormatNoCurrencyFraction2(investment.pf.ror)}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:NumberFormatNoCurrencyFraction2(investment.nps.ror)}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:NumberFormatNoCurrencyFraction2(investment.lic.ror)}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.beg}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.end}</td>
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.ror}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null? 0:investment.total.ror}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:NumberFormatNoCurrencyFraction2(investment.share.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:NumberFormatNoCurrencyFraction2(investment.mf.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:NumberFormatNoCurrencyFraction2(investment.total.ror)}</td>
           </tr>
       }
     );
@@ -325,7 +286,8 @@ class Investment extends Component {
                            <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>NPS</th>
                            <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>LIC</th>
                            <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Share</th>
-                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Total</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>MF</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Total</th>
                          </tr>
                         <tr>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Beg</th>
@@ -348,6 +310,10 @@ class Investment extends Component {
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>End</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Inv</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Ret (%)</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Beg</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>End</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
                         </tr>
                        </thead>
                        <tbody>
@@ -362,7 +328,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Years Investment">
                             <div>
-                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[800000, 5500000]} divContainer="total-investment-line-container" />
+                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[1000000, 6500000]} divContainer="total-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -371,7 +337,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year PF Investment">
                             <div>
-                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[500000, 3500000]} divContainer="PF-investment-line-container" />
+                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[700000, 4000000]} divContainer="PF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -380,7 +346,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year NPS Investment">
                             <div>
-                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[5000, 1200000]} divContainer="NPS-investment-line-container" />
+                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[50000, 1400000]} divContainer="NPS-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -389,7 +355,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year LIC Investment">
                             <div>
-                                <DrawLineChartShare data={licMonthlyInvestment} domain={[200000, 700000]} divContainer="LIC-investment-line-container" />
+                                <DrawLineChartShare data={licMonthlyInvestment} domain={[300000, 800000]} divContainer="LIC-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -407,7 +373,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Mutual Fund Investment">
                             <div>
-                                <DrawLineChartShare data={mfMonthlyInvestment} domain={[0, 100000]} divContainer="MF-investment-line-container" />
+                                <DrawLineChartShare data={mfMonthlyInvestment} domain={[0, 500000]} divContainer="MF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
