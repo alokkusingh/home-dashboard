@@ -29,7 +29,21 @@ The build is minified and the filenames include the hashes.\
 App is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
+### Protobuf
+#### Install pbf Globally to generate .js from .proto
+```shell
+npm install -g pbf
+```
+#### Install pbf locally to be used as dependent lib
+```shell
+npm install pbf --save
+```
+#### Generate JS from PROTO
+```shell
+pbf src/proto/getInvestmentsResponse.proto  >src/proto/getInvestmentsResponse.js
+pbf src/proto/getInvestmentsRorMetricsResponse.proto  >src/proto/getInvestmentsRorMetricsResponse.js
+pbf src/proto/getRawInvestmentsResponse.proto  >src/proto/getRawInvestmentsResponse.js
+```
 ### Docker Build and Deploy
 1. Build
 ```shell

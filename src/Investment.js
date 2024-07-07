@@ -5,6 +5,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { NumberFormatNoCurrencyFraction2 } from "./utils/NumberFormatNoCurrencyFraction2";
 import DrawLineChartShare from './charts/drawLineChart';
+import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
 
 class Investment extends Component {
 
@@ -25,97 +26,95 @@ class Investment extends Component {
 
   async componentDidMount() {
 
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    await Promise.all([
+      fetchInvestmentSummaryProto().then(this.handleInvestmentsSummary),
+      fetchInvestmentReturnsProto().then(this.handleInvestmentReturns),
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+ }
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-     const responseInvestments = await fetch('/home/api/investment/all', requestOptions);
-     const bodyInvestments = await responseInvestments.json();
-
-     const investmentSummaryRecords = [];
-     for (var head in bodyInvestments.investmentsByType) {
-      investmentSummaryRecords.push(
-        {
-            "head": head,
-            "investmentAmount": bodyInvestments.investmentsByType[head],
-            "investmentValue": bodyInvestments.investmentsValueByType[head]
-        }
-      );
-     }
-     investmentSummaryRecords.push(
-       {
-           "head": 'Total',
-           "investmentAmount": bodyInvestments.investmentAmount,
-           "investmentValue": bodyInvestments.asOnValue
+  handleInvestmentsSummary = (investments) => {
+      const investmentSummaryRecords = [];
+       for (var head in investments.investmentsByType) {
+          investmentSummaryRecords.push({
+              "head": head,
+              "investmentAmount": investments.investmentsByType[head],
+              "investmentValue": investments.investmentsValueByType[head]
+          }
+        );
        }
-     );
+       investmentSummaryRecords.push(
+         {
+             "head": 'Total',
+             "investmentAmount": investments.investmentAmount,
+             "investmentValue": investments.asOnValue
+         }
+       );
 
-     const totalMonthlyInvestment = [];
-     const pfMonthlyInvestment = [];
-     const licMonthlyInvestment = [];
-     const npsMonthlyInvestment = [];
-     const shareMonthlyInvestment = [];
-     const mfMonthlyInvestment = [];
+       const totalMonthlyInvestment = [];
+       const pfMonthlyInvestment = [];
+       const licMonthlyInvestment = [];
+       const npsMonthlyInvestment = [];
+       const shareMonthlyInvestment = [];
+       const mfMonthlyInvestment = [];
 
-    for (let monthInvestment of bodyInvestments.monthInvestments) {
-      let yearMonth = monthInvestment.yearMonth;
+       for (let monthInvestment of investments.monthInvestments) {
+         let yearMonth = monthInvestment.yearMonth;
 
-      totalMonthlyInvestment.push({
-          'yearMonth': yearMonth,
-          'investmentAmount': monthInvestment.investmentAmount,
-          'asOnInvestment': monthInvestment.asOnInvestment,
-          'asOnValue': monthInvestment.asOnValue
-      });
+         totalMonthlyInvestment.push({
+            'yearMonth': yearMonth,
+            'investmentAmount': monthInvestment.investmentAmount,
+            'asOnInvestment': monthInvestment.asOnInvestment,
+            'asOnValue': monthInvestment.asOnValue
+         });
 
-      for (let investment of monthInvestment.investments) {
-        if (investment.head === 'PF') {
-          pfMonthlyInvestment.push({
-              'yearMonth': yearMonth,
-              'investmentAmount': investment.investmentAmount,
-              'asOnInvestment': investment.asOnInvestment,
-              'asOnValue': investment.asOnValue
-          });
+         for (let investment of monthInvestment.investments) {
+           if (investment.head === 'PF') {
+             pfMonthlyInvestment.push({
+                'yearMonth': yearMonth,
+                'investmentAmount': investment.investmentAmount,
+                'asOnInvestment': investment.asOnInvestment,
+                'asOnValue': investment.asOnValue
+             });
+           }
+
+           if (investment.head === 'LIC') {
+             licMonthlyInvestment.push({
+                'yearMonth': yearMonth,
+                'investmentAmount': investment.investmentAmount,
+                'asOnInvestment': investment.asOnInvestment,
+                'asOnValue': investment.asOnValue
+             });
+           }
+
+           if (investment.head === 'NPS') {
+             npsMonthlyInvestment.push({
+                'yearMonth': yearMonth,
+                'investmentAmount': investment.investmentAmount,
+                'asOnInvestment': investment.asOnInvestment,
+                'asOnValue': investment.asOnValue
+             });
+          }
+
+          if (investment.head === 'SHARE') {
+            shareMonthlyInvestment.push({
+                'yearMonth': yearMonth,
+                'investmentAmount': investment.investmentAmount,
+                'asOnInvestment': investment.asOnInvestment,
+                'asOnValue': investment.asOnValue
+            });
+          }
+
+          if (investment.head === 'MF') {
+            mfMonthlyInvestment.push({
+                'yearMonth': yearMonth,
+                'investmentAmount': investment.investmentAmount,
+                'asOnInvestment': investment.asOnInvestment,
+                'asOnValue': investment.asOnValue
+            });
+          }
         }
-
-        if (investment.head === 'LIC') {
-          licMonthlyInvestment.push({
-              'yearMonth': yearMonth,
-              'investmentAmount': investment.investmentAmount,
-              'asOnInvestment': investment.asOnInvestment,
-              'asOnValue': investment.asOnValue
-          });
-        }
-
-        if (investment.head === 'NPS') {
-          npsMonthlyInvestment.push({
-              'yearMonth': yearMonth,
-              'investmentAmount': investment.investmentAmount,
-              'asOnInvestment': investment.asOnInvestment,
-              'asOnValue': investment.asOnValue
-          });
-        }
-
-        if (investment.head === 'SHARE') {
-          shareMonthlyInvestment.push({
-              'yearMonth': yearMonth,
-              'investmentAmount': investment.investmentAmount,
-              'asOnInvestment': investment.asOnInvestment,
-              'asOnValue': investment.asOnValue
-          });
-        }
-
-        if (investment.head === 'MF') {
-          mfMonthlyInvestment.push({
-              'yearMonth': yearMonth,
-              'investmentAmount': investment.investmentAmount,
-              'asOnInvestment': investment.asOnInvestment,
-              'asOnValue': investment.asOnValue
-          });
-        }
-
       }
 
       this.setState({
@@ -127,45 +126,32 @@ class Investment extends Component {
          mfMonthlyInvestment: mfMonthlyInvestment,
          investmentSummaryRecords: investmentSummaryRecords
       });
-    }
+  };
 
-    const responseInvestmentsReturn = await fetch('/home/api/investment/return', requestOptions);
-    const bodyInvestmentsReturn = await responseInvestmentsReturn.json();
-    console.log(bodyInvestmentsReturn);
-    const investmentReturnList = bodyInvestmentsReturn.investmentsRorMetrics;
-
+  handleInvestmentReturns = (investmentReturnList) => {
     this.setState({
-             investmentReturnList: investmentReturnList
-          });
-  }
+       investmentReturnList: investmentReturnList
+    });
+  };
 
   showInvestmentheadRecordsModal = (event) => {
     console.log(event);
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
-    fetch("/home/api/investment/head/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
-        .then(recordsJson => {
-            const investmentHeadRecordsRows = recordsJson.map( record => {
-                return <tr>
-                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.head}</td>
-                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
-                    <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contributionAsOnMonth)}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
-                 </tr>
-            });
-            this.setState({ investmentHeadRecordsRows: investmentHeadRecordsRows });
-            this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow });
-        }
-    );
+    fetchInvestmentsForHeadProto(event.target.getAttribute("id"))
+      .then(investments => {
+          const investmentHeadRecordsRows = investments.map( record => {
+                     return <tr>
+                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.head}</td>
+                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
+                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
+                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
+                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contributionAsOnMonth)}</td>
+                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
+                      </tr>
+          });
+          this.setState({ investmentHeadRecordsRows: investmentHeadRecordsRows });
+          this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow });
+      });
   };
 
   hideInvestmentheadRecordsModal = () => {
@@ -202,35 +188,33 @@ class Investment extends Component {
       investment => {
           return <tr key={investment.metric} >
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.metric}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:investment.pf.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null? 0:NumberFormatNoCurrencyFraction2(investment.pf.ror)}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:investment.nps.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null? 0:NumberFormatNoCurrencyFraction2(investment.nps.ror)}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:investment.lic.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null? 0:NumberFormatNoCurrencyFraction2(investment.lic.ror)}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:investment.share.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null? 0:NumberFormatNoCurrencyFraction2(investment.share.ror)}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:investment.mf.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null? 0:NumberFormatNoCurrencyFraction2(investment.mf.ror)}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.beg}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.end}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:investment.total.inv}</td>
-              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null? 0:NumberFormatNoCurrencyFraction2(investment.total.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null || investment.pf === undefined? 0:investment.pf.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null || investment.pf === undefined? 0:investment.pf.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null || investment.pf === undefined? 0:investment.pf.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.pf === null || investment.pf === undefined? 0:NumberFormatNoCurrencyFraction2(investment.pf.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null || investment.nps === undefined? 0:investment.nps.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null || investment.nps === undefined? 0:investment.nps.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null || investment.nps === undefined? 0:investment.nps.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.nps === null || investment.nps === undefined? 0:NumberFormatNoCurrencyFraction2(investment.nps.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null || investment.lic === undefined? 0:investment.lic.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null || investment.lic === undefined? 0:investment.lic.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null || investment.lic === undefined? 0:investment.lic.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.lic === null || investment.lic === undefined? 0:NumberFormatNoCurrencyFraction2(investment.lic.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null || investment.share === undefined? 0:investment.share.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null || investment.share === undefined? 0:investment.share.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null || investment.share === undefined? 0:investment.share.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.share === null || investment.share === undefined? 0:NumberFormatNoCurrencyFraction2(investment.share.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null || investment.mf === undefined? 0:investment.mf.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null || investment.mf === undefined? 0:investment.mf.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null || investment.mf === undefined? 0:investment.mf.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.mf === null || investment.mf === undefined? 0:NumberFormatNoCurrencyFraction2(investment.mf.ror)}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null || investment.total === undefined? 0:investment.total.beg}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null || investment.total === undefined? 0:investment.total.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null || investment.total === undefined? 0:investment.total.inv}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.total === null || investment.total === undefined? 0:NumberFormatNoCurrencyFraction2(investment.total.ror)}</td>
           </tr>
       }
     );
-
-//console.log("returnOnInvestmentRows: " + returnOnInvestmentRows);
 
     return (
          <div id="cards" align="center" >
