@@ -8,6 +8,9 @@ import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
 import ExpenseForYearCategoryBarChart from "./charts/expenseForYearCategoryBarChart";
 import { Dimmer, Loader } from 'semantic-ui-react'
+import {fetchExpensesJson, fetchExpenseByCategoryMonthJson, fetchExpenseByCategoryYearJson,
+        fetchMonthlyExpensesForCategoryJson, fetchExpenseHeadsJson, fetchExpenseMonthsJson,
+        fetchExpensesForYearMonthJson, fetchExpensesForYearMonthAndCategoryJson} from './api/ExpensesAPIManager.js'
 
 class ExpenseList extends Component {
 
@@ -39,82 +42,81 @@ class ExpenseList extends Component {
 
   async componentDidMount() {
 
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    await Promise.all([
+          fetchExpensesJson().then(this.handleExpenses),
+          fetchExpenseByCategoryMonthJson().then(this.handleExpenseByCategoryMonth),
+          fetchExpenseByCategoryYearJson().then(this.handleExpenseByCategoryYear),
+          fetchMonthlyExpensesForCategoryJson(this.state.categoryDropDownValue).then(this.handleMonthlyExpensesForCategory),
+          fetchExpenseHeadsJson().then(this.handleExpenseHeads),
+          fetchExpenseMonthsJson().then(this.handleExpenseMonths)
+      ]);
+      // All fetch calls are done now
+      console.log(this.state);
+  }
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-      // Default set Expenses for all months
-      const response = await fetch('/home/api/expense', requestOptions);
-      const body = await response.json();
+  handleExpenseHeads = (categories) => {
       this.setState({
-          expenses: body.expenses,
-          count: body.count,
-          lastTransactionDate: body.lastTransactionDate
+          categories: categories
       });
+  }
 
-      const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
-      const bodySumByCat = await responseSumByCatMonth.json();
-      this.setState({
-          expensesByCategory: bodySumByCat.expenseCategorySums
-      });
+  handleExpenseMonths = (months) => {
+    var monthsArr = [];
+    months.forEach(
+      month => monthsArr.push({
+          'year': month.year,
+          'month': month.month,
+          'monthStr': formatYearMonth(month.year, month.month)
+      })
+    )
+    this.setState({
+        months: monthsArr
+    });
+  }
 
-      var expensesForSelectedCategory = this.state.expensesByCategory.reduce((expensesForSelectedCategory, expense) => {
+  handleExpenses = (body) => {
+     this.setState({
+         expenses: body.expenses,
+         count: body.count,
+         lastTransactionDate: body.lastTransactionDate
+     });
+  }
+
+  handleExpenseByCategoryMonth = (body) => {
+      var expensesForSelectedCategory = body.expenseCategorySums.reduce((expensesForSelectedCategory, expense) => {
         var ym = expense.year + '-' + expense.month;
         expensesForSelectedCategory[ym] = (expensesForSelectedCategory[ym] || 0) + expense.sum;
         return expensesForSelectedCategory;
       }, {});
-      this.setState(
-          { expensesForSelectedCategoryForBar: expensesForSelectedCategory }
-      );
 
-      const responseSumByCatYear = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
-      const bodySumByYearCat = await responseSumByCatYear.json();
       this.setState({
-          expensesByYearCategory: bodySumByYearCat.expenseCategorySums
-      });
+          expensesForSelectedCategoryForBar: expensesForSelectedCategory,
+          expensesByCategory: body.expenseCategorySums,
+          dimmerActive: false
+        }
+      );
+  }
 
-      var expensesForSelectedYearCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
+  handleExpenseByCategoryYear = (body) => {
+      var expensesForSelectedCategory = body.expenseCategorySums.reduce((expensesForSelectedCategory, expense) => {
         expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
         return expensesForSelectedCategory;
       }, {});
-      this.setState(
-          { expensesForSelectedYearCategoryForBar: expensesForSelectedYearCategory }
-      )
 
-      this.setState({ dimmerActive: false })
-
-      // Default set Expense Category - Grocery
-      const catExpResponse = await fetch("/home/api/expense/monthly/categories/" + this.state.categoryDropDownValue, requestOptions);
-      const catExpResponseJson = await catExpResponse.json();
-      this.setState(
-           { expensesForCategory: catExpResponseJson.expenseCategorySums }
+      this.setState({
+          expensesForSelectedYearCategoryForBar: expensesForSelectedCategory,
+          expensesByYearCategory: body.expenseCategorySums
+        }
       );
-
-      const responseCategories = await fetch('/home/api/expense/categories/names', requestOptions);
-      const categories = await responseCategories.json();
-      this.setState({
-          categories: categories
-      });
-      categories.push('ALL')
-
-      const responseMonths = await fetch('/home/api/expense/months', requestOptions);
-      const months = await responseMonths.json();
-      var monthsArr = [];
-      months.forEach(
-        month => monthsArr.push({
-            'year': month.year,
-            'month': month.month,
-            'monthStr': formatYearMonth(month.year, month.month)
-        })
-      )
-      this.setState({
-          months: monthsArr
-      });
-
   }
+
+  handleMonthlyExpensesForCategory = (body) => {
+    this.setState(
+            { expensesForCategory: body.expenseCategorySums }
+       );
+  }
+
+
 
   toggleCategory = () => {
       this.setState({
@@ -124,18 +126,8 @@ class ExpenseList extends Component {
 
   changeCategoryValue = (e) => {
       this.setState({categoryDropDownValue: e.currentTarget.textContent});
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-      };
-
-      fetch("/home/api/expense/monthly/categories/" + e.currentTarget.getAttribute("id"), requestOptions)
-          .then(response => response.json())
+      fetchMonthlyExpensesForCategoryJson(e.currentTarget.getAttribute("id"))
           .then(expensesJson => {
-              console.table(expensesJson.expenses);
               this.setState(
                   { expensesForCategory: expensesJson.expenseCategorySums }
               );
@@ -231,16 +223,8 @@ class ExpenseList extends Component {
   changeExpMonthValue = (e) => {
       const yearMonth = e.currentTarget.getAttribute("id");
       this.setState({monthExpDropDownValue: e.currentTarget.textContent});
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-      };
-
-      fetch("/home/api/expense?yearMonth=" + yearMonth, requestOptions)
-          .then(response => response.json())
+      fetchExpensesForYearMonthJson(yearMonth)
           .then(expensesJson => {
               console.table(expensesJson.expenses);
               this.setState(
@@ -252,16 +236,8 @@ class ExpenseList extends Component {
 
   showExpenseCategoryModal = (event) => {
       console.log("event: ", event.target.getAttribute("tranId"))
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-      };
-
-      fetch("/home/api/expense?yearMonth=" + event.target.getAttribute("tranId") + "&category=" + this.state.categoryDropDownValue, requestOptions)
-          .then(response => response.json())
+      fetchExpensesForYearMonthAndCategoryJson(event.target.getAttribute("tranId"), this.state.categoryDropDownValue)
           .then(expensesJson => {
               const expenseCategoryMonthRows = expensesJson.expenses.map( expense => {
                   return <tr>
@@ -304,6 +280,7 @@ class ExpenseList extends Component {
       expenseCategoryMonthRows,
       dimmerActive
     } = this.state;
+
     const title = "Expenses";
 
     const expenseForCategoriesRows = expensesForCategory.map(record => {
