@@ -12,6 +12,8 @@ import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChar
 import ExpenseMonthByCategoryBarChart from './charts/expenseMonthByCategoryBarChart';
 import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
+import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson} from './api/ExpensesAPIManager.js'
+import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
 
 class HomeCards extends Component {
 
@@ -92,48 +94,50 @@ class HomeCards extends Component {
   };
 
   async componentDidMount() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
+    await Promise.all([
+        fetchExpenseHeadsJson().then(this.handleExpenseHeads),
+        fetchCurrentMonthExpenseByDayJson().then(this.handleCurrentMonthExpenseByDay),
+        fetchExpenseByCategoryMonthJson().then(this.handleExpenseByCategoryMonth),
+        fetchMonthlyIncomeExpenseSummaryJson().then(this.handleMonthlyIncomeExpenseSummary),
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+  }
 
-    const response = await fetch('/home/api/expense/current_month_by_day', requestOptions);
-    const body = await response.json();
-    this.setState({
-        monthExpensesByDay: body.expenses,
-        monthExpensesByCategory: body.categoryExpenses
-    });
+  handleExpenseHeads = (body) => {
+         this.setState({
+             expCategories: body
+         });
 
-    var sum = 0;
-    body.expenses.forEach(function(d) {
-        sum += d.amount;
-    });
-    this.setState({
-        totalMonthExpense: sum
-    });
+         this.setState({ dimmerActive: false })
+  }
 
-    const responseSumByCatMonth = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
-    const bodySumByCat = await responseSumByCatMonth.json();
-    this.setState({
-        expensesByCategory: bodySumByCat.expenseCategorySums
-    });
+  handleCurrentMonthExpenseByDay = (body) => {
+      this.setState({
+          monthExpensesByDay: body.expenses,
+          monthExpensesByCategory: body.categoryExpenses
+      });
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly', requestOptions);
-     const bodyMonthlySummary = await responseMonthlySummary.json();
-     this.setState({
-         monthlySummary: bodyMonthlySummary.records
-     });
+      var sum = 0;
+      body.expenses.forEach(function(d) {
+          sum += d.amount;
+      });
+      this.setState({
+          totalMonthExpense: sum
+      });
+  }
 
-      const responseCategories = await fetch('/home/api/expense/categories/names', requestOptions);
-       const categories = await responseCategories.json();
+  handleExpenseByCategoryMonth = (body) => {
+      this.setState({
+          expensesByCategory: body.expenseCategorySums
+      });
+  }
+
+  handleMonthlyIncomeExpenseSummary = (body) => {
        this.setState({
-           expCategories: categories
+           monthlySummary: body.records
        });
-
-       this.setState({ dimmerActive: false })
   }
 
   render() {
@@ -152,7 +156,6 @@ class HomeCards extends Component {
         expCategories,
         dimmerActive
       } =  this.state;
-
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
@@ -307,7 +310,6 @@ class HomeCards extends Component {
           </div>
       );
   }
-
 }
 
 export default HomeCards;

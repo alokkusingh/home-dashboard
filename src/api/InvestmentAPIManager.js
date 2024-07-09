@@ -2,6 +2,7 @@ import Pbf from 'pbf'
 import getInvestmentsResponse from '../proto/getInvestmentsResponse'
 import getInvestmentsRorMetricsResponse from '../proto/getInvestmentsRorMetricsResponse'
 import getRawInvestmentsResponse from '../proto/getRawInvestmentsResponse'
+import {getHeadersJson, getHeadersProto} from './APIUtils'
 
 export async function fetchInvestmentReturnsProto() {
     var requestOptions = {
@@ -56,20 +57,4 @@ export async function fetchInvestmentSummaryJson() {
     console.log(investments);
 
     return investments;
-}
-
-function getHeadersProto() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-    myHeaders.append("Accept", "application/x-protobuf");
-
-    return myHeaders;
-}
-
-function getHeadersJson() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-    myHeaders.append("Accept", "application/json");
-
-    return myHeaders;
 }
