@@ -5,6 +5,7 @@ import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
+import {fetchAccountBalancesJson, fetchTransactionsJson, fetchATransactionJson} from './api/EstateAPIManager.js'
 
 class EstateSummary extends Component {
 
@@ -47,81 +48,48 @@ class EstateSummary extends Component {
     };
   }
 
-  showModal = (event) => {
-    console.log("event: ", event.target.getAttribute("id"))
-
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
-    fetch("/home/api/odion/transactions/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
-        .then(transactionsJson => {
-            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
-                return <tr>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
-                 </tr>
-            });
-            this.setState({ accountTransactionsRows: accountTransactionsRows });
-            this.setState({ transactionModalShow: !this.state.transactionModalShow });
-        }
-    );
-  };
-
-  hideModal = () => {
-    this.setState({ transactionModalShow: !this.state.transactionModalShow});
-  };
-
   async componentDidMount() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+     await Promise.all([
+        fetchAccountBalancesJson().then(this.handleAccountBalances),
+        fetchTransactionsJson().then(this.handleTransactions)
+     ]);
+     // All fetch calls are done now
+      console.log(this.state);
+  }
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-    const response = await fetch('/home/api/odion/accounts', requestOptions);
-    const body = await response.json();
-
-    const balanceByHeadCredit = [];
-    const balanceByHeadDebit = [];
-    for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
-      var totalCredit = 0;
-      var totalDebit = 0;
-      accountsBalance.map(record => {
-          if (record.balance < 0) {
-            totalDebit += record.balance;
-          } else {
-            totalCredit += record.balance;
-          }
+  handleAccountBalances = (body) => {
+      const balanceByHeadCredit = [];
+      const balanceByHeadDebit = [];
+      for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
+        var totalCredit = 0;
+        var totalDebit = 0;
+        accountsBalance.map(record => {
+            if (record.balance < 0) {
+              totalDebit += record.balance;
+            } else {
+              totalCredit += record.balance;
+            }
+        });
+        balanceByHeadDebit[head] = Math.abs(totalDebit);
+        balanceByHeadCredit[head] = Math.abs(totalCredit);
+      }
+      this.setState({
+          accountsBalance: body.accountBalances,
+          headAccountBalances: body.headAccountBalances,
+          balanceByHeadCredit: balanceByHeadCredit,
+          balanceByHeadDebit: balanceByHeadDebit
       });
-      balanceByHeadDebit[head] = Math.abs(totalDebit);
-      balanceByHeadCredit[head] = Math.abs(totalCredit);
-    }
-    this.setState({
-        accountsBalance: body.accountBalances,
-        headAccountBalances: body.headAccountBalances,
-        balanceByHeadCredit: balanceByHeadCredit,
-        balanceByHeadDebit: balanceByHeadDebit
-    });
-    const expenses = [];
-    const fundings = [];
-    const loans = [];
-    var loanTotal = 0;
-    const fundingsProperty = [];
-    const expensesAdarsh = [];
-    const expensesJyothi = [];
-    var total = 0;
-    var totalAdarsh = 0;
-    var totalJyothi = 0;
-    body.accountBalances.map(record => {
+      const expenses = [];
+      const fundings = [];
+      const loans = [];
+      var loanTotal = 0;
+      const fundingsProperty = [];
+      const expensesAdarsh = [];
+      const expensesJyothi = [];
+      var total = 0;
+      var totalAdarsh = 0;
+      var totalJyothi = 0;
+      body.accountBalances.map(record => {
           if (record.account === 'INTEREST') {
              expenses.push({
                'head': 'Interest',
@@ -236,58 +204,56 @@ class EstateSummary extends Component {
             });
             totalJyothi += Math.abs(record.balance);
           }
-       }
-     );
+         }
+      );
 
-     this.setState({
-         fundings: fundings
-     });
-     this.setState({
-         loans: loans
-     });
-     this.setState({
-         loanTotal: loanTotal
-     });
-     this.setState({
-         expenses: expenses
-     });
-      this.setState({
-          expensesAdarsh: expensesAdarsh
-      });
-      this.setState({
-          expensesJyothi: expensesJyothi
-      });
-     this.setState({
-         total: total
-     });
-      this.setState({
-          totalAdarsh: totalAdarsh
-      });
-      this.setState({
-          totalJyothi: totalJyothi
-      });
+       this.setState({
+           fundings: fundings
+       });
+       this.setState({
+           loans: loans
+       });
+       this.setState({
+           loanTotal: loanTotal
+       });
+       this.setState({
+           expenses: expenses
+       });
+       this.setState({
+            expensesAdarsh: expensesAdarsh
+       });
+       this.setState({
+            expensesJyothi: expensesJyothi
+       });
+       this.setState({
+           total: total
+       });
+       this.setState({
+            totalAdarsh: totalAdarsh
+       });
+       this.setState({
+            totalJyothi: totalJyothi
+       });
 
-      fundingsProperty.push({
-         'head': 'Odion',
-         'amount': total
-      });
-      fundingsProperty.push({
-         'head': 'Adarsh',
-         'amount': totalAdarsh
-      });
-      fundingsProperty.push({
-         'head': 'Jyothi',
-         'amount': totalJyothi
-      })
-      this.setState({
-          fundingsProperty: fundingsProperty
-      });
+       fundingsProperty.push({
+           'head': 'Odion',
+           'amount': total
+       });
+       fundingsProperty.push({
+           'head': 'Adarsh',
+           'amount': totalAdarsh
+       });
+       fundingsProperty.push({
+           'head': 'Jyothi',
+           'amount': totalJyothi
+       })
+       this.setState({
+            fundingsProperty: fundingsProperty
+       });
+  }
 
-     const monthlyResponse = await fetch('/home/api/odion/monthly/transaction', requestOptions);
-     const bodyMonthly = await monthlyResponse.json();
+  handleTransactions = (bodyMonthly) => {
      this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
-
-
      const interests = bodyMonthly.accountMonthTransaction.INTEREST;
      const monthlyInterests = [];
      Object.keys(interests).forEach(
@@ -459,6 +425,31 @@ class EstateSummary extends Component {
      );
      this.setState({ monthlyMiscs: monthlyMiscs });
   }
+
+  showModal = (event) => {
+    console.log("event: ", event.target.getAttribute("id"))
+
+    fetchATransactionJson(event.target.getAttribute("id"))
+        .then(transactionsJson => {
+            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
+                return <tr>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
+                 </tr>
+            });
+            this.setState({ accountTransactionsRows: accountTransactionsRows });
+            this.setState({ transactionModalShow: !this.state.transactionModalShow });
+        }
+    );
+  };
+
+  hideModal = () => {
+    this.setState({ transactionModalShow: !this.state.transactionModalShow});
+  };
+
+
 
   render() {
     const {

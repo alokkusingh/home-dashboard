@@ -14,6 +14,9 @@ import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson} from './api/ExpensesAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
+import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
+import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
+import {TileCard} from './cards/tileCard'
 
 class HomeCards extends Component {
 
@@ -28,6 +31,21 @@ class HomeCards extends Component {
       monthExpensesByCategory: [],
       monthlySummary: [],
       totalMonthExpense: 0,
+      totalLastMonthExpense: 0,
+      totalYearExpense: 0,
+      totalLastYearExpense: 0,
+      investmentTotalValue: 0,
+      investmentLastMonthReturn: 0,
+      investmentThisYearReturn: 0,
+      investmentCumulativeReturn: 0,
+      estateInvestmentAmount: 0,
+      estateOdionInvestment: 0,
+      estateAdarshInvestment: 0,
+      estateJGETInvestment: 0,
+      loanAmount: 0,
+      loanInterestLastMonth: 0,
+      loanInterestThisYear: 0,
+      loanInterestLastYear: 0,
       count: 0,
       expenseModalShow: false,
       expenseCatModalShow: false,
@@ -35,6 +53,181 @@ class HomeCards extends Component {
       catExpensesRows: "",
       dimmerActive: {}
     };
+  }
+
+  async componentDidMount() {
+    await Promise.all([
+        fetchExpenseHeadsJson().then(this.handleExpenseHeads),
+        fetchCurrentMonthExpenseByDayJson().then(this.handleCurrentMonthExpenseByDay),
+        fetchExpenseByCategoryMonthJson().then(this.handleExpenseByCategoryMonth),
+        fetchMonthlyIncomeExpenseSummaryJson().then(this.handleMonthlyIncomeExpenseSummary),
+        fetchInvestmentReturnsProto().then(this.handleInvestmentReturns),
+        fetchAccountBalancesJson().then(this.handleEstateAccountBalances),
+        fetchTransactionsJson().then(this.handleTransactionsJson)
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+  }
+
+  handleExpenseHeads = (body) => {
+         this.setState({
+             expCategories: body
+         });
+
+         this.setState({ dimmerActive: false })
+  }
+
+  handleCurrentMonthExpenseByDay = (body) => {
+      this.setState({
+          monthExpensesByDay: body.expenses,
+          monthExpensesByCategory: body.categoryExpenses
+      });
+
+      var sum = 0;
+      body.expenses.forEach(function(d) {
+          sum += d.amount;
+      });
+      this.setState({
+          totalMonthExpense: sum
+      });
+  }
+
+  handleExpenseByCategoryMonth = (body) => {
+      this.setState({
+          expensesByCategory: body.expenseCategorySums
+      });
+  }
+
+  handleMonthlyIncomeExpenseSummary = (body) => {
+       this.setState({
+           monthlySummary: body.records
+       });
+
+       var totalLastMonthExpense = 0;
+       var totalYearExpense = 0;
+       var totalLastYearExpense = 0;
+       const today = new Date();
+       body.records.forEach(function(d) {
+           if (d.year === today.getFullYear() && d.month === today.getMonth()) {
+              totalLastMonthExpense += d.expenseAmount;
+           }
+           if (d.year === today.getFullYear()) {
+              totalYearExpense += d.expenseAmount;
+           }
+           if (d.year === today.getFullYear() - 1) {
+              totalLastYearExpense += d.expenseAmount;
+           }
+       });
+
+       this.setState({
+          totalLastMonthExpense: totalLastMonthExpense,
+          totalYearExpense: totalYearExpense,
+          totalLastYearExpense: totalLastYearExpense
+      });
+  }
+
+  handleInvestmentReturns = (investmentReturnList) => {
+    var investmentTotalValue = 0;
+    var investmentLastMonthReturn = 0;
+    var investmentThisYearReturn = 0;
+    var investmentCumulativeReturn = 0;
+
+   investmentReturnList.forEach(function(d) {
+      if (d.metric === "Previous Month (%)") {
+        investmentLastMonthReturn = (d.total.end - d.total.beg - d.total.inv )
+      }
+      if (d.metric === "Cumulative Return (%)") {
+        investmentTotalValue = d.total.end;
+        investmentCumulativeReturn = (d.total.end - d.total.inv);
+      }
+      if (d.metric === "RoR - 2024") {
+        investmentThisYearReturn = (d.total.end - d.total.beg - d.total.inv)
+      }
+   });
+
+    this.setState({
+       investmentTotalValue: investmentTotalValue,
+       investmentLastMonthReturn: investmentLastMonthReturn,
+       investmentThisYearReturn: investmentThisYearReturn,
+       investmentCumulativeReturn: investmentCumulativeReturn
+    });
+  }
+
+  handleEstateAccountBalances = (body) => {
+
+    var estateOdionInvestment = 0;
+    var estateAdarshInvestment = 0;
+    var estateJGETInvestment = 0;
+    var loanAmount = 0;
+    for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
+      if (head == "ODION") {
+        accountsBalance.forEach(function(d) {
+          estateOdionInvestment += d.balance;
+        });
+      }
+      if (head == "ADARSH") {
+        accountsBalance.forEach(function(d) {
+          estateAdarshInvestment += d.balance;
+        });
+      }
+      if (head == "JYOTHI") {
+        accountsBalance.forEach(function(d) {
+          estateJGETInvestment += d.balance;
+        });
+      }
+
+      if (head == "SAVINGS_BANKS") {
+        accountsBalance.forEach(function(d) {
+          if (d.account === "SBI_MAX_GAIN" || d.account === "BOB_ADVANTAGE") {
+            loanAmount += d.balance;
+          }
+        });
+      }
+    }
+
+    this.setState({
+     estateInvestmentAmount: (estateOdionInvestment + estateAdarshInvestment + estateJGETInvestment) * -1,
+     estateOdionInvestment: estateOdionInvestment * -1,
+     estateAdarshInvestment: estateAdarshInvestment * -1,
+     estateJGETInvestment: estateJGETInvestment * -1,
+     loanAmount: loanAmount
+    });
+  }
+
+  handleTransactionsJson = (body) => {
+
+    var loanInterestLastMonth = 0;
+    var loanInterestThisYear = 0;
+    var loanInterestLastYear = 0;
+    const today = new Date();
+    for (const [month, amount] of Object.entries(body.accountMonthTransaction.INTEREST)) {
+      if (month === formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")) {
+        loanInterestLastMonth += amount;
+      }
+      if (month.split("-")[0] == today.getFullYear()) {
+        loanInterestThisYear += amount;
+      }
+      if (month.split("-")[0] == today.getFullYear()-1) {
+        loanInterestLastYear += amount;
+      }
+    }
+    for (const [month, amount] of Object.entries(body.accountMonthTransaction.INTEREST_ADARSH)) {
+      if (month === formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")) {
+        loanInterestLastMonth += amount;
+      }
+      if (month.split("-")[0] == today.getFullYear()) {
+        loanInterestThisYear += amount;
+      }
+      if (month.split("-")[0] == today.getFullYear()-1) {
+        loanInterestLastYear += amount;
+      }
+    }
+
+    this.setState({
+      loanInterestLastMonth: loanInterestLastMonth,
+      loanInterestThisYear: loanInterestThisYear,
+      loanInterestLastYear: loanInterestLastYear
+    });
   }
 
   showExpenseModal = (event) => {
@@ -93,53 +286,6 @@ class HomeCards extends Component {
       this.setState({ expenseCatModalShow: !this.state.expenseCatModalShow });
   };
 
-  async componentDidMount() {
-
-    await Promise.all([
-        fetchExpenseHeadsJson().then(this.handleExpenseHeads),
-        fetchCurrentMonthExpenseByDayJson().then(this.handleCurrentMonthExpenseByDay),
-        fetchExpenseByCategoryMonthJson().then(this.handleExpenseByCategoryMonth),
-        fetchMonthlyIncomeExpenseSummaryJson().then(this.handleMonthlyIncomeExpenseSummary),
-    ]);
-    // All fetch calls are done now
-    console.log(this.state);
-  }
-
-  handleExpenseHeads = (body) => {
-         this.setState({
-             expCategories: body
-         });
-
-         this.setState({ dimmerActive: false })
-  }
-
-  handleCurrentMonthExpenseByDay = (body) => {
-      this.setState({
-          monthExpensesByDay: body.expenses,
-          monthExpensesByCategory: body.categoryExpenses
-      });
-
-      var sum = 0;
-      body.expenses.forEach(function(d) {
-          sum += d.amount;
-      });
-      this.setState({
-          totalMonthExpense: sum
-      });
-  }
-
-  handleExpenseByCategoryMonth = (body) => {
-      this.setState({
-          expensesByCategory: body.expenseCategorySums
-      });
-  }
-
-  handleMonthlyIncomeExpenseSummary = (body) => {
-       this.setState({
-           monthlySummary: body.records
-       });
-  }
-
   render() {
       const {
         monthExpenses,
@@ -149,6 +295,21 @@ class HomeCards extends Component {
         monthExpensesByCategory,
         monthlySummary,
         totalMonthExpense,
+        totalLastMonthExpense,
+        totalYearExpense,
+        totalLastYearExpense,
+        investmentTotalValue,
+        investmentLastMonthReturn,
+        investmentThisYearReturn,
+        investmentCumulativeReturn,
+        estateInvestmentAmount,
+        estateJGETInvestment,
+        estateAdarshInvestment,
+        estateOdionInvestment,
+        loanAmount,
+        loanInterestLastMonth,
+        loanInterestThisYear,
+        loanInterestLastYear,
         expenseModalShow,
         expenseCatModalShow,
         dayExpensesRows,
@@ -199,6 +360,40 @@ class HomeCards extends Component {
       return (
           <div>
               <div id="cards" align="center" >
+              <Row>
+                <Col l={4} m={4} s={4} >
+                  <TileCard title="Expense"
+                    x={{"value":NumberFormatNoDecimal(totalMonthExpense), "text":"This Month"}}
+                    a={{"value":NumberFormatNoDecimal(totalLastMonthExpense), "text":"Last Month"}}
+                    b={{"value":NumberFormatNoDecimal(totalYearExpense), "text":"This Year"}}
+                    c={{"value":NumberFormatNoDecimal(totalLastYearExpense), "text":"Last Year"}}
+                  />
+                </Col>
+                <Col l={4} m={4} s={4} >
+                  <TileCard title="Investment"
+                    x={{"value":NumberFormatNoDecimal(investmentTotalValue), "text":"Market Value"}}
+                    a={{"value":NumberFormatNoDecimal(investmentLastMonthReturn), "text":"Last Month Return"}}
+                    b={{"value":NumberFormatNoDecimal(investmentThisYearReturn), "text":"This Year Return"}}
+                    c={{"value":NumberFormatNoDecimal(investmentCumulativeReturn), "text":"Cumulative Return"}}
+                  />
+                </Col>
+                <Col l={4} m={4} s={4} >
+                  <TileCard title="Estate"
+                    x={{"value":NumberFormatNoDecimal(estateInvestmentAmount), "text":"Invested"}}
+                    a={{"value":NumberFormatNoDecimal(estateAdarshInvestment), "text":"Adarsh"}}
+                    b={{"value":NumberFormatNoDecimal(estateOdionInvestment), "text":"Odion"}}
+                    c={{"value":NumberFormatNoDecimal(estateJGETInvestment), "text":"JGTE"}}
+                  />
+                </Col>
+                <Col l={4} m={4} s={4} >
+                  <TileCard title="Loan"
+                    x={{"value":NumberFormatNoDecimal(loanAmount), "text":"Dept"}}
+                    a={{"value":NumberFormatNoDecimal(loanInterestLastMonth), "text":"Interest Last Month"}}
+                    b={{"value":NumberFormatNoDecimal(loanInterestThisYear), "text":"Interest This Year"}}
+                    c={{"value":NumberFormatNoDecimal(loanInterestLastYear), "text":"Interest Last Year"}}
+                  />
+                </Col>
+              </Row>
               <Row>
                 <Col m={2} s={2} l={2}>
                     <Card className="card-panel teal lighten-4" textClassName="black-text" >

@@ -18,6 +18,19 @@ export async function fetchInvestmentReturnsProto() {
     return investmentReturnList;
 }
 
+export async function fetchInvestmentReturnsJson() {
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersJson()
+    };
+    const responsePromise = await fetch('/home/api/investment/return', requestOptions);
+    const investmentsReturn = await responsePromise.json();
+    console.log(investmentsReturn);
+    const investmentReturnList = investmentsReturn.investmentsRorMetrics;
+
+    return investmentReturnList;
+}
+
 export async function fetchInvestmentSummaryProto() {
 
     var requestOptions = {
