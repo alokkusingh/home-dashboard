@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 import './css/App.css';
+import {refreshSheet} from './api/GSheetAPIManager.js'
 
 class RefreshGoogleSheets extends Component {
 
@@ -13,23 +14,8 @@ class RefreshGoogleSheets extends Component {
   async componentDidMount() {
   }
 
-  refreshSheet = (e) => {
-
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-    console.log(e);
-    console.log(e.currentTarget.getAttribute("id"));
-    fetch("/home/etl/gsheet/refresh/" + e.currentTarget.getAttribute("id"), requestOptions)
-        .then(response => {
-            console.log(response);
-        }
-    );
-
+  refreshGSheet = (e) => {
+    refreshSheet(e.currentTarget.getAttribute("id"));
   }
 
   render() {
@@ -39,19 +25,19 @@ class RefreshGoogleSheets extends Component {
       return (
           <div className="center">
             <Button.Group basic size='small'>
-                <Button id='expense' onClick={this.refreshSheet}>
+                <Button id='expense' onClick={this.refreshGSheet}>
                   <Icon name='refresh'/>
                   Expense
                 </Button>
-                <Button id='investment' onClick={this.refreshSheet}>
+                <Button id='investment' onClick={this.refreshGSheet}>
                   <Icon name='refresh'/>
                   Investment
                 </Button>
-                <Button id='tax' onClick={this.refreshSheet}>
+                <Button id='tax' onClick={this.refreshGSheet}>
                   <Icon name='refresh'/>
                   Tax
                 </Button>
-                <Button id='odion/transactions' onClick={this.refreshSheet}>
+                <Button id='odion/transactions' onClick={this.refreshGSheet}>
                   <Icon name='refresh'/>
                   Odion Transaction
                 </Button>

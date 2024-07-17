@@ -6,6 +6,10 @@ import { formatYearMonth } from "./utils/FormatYearMonth";
 import DrawPiChart from "./charts/drawPiChart";
 import DrawBarChart from "./charts/drawBarChart";
 import DrawSalaryBarChart from "./charts/drawSalaryBarChart";
+import {fetchYearlyTaxPaidJson} from './api/SalaryAPIManager.js'
+import {fetchSalaryByCompanyJson} from './api/BankAPIManager.js'
+import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
+import {fetchInvestmentsForMonthProto} from './api/InvestmentAPIManager.js'
 
 class Salary extends Component {
 
@@ -33,31 +37,31 @@ class Salary extends Component {
   }
 
   async componentDidMount() {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    await Promise.all([
+      fetchYearlyTaxPaidJson().then(this.handleYearlyTaxPaid),
+      fetchSalaryByCompanyJson().then(this.handleSalaryByCompany),
+      fetchMonthlyIncomeExpenseSummaryJson().then(this.handleMonthlyIncomeExpenseSummary),
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+  }
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-      };
-
-    const responseTaxByYear = await fetch('/home/api/tax/all', requestOptions);
-    const bodyResponseTaxByYear = await responseTaxByYear.json();
+  handleYearlyTaxPaid = (body) => {
     const taxByYearMap = new Map();
-    bodyResponseTaxByYear.taxes.map(record => {
+    body.taxes.map(record => {
       taxByYearMap.set(record.financialYear, Math.abs(record.paidAmount));
     });
     this.setState({
         taxByYear: taxByYearMap
     });
+  }
 
-    const responseSalaryByCompany = await fetch('/home/api/bank/salary/bycompany', requestOptions);
-    const bodySalaryByCompany = await responseSalaryByCompany.json();
+  handleSalaryByCompany = (body) => {
     this.setState({
-        total: bodySalaryByCompany.total
+        total: body.total
     });
 
-    for (let companyRecord of bodySalaryByCompany.companySalaries) {
+    for (let companyRecord of body.companySalaries) {
       let name = companyRecord.company;
       let companyTotal = companyRecord.total;
       let companySalaryByMonth = companyRecord.monthSalaries
@@ -99,25 +103,16 @@ class Salary extends Component {
         });
       }
     }
+  }
 
-     const responseMonthlySummary = await fetch('/home/api/summary/monthly?sinceMonth=2007-06', requestOptions);
-     const bodyMonthlySummary = await responseMonthlySummary.json();
+  handleMonthlyIncomeExpenseSummary = (body) => {
      this.setState({
-         monthlySummary: bodyMonthlySummary.records
+         monthlySummary: body.records
      });
   }
 
   showMonthDetailsModal = (event) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
-    fetch("/home/api/investment/month/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
+    fetchInvestmentsForMonthProto(event.target.getAttribute("id"))
         .then(recordsJson => {
             const monthDetailsRows = recordsJson.map( record => {
                 return <tr>
@@ -135,7 +130,6 @@ class Salary extends Component {
   hideMonthDetailsModal = () => {
     this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow});
   };
-
 
   render() {
     const {

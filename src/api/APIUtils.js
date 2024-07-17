@@ -13,3 +13,11 @@ export function getHeadersProto() {
 
     return myHeaders;
 }
+
+export function getHeadersOctet() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("Accept", "application/octet-stream");
+
+    return myHeaders;
+}

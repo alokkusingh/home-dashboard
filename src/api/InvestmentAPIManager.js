@@ -59,6 +59,20 @@ export async function fetchInvestmentsForHeadProto(head) {
     return investments;
 }
 
+export async function fetchInvestmentsForMonthProto(month) {
+
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersProto()
+    };
+    const responsePromise = await fetch('/home/api/investment/month/' + month, requestOptions);
+    const responseBuffer = await responsePromise.arrayBuffer();
+    var investments = getRawInvestmentsResponse.GetRawInvestmentsResponse.read(new Pbf(responseBuffer)).investments;
+    console.log(investments);
+
+    return investments;
+}
+
 export async function fetchInvestmentSummaryJson() {
 
     var requestOptions = {

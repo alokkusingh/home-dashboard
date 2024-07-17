@@ -4,6 +4,8 @@ import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
 import { Button, Modal } from 'semantic-ui-react';
+import {fetchAllTransactionsJson, fetchTransactionByIdJson} from './api/BankAPIManager.js'
+import {etlDownloadTransactions} from './api/EtlAPIManager.js'
 
 class TransactionList extends Component {
 
@@ -18,33 +20,42 @@ class TransactionList extends Component {
     };
   }
 
+  async componentDidMount() {
+
+    await Promise.all([
+      fetchAllTransactionsJson().then(this.handleAllTransactions),
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+  }
+
+  handleAllTransactions = (body) => {
+    this.setState({
+        transactions: body.transactions,
+        count: body.count,
+        lastTransactionDate: body.lastTransactionDate
+    });
+  }
+
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("id"))
 
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
     let tranDetails = [];
-
-    fetch("/home/api/bank/transactions/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
+    fetchTransactionByIdJson(event.target.getAttribute("id"))
         .then(data => {
-              tranDetails[1] = data.id;
-              tranDetails[2] = data.date;
-              tranDetails[3] = data.debit;
-              tranDetails[4] = data.credit;
-              tranDetails[5] = data.head;
-              tranDetails[6] = data.description;
+            tranDetails[1] = data.id;
+            tranDetails[2] = data.date;
+            tranDetails[3] = data.debit;
+            tranDetails[4] = data.credit;
+            tranDetails[5] = data.head;
+            tranDetails[6] = data.description;
 
-              this.setState(
-                  { tranDetails: tranDetails }
-              );
-              this.setState({transactionModalShow: !this.state.transactionModalShow});
+            this.setState(
+              {
+                tranDetails: tranDetails,
+                transactionModalShow: !this.state.transactionModalShow
+              }
+            );
         }
     );
   };
@@ -53,44 +64,9 @@ class TransactionList extends Component {
     this.setState({ transactionModalShow: !this.state.transactionModalShow});
   };
 
-  async componentDidMount() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-    const response = await fetch('/home/api/bank/transactions', requestOptions);
-    const body = await response.json();
-    this.setState({
-        transactions: body.transactions,
-        count: body.count,
-        lastTransactionDate: body.lastTransactionDate
-    });
-  }
-
   downloadTransactions = () => {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-      };
-
-  		fetch('/home/etl/report/download', requestOptions)
-  			.then(response => {
-  				response.blob().then(blob => {
-  					let url = window.URL.createObjectURL(blob);
-  					let a = document.createElement('a');
-  					a.href = url;
-  					a.download = 'transactions.csv';
-  					a.click();
-  				});
-  				//window.location.href = response.url;
-  		});
-  	}
+    etlDownloadTransactions();
+  }
 
   render() {
     const {transactions} = this.state;
