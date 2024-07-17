@@ -17,6 +17,7 @@ import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
 import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
 import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
 import {TileCard} from './cards/tileCard'
+import {getCurrentMonth, getPreviousMonth, getCurrentMonthFull, getPreviousMonthFull, getCurrentYear, getPreviousYear} from './utils/dateUtils'
 
 class HomeCards extends Component {
 
@@ -363,34 +364,34 @@ class HomeCards extends Component {
               <Row>
                 <Col l={4} m={4} s={4} >
                   <TileCard title="Expense"
-                    x={{"value":NumberFormatNoDecimal(totalMonthExpense), "text":"This Month"}}
-                    a={{"value":NumberFormatNoDecimal(totalLastMonthExpense), "text":"Last Month"}}
-                    b={{"value":NumberFormatNoDecimal(totalYearExpense), "text":"This Year"}}
-                    c={{"value":NumberFormatNoDecimal(totalLastYearExpense), "text":"Last Year"}}
+                    x={{"value":NumberFormatNoCurrency(totalMonthExpense), "text":getCurrentMonthFull()}}
+                    a={{"value":NumberFormatNoCurrency(totalLastMonthExpense), "text":getPreviousMonthFull()}}
+                    b={{"value":NumberFormatNoCurrency(totalYearExpense), "text":getCurrentYear()}}
+                    c={{"value":NumberFormatNoCurrency(totalLastYearExpense), "text":getPreviousYear()}}
                   />
                 </Col>
                 <Col l={4} m={4} s={4} >
                   <TileCard title="Investment"
-                    x={{"value":NumberFormatNoDecimal(investmentTotalValue), "text":"Market Value"}}
-                    a={{"value":NumberFormatNoDecimal(investmentLastMonthReturn), "text":"Last Month Return"}}
-                    b={{"value":NumberFormatNoDecimal(investmentThisYearReturn), "text":"This Year Return"}}
-                    c={{"value":NumberFormatNoDecimal(investmentCumulativeReturn), "text":"Cumulative Return"}}
+                    x={{"value":NumberFormatNoCurrency(investmentTotalValue), "text":"Market Value"}}
+                    a={{"value":NumberFormatNoCurrency(investmentLastMonthReturn), "text":getPreviousMonthFull() + ' Return'}}
+                    b={{"value":NumberFormatNoCurrency(investmentThisYearReturn), "text":getCurrentYear() + ' Return'}}
+                    c={{"value":NumberFormatNoCurrency(investmentCumulativeReturn), "text":"Total Return"}}
                   />
                 </Col>
                 <Col l={4} m={4} s={4} >
                   <TileCard title="Estate"
-                    x={{"value":NumberFormatNoDecimal(estateInvestmentAmount), "text":"Invested"}}
-                    a={{"value":NumberFormatNoDecimal(estateAdarshInvestment), "text":"Adarsh"}}
-                    b={{"value":NumberFormatNoDecimal(estateOdionInvestment), "text":"Odion"}}
-                    c={{"value":NumberFormatNoDecimal(estateJGETInvestment), "text":"JGTE"}}
+                    x={{"value":NumberFormatNoCurrency(estateInvestmentAmount), "text":"Invested"}}
+                    a={{"value":NumberFormatNoCurrency(estateAdarshInvestment), "text":"Adarsh"}}
+                    b={{"value":NumberFormatNoCurrency(estateOdionInvestment), "text":"Odion"}}
+                    c={{"value":NumberFormatNoCurrency(estateJGETInvestment), "text":"JGTE"}}
                   />
                 </Col>
                 <Col l={4} m={4} s={4} >
                   <TileCard title="Loan"
-                    x={{"value":NumberFormatNoDecimal(loanAmount), "text":"Dept"}}
-                    a={{"value":NumberFormatNoDecimal(loanInterestLastMonth), "text":"Interest Last Month"}}
-                    b={{"value":NumberFormatNoDecimal(loanInterestThisYear), "text":"Interest This Year"}}
-                    c={{"value":NumberFormatNoDecimal(loanInterestLastYear), "text":"Interest Last Year"}}
+                    x={{"value":NumberFormatNoCurrency(loanAmount), "text":"Dept"}}
+                    a={{"value":NumberFormatNoDecimal(loanInterestLastMonth), "text":getPreviousMonthFull() + ' Interest'}}
+                    b={{"value":NumberFormatNoDecimal(loanInterestThisYear), "text":getCurrentYear() + ' Interest'}}
+                    c={{"value":NumberFormatNoDecimal(loanInterestLastYear), "text":getPreviousYear() + ' Interest'}}
                   />
                 </Col>
               </Row>
