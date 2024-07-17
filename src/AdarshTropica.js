@@ -5,6 +5,7 @@ import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
+import {fetchAccountBalancesJson, fetchTransactionsJson, fetchATransactionJson} from './api/EstateAPIManager.js'
 
 class AdarshTropica extends Component {
 
@@ -24,114 +25,54 @@ class AdarshTropica extends Component {
       monthlyMaxGains: [],
       monthlyBob: [],
       monthlySavings: [],
-      monthlyOdions: [],
       monthlyAdarsh: [],
-      monthlyMiscs: [],
       monthlyMiscsAdarsh: [],
       expenses: [],
       fundings: [],
       fundingsProperty: [],
       expensesAdarsh: [],
-      total: 0,
       totalAdarsh: 0,
       months: [],
       accountMonthTransaction: ""
     };
   }
 
-  showModal = (event) => {
-    console.log("event: ", event.target.getAttribute("id"))
-
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
-    fetch("/home/api/odion/transactions/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
-        .then(transactionsJson => {
-            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
-                return <tr>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
-                 </tr>
-            });
-            this.setState({ accountTransactionsRows: accountTransactionsRows });
-            this.setState({ transactionModalShow: !this.state.transactionModalShow });
-        }
-    );
-  };
-
-  hideModal = () => {
-    this.setState({ transactionModalShow: !this.state.transactionModalShow});
-  };
-
   async componentDidMount() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+     await Promise.all([
+        fetchAccountBalancesJson().then(this.handleAccountBalances),
+        fetchTransactionsJson().then(this.handleTransactions)
+     ]);
+     // All fetch calls are done now
+     console.log(this.state);
+  }
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-    const response = await fetch('/home/api/odion/accounts', requestOptions);
-    const body = await response.json();
-
-    const balanceByHeadCredit = [];
-    const balanceByHeadDebit = [];
-    for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
-      var totalCredit = 0;
-      var totalDebit = 0;
-      accountsBalance.map(record => {
-          if (record.balance < 0) {
-            totalDebit += record.balance;
-          } else {
-            totalCredit += record.balance;
-          }
+  handleAccountBalances = (body) => {
+      const balanceByHeadCredit = [];
+      const balanceByHeadDebit = [];
+      for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
+        var totalCredit = 0;
+        var totalDebit = 0;
+        accountsBalance.map(record => {
+            if (record.balance < 0) {
+              totalDebit += record.balance;
+            } else {
+              totalCredit += record.balance;
+            }
+        });
+        balanceByHeadDebit[head] = Math.abs(totalDebit);
+        balanceByHeadCredit[head] = Math.abs(totalCredit);
+      }
+      this.setState({
+          accountsBalance: body.accountBalances,
+          headAccountBalances: body.headAccountBalances,
+          balanceByHeadCredit: balanceByHeadCredit,
+          balanceByHeadDebit: balanceByHeadDebit
       });
-      balanceByHeadDebit[head] = Math.abs(totalDebit);
-      balanceByHeadCredit[head] = Math.abs(totalCredit);
-    }
-    this.setState({
-        accountsBalance: body.accountBalances,
-        headAccountBalances: body.headAccountBalances,
-        balanceByHeadCredit: balanceByHeadCredit,
-        balanceByHeadDebit: balanceByHeadDebit
-    });
-    const expenses = [];
-    const fundings = [];
-    const fundingsProperty = [];
-    const expensesAdarsh = [];
-    var total = 0;
-    var totalAdarsh = 0;
-    body.accountBalances.map(record => {
-          if (record.account === 'INTEREST') {
-             expenses.push({
-               'head': 'Interest',
-               'amount': Math.abs(record.balance)
-            });
-            total += Math.abs(record.balance);
-          }
-          if (record.account === 'ODION') {
-             expenses.push({
-               'head': 'Odion',
-               'amount': Math.abs(record.balance)
-            });
-            total += Math.abs(record.balance);
-          }
-          if (record.account === 'MISC') {
-             expenses.push({
-               'head': 'Miscellaneous',
-               'amount': Math.abs(record.balance)
-            });
-            total += Math.abs(record.balance);
-          }
-
+      const fundings = [];
+      const fundingsProperty = [];
+      const expensesAdarsh = [];
+      var totalAdarsh = 0;
+      body.accountBalances.map(record => {
           if (record.account === 'SAVING') {
              fundings.push({
                'head': 'Saving',
@@ -177,23 +118,13 @@ class AdarshTropica extends Component {
      this.setState({
          fundings: fundings
      });
-     this.setState({
-         expenses: expenses
-     });
       this.setState({
           expensesAdarsh: expensesAdarsh
       });
-     this.setState({
-         total: total
-     });
       this.setState({
           totalAdarsh: totalAdarsh
       });
 
-      fundingsProperty.push({
-         'head': 'Odion',
-         'amount': total
-      });
       fundingsProperty.push({
          'head': 'Adarsh',
          'amount': totalAdarsh
@@ -201,23 +132,10 @@ class AdarshTropica extends Component {
       this.setState({
           fundingsProperty: fundingsProperty
       });
+  }
 
-     const monthlyResponse = await fetch('/home/api/odion/monthly/transaction', requestOptions);
-     const bodyMonthly = await monthlyResponse.json();
-     this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
-
-
-     const interests = bodyMonthly.accountMonthTransaction.INTEREST;
-     const monthlyInterests = [];
-     Object.keys(interests).forEach(
-         yearMonth => {
-            monthlyInterests.push({
-              'month': yearMonth,
-              'amount': interests[yearMonth]
-            });
-         }
-     );
-     this.setState({ monthlyInterests: monthlyInterests });
+  handleTransactions = (bodyMonthly) => {
+   this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
 
     const interestsAdarsh = bodyMonthly.accountMonthTransaction.INTEREST_ADARSH;
     const monthlyInterestsAdarsh = [];
@@ -231,17 +149,17 @@ class AdarshTropica extends Component {
     );
     this.setState({ monthlyInterestsAdarsh: monthlyInterestsAdarsh });
 
-      const miscsAdarsh = bodyMonthly.accountMonthTransaction.MISC_ADARSH;
-      const monthlyMiscsAdarsh = [];
-      Object.keys(miscsAdarsh).forEach(
-          yearMonth => {
-             monthlyMiscsAdarsh.push({
-               'month': yearMonth,
-               'amount': miscsAdarsh[yearMonth]
-             });
-          }
-      );
-      this.setState({ monthlyMiscsAdarsh: monthlyMiscsAdarsh });
+    const miscsAdarsh = bodyMonthly.accountMonthTransaction.MISC_ADARSH;
+    const monthlyMiscsAdarsh = [];
+    Object.keys(miscsAdarsh).forEach(
+        yearMonth => {
+           monthlyMiscsAdarsh.push({
+             'month': yearMonth,
+             'amount': miscsAdarsh[yearMonth]
+           });
+        }
+    );
+    this.setState({ monthlyMiscsAdarsh: monthlyMiscsAdarsh });
 
      const sbiMaxGain = bodyMonthly.accountMonthTransaction.SBI_MAX_GAIN;
      const monthlyMaxGains = [];
@@ -282,18 +200,6 @@ class AdarshTropica extends Component {
      this.setState({ monthlySavings: monthlySavings });
      this.setState({ months: months });
 
-     const odion = bodyMonthly.accountMonthTransaction.ODION;
-     const monthlyOdions = [];
-     Object.keys(odion).forEach(
-          yearMonth => {
-             monthlyOdions.push({
-               'month': yearMonth,
-               'amount': odion[yearMonth]
-             });
-          }
-     );
-     this.setState({ monthlyOdions: monthlyOdions });
-
       const adarsh = bodyMonthly.accountMonthTransaction.ADARSH;
       const monthlyAdarsh = [];
       Object.keys(adarsh).forEach(
@@ -305,19 +211,30 @@ class AdarshTropica extends Component {
            }
       );
       this.setState({ monthlyAdarsh: monthlyAdarsh })
-
-     const misc = bodyMonthly.accountMonthTransaction.MISC;
-     const monthlyMiscs = [];
-     Object.keys(misc).forEach(
-          yearMonth => {
-             monthlyMiscs.push({
-               'month': yearMonth,
-               'amount': misc[yearMonth]
-             });
-          }
-     );
-     this.setState({ monthlyMiscs: monthlyMiscs });
   }
+
+  showModal = (event) => {
+    console.log("event: ", event.target.getAttribute("id"))
+
+    fetchATransactionJson(event.target.getAttribute("id"))
+        .then(transactionsJson => {
+            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
+                return <tr>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
+                 </tr>
+            });
+            this.setState({ accountTransactionsRows: accountTransactionsRows });
+            this.setState({ transactionModalShow: !this.state.transactionModalShow });
+        }
+    );
+  };
+
+  hideModal = () => {
+    this.setState({ transactionModalShow: !this.state.transactionModalShow});
+  };
 
   render() {
     const {
@@ -326,38 +243,17 @@ class AdarshTropica extends Component {
       balanceByHeadDebit,
       transactionModalShow,
       accountTransactionsRows,
-      monthlyInterests,
       monthlyInterestsAdarsh,
       monthlyMiscsAdarsh,
       monthlyMaxGains,
       monthlyBob,
       monthlySavings,
-      monthlyOdions,
       monthlyAdarsh,
-      monthlyMiscs,
-      expenses,
-      fundings,
-      fundingsProperty,
-      total,
       expensesAdarsh,
       totalAdarsh,
       months,
       accountMonthTransaction
     } = this.state;
-
-//    const accountsBalanceRows = accountsBalance.map(record => {
-//        if (record.balance < 0)
-//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(Math.abs(record.balance))}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-//                </tr>
-//        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-//                  <td id={record.account} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{record.account}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(0)}</td>
-//                  <td id={record.account} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.balance)}</td>
-//                </tr>
-//    });
 
     let accountsBalanceRows = [];
     for (const [head, accountsBalance] of Object.entries(headAccountBalances)) {
@@ -402,12 +298,6 @@ class AdarshTropica extends Component {
     console.log (monthTransactionsRows);
 
 
-    const monthlyInterestRows = monthlyInterests.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
     const monthlyMaxGainRows = monthlyMaxGains.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
@@ -421,18 +311,6 @@ class AdarshTropica extends Component {
                 </tr>
     });
     const monthlySavingRows = monthlySavings.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyOdionRows = monthlyOdions.map(record => {
-        return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
-                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
-                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>
-                </tr>
-    });
-    const monthlyMiscRows = monthlyMiscs.map(record => {
         return <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
                   <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{format(parseISO(record.month), 'MMM yyyy')}</td>
                   <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(record.amount)}</td>

@@ -5,6 +5,7 @@ import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
+import {fetchAccountBalancesJson, fetchTransactionsJson, fetchATransactionJson} from './api/EstateAPIManager.js'
 
 class Jyothi extends Component {
 
@@ -34,49 +35,16 @@ class Jyothi extends Component {
     };
   }
 
-  showModal = (event) => {
-    console.log("event: ", event.target.getAttribute("id"))
-
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-
-    fetch("/home/api/odion/transactions/" + event.target.getAttribute("id"), requestOptions)
-        .then(response => response.json())
-        .then(transactionsJson => {
-            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
-                return <tr>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
-                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
-                 </tr>
-            });
-            this.setState({ accountTransactionsRows: accountTransactionsRows });
-            this.setState({ transactionModalShow: !this.state.transactionModalShow });
-        }
-    );
-  };
-
-  hideModal = () => {
-    this.setState({ transactionModalShow: !this.state.transactionModalShow});
-  };
-
   async componentDidMount() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    await Promise.all([
+      fetchAccountBalancesJson().then(this.handleAccountBalances),
+      fetchTransactionsJson().then(this.handleTransactions)
+    ]);
+    // All fetch calls are done now
+    console.log(this.state);
+  }
 
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
-    const response = await fetch('/home/api/odion/accounts', requestOptions);
-    const body = await response.json();
-
+  handleAccountBalances = (body) => {
     const balanceByHeadCredit = [];
     const balanceByHeadDebit = [];
     for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
@@ -102,7 +70,6 @@ class Jyothi extends Component {
     const fundings = [];
     const fundingsProperty = [];
     var total = 0;
-    var totalAdarsh = 0;
     body.accountBalances.map(record => {
           if (record.account === 'INTEREST_JYOTHI') {
              expenses.push({
@@ -176,11 +143,10 @@ class Jyothi extends Component {
       this.setState({
           fundingsProperty: fundingsProperty
       });
+  }
 
-     const monthlyResponse = await fetch('/home/api/odion/monthly/transaction', requestOptions);
-     const bodyMonthly = await monthlyResponse.json();
-     this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
-
+  handleTransactions = (bodyMonthly) => {
+    this.setState({ accountMonthTransaction: bodyMonthly.accountMonthTransaction });
 
     const jyothi = bodyMonthly.accountMonthTransaction.JYOTHI;
      const monthlyJyothi = [];
@@ -257,6 +223,37 @@ class Jyothi extends Component {
      this.setState({ monthlySavings: monthlySavings });
      this.setState({ months: months });
   }
+
+  showModal = (event) => {
+    console.log("event: ", event.target.getAttribute("id"))
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders
+    };
+
+    fetchATransactionJson(event.target.getAttribute("id"))
+        .then(transactionsJson => {
+            const accountTransactionsRows = transactionsJson.transactions.map( transaction => {
+                return <tr>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{transaction.particular}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.debit)}</td>
+                    <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
+                 </tr>
+            });
+            this.setState({ accountTransactionsRows: accountTransactionsRows });
+            this.setState({ transactionModalShow: !this.state.transactionModalShow });
+        }
+    );
+  };
+
+  hideModal = () => {
+    this.setState({ transactionModalShow: !this.state.transactionModalShow});
+  };
 
   render() {
     const {
