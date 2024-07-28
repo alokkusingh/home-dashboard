@@ -12,6 +12,7 @@ class Investment extends Component {
   constructor() {
     super();
     this.state = {
+      today: new Date(),
       totalMonthlyInvestment: [],
       pfMonthlyInvestment: [],
       npsMonthlyInvestment: [],
@@ -134,22 +135,45 @@ class Investment extends Component {
     });
   };
 
-  showInvestmentheadRecordsModal = (event) => {
+  notFutureMonth = (year, month) => {
+    const {today} = this.state;
+    if (year > today.getFullYear()) {
+      return false;
+    }
+
+    if (year == today.getFullYear() && month > today.getMonth() + 1) {
+      return false;
+    }
+    return true;
+  };
+
+  showInvestmentHeadRecordsModal = (event) => {
     console.log(event);
 
     fetchInvestmentsForHeadProto(event.target.getAttribute("id"))
       .then(investments => {
-          const investmentHeadRecordsRows = investments.map( record => {
-                     return <tr>
-                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.head}</td>
-                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
-                         <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
-                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contribution)}</td>
-                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.contributionAsOnMonth)}</td>
-                         <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.valueAsOnMonth)}</td>
-                      </tr>
+          var prevMonthClosing = 0;
+          const investmentHeadRecordsRows = investments.reverse().map( record => {
+            if (this.notFutureMonth(record.yearx, record.monthx)) {
+               var monthReturn = (record.valueAsOnMonth - (prevMonthClosing + record.contribution));
+               var returnPercentage = monthReturn * 100 / (prevMonthClosing + record.contribution);
+               var row =  <tr>
+                   <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.head}</td>
+                   <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{record.yearx}</td>
+                   <td style={{whiteSpace: 'wrap', textAlign: "center" , fontSize: '.8rem'}}>{Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(1, record.monthx - 1, record.yearx).setMonth(record.monthx - 1))}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoCurrency(record.contribution)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoCurrency(record.contributionAsOnMonth)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoCurrency(record.valueAsOnMonth)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoCurrency(monthReturn)}</td>
+                   <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoCurrencyFraction2(returnPercentage)}</td>
+                </tr>;
+
+              prevMonthClosing = record.valueAsOnMonth;
+              return row;
+            }
           });
-          this.setState({ investmentHeadRecordsRows: investmentHeadRecordsRows });
+
+          this.setState({ investmentHeadRecordsRows: investmentHeadRecordsRows.reverse() });
           this.setState({ monthDetailsModalShow: !this.state.monthDetailsModalShow });
       });
   };
@@ -174,7 +198,7 @@ class Investment extends Component {
 
     const investmentSummaryRecordRows = investmentSummaryRecords.map(
       investment => {
-         return <tr key={investment.head} onClick={this.showInvestmentheadRecordsModal}>
+         return <tr key={investment.head} onClick={this.showInvestmentHeadRecordsModal}>
                  <td id={investment.head} style={{textAlign: "center", fontSize: '.8rem'}}>{investment.head}</td>
                  <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrency(investment.investmentAmount)}</td>
                  <td id={investment.head} style={{textAlign: "right", fontSize: '.8rem', backgroundColor: "lightblue"}}>{NumberFormatNoCurrency(investment.investmentValue)}</td>
@@ -242,11 +266,13 @@ class Investment extends Component {
                         <thead >
                           <tr>
                             <th style={{textAlign: "center"}}>Head</th>
-                            <th style={{textAlign: "center"}}>Year</th>
-                            <th style={{textAlign: "center"}}>Month</th>
-                            <th style={{textAlign: "center"}}>Contribution</th>
+                            <th style={{textAlign: "center"}}>YYYY</th>
+                            <th style={{textAlign: "center"}}>MON</th>
+                            <th style={{textAlign: "center"}}>Invested</th>
                             <th style={{textAlign: "center"}}>Sub Total</th>
                             <th style={{textAlign: "center"}}>Current Value</th>
+                            <th style={{textAlign: "center"}}>Month Return</th>
+                            <th style={{textAlign: "center"}}>Ret %</th>
                           </tr>
                         </thead>
                         <tbody>

@@ -13,6 +13,8 @@ import EstateSummary from './EstateSummary';
 import Odion from './Odion';
 import AdarshTropica from './AdarshTropica';
 import Jyothi from './Jyothi';
+import FormExpense from './FormExpense';
+import FormEstate from './FormEstate';
 
 export default class MenuBarWithContent extends Component {
   state = { activeItem: 'Summary' }
@@ -60,6 +62,12 @@ export default class MenuBarWithContent extends Component {
       }
       if (page === 'Jyothi') {
         return <Jyothi />;
+      }
+      if (page === 'form-expense') {
+        return <FormExpense />
+      }
+      if (page === 'form-estate') {
+        return <FormEstate />
       }
 
       return <TbdPage />;
@@ -120,7 +128,22 @@ export default class MenuBarWithContent extends Component {
               </Menu.Menu>
 
             <Divider horizontal/>
+            <Menu.Header>
+              <Icon name='wordpress forms'/>
+              Forms
+            </Menu.Header>
+            <Menu.Menu>
+              <Menu.Item name='form-expense' active={activeItem === 'orm-expense'} onClick={this.handleItemClick} >
+                <Icon name='credit card outline'/>
+                Expense Entry
+              </Menu.Item>
+              <Menu.Item name='form-estate' active={activeItem === 'form-estate'} onClick={this.handleItemClick} >
+                <Icon name='building outline'/>
+                Estate Entry
+              </Menu.Item>
+            </Menu.Menu>
 
+            <Divider horizontal/>
             <Menu.Header>
               <Icon name='building outline'/>
               Estate
@@ -158,11 +181,9 @@ export default class MenuBarWithContent extends Component {
                 <Icon name='question circle outline'/>
                 Loan
               </Menu.Item>
-
             </Menu.Menu>
 
               <Divider horizontal/>
-
               <Menu.Header>
                 <Icon name='heartbeat'/>
                 Health

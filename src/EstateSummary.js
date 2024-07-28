@@ -439,7 +439,7 @@ class EstateSummary extends Component {
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(transaction.credit)}</td>
                  </tr>
             });
-            this.setState({ accountTransactionsRows: accountTransactionsRows });
+            this.setState({ accountTransactionsRows: accountTransactionsRows.reverse() });
             this.setState({ transactionModalShow: !this.state.transactionModalShow });
         }
     );
@@ -448,8 +448,6 @@ class EstateSummary extends Component {
   hideModal = () => {
     this.setState({ transactionModalShow: !this.state.transactionModalShow});
   };
-
-
 
   render() {
     const {
