@@ -135,11 +135,11 @@ export default class MenuBarWithContent extends Component {
             <Menu.Menu>
               <Menu.Item name='form-expense' active={activeItem === 'orm-expense'} onClick={this.handleItemClick} >
                 <Icon name='credit card outline'/>
-                Expense Entry
+                Expense
               </Menu.Item>
               <Menu.Item name='form-estate' active={activeItem === 'form-estate'} onClick={this.handleItemClick} >
                 <Icon name='building outline'/>
-                Estate Entry
+                Estate
               </Menu.Item>
             </Menu.Menu>
 

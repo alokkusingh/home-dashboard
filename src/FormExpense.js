@@ -10,35 +10,44 @@ import {
   Divider,
   Label,
   Container,
-  Header
+  Header,
+  Popup
 } from 'semantic-ui-react'
 
 import {submitExpenseForm} from './api/FormAPIManager.js'
 
 class FormExpense extends Component {
 
-  state = {}
+  state = {
+    formInProgress: false
+  }
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  handleSubmit = () => {
+  handleSubmit = async() => {
+    this.setState({formInProgress: true});
     const { head, amount, comment } = this.state
-    submitExpenseForm(head, amount, comment);
-    this.setState({ head: '', amount: '', comment: '' });
+    try {
+      await submitExpenseForm(head, amount, comment);
+      this.setState({ head: '', amount: '', comment: '' });
+    } catch(err) {
+      alert(err);
+    }
+    this.setState({formInProgress: false});
   }
 
   render() {
-    const { head, amount, comment } = this.state
+    const { head, amount, comment, formInProgress } = this.state
 
     return (
       <Segment inverted color="brown">
-        <Label ribbon size="huge">Expense Entry From</Label>
+        <Label ribbon size="huge">Expense Entry Form</Label>
         <Divider />
         <Form inverted size="large" onSubmit={this.handleSubmit} success error>
           <FormInput label="Head" placeholder='Head' name='head' value={head} onChange={this.handleChange} width={6} required />
           <FormInput label="Amount" placeholder='Amount' name='amount' value={amount} onChange={this.handleChange} width={5} required type="number"/>
           <FormInput label="Comment" placeholder='Comment' name='comment' value={comment} onChange={this.handleChange} width={10}  />
-          <Button type='submit'  color='teal'>Submit</Button>
+          <Button type='submit' loading={formInProgress} color='teal'>Submit</Button>
         </Form>
       </Segment>
     )
