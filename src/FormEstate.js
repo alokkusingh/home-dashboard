@@ -101,39 +101,41 @@ class FormEstate extends Component {
     const { particular, debitFrom, creditTo, amount, formInProgress } = this.state
 
     return (
-      <Segment inverted color="brown">
+      <Segment raised color="brown">
         <Dimmer active={formInProgress}>
           <Loader>Submitting</Loader>
         </Dimmer>
         <Label ribbon size="huge">Real Estate Transaction Entry Form</Label>
         <Divider />
         <Form inverted size="large" onSubmit={this.handleSubmit} >
-          <FormInput label="Particular" placeholder='Particular' name='particular' value={particular} onChange={this.handleChange} width={6} required />
-          <FormInput label="Amount" placeholder='Amount' name='amount' value={amount} onChange={this.handleChange} width={5} required type="number"/>
-          <FormGroup widths='head'>
-              <FormInput
-                control={Select}
-                options={account}
-                label={{ children: 'Debit From', htmlFor: 'debitFrom' }}
-                searchInput={{ id: 'debitFrom' }}
-                placeholder='Debit From'
-                name='debitFrom'
-                value={debitFrom}
-                onChange={this.handleChange}
-                width={6}
-                required />
-              <FormInput
-                control={Select}
-                options={account}
-                label={{ children: 'Credit To', htmlFor: 'creditTo' }}
-                searchInput={{ id: 'creditTo' }}
-                placeholder='Credit To'
-                name='creditTo'
-                value={creditTo}
-                onChange={this.handleChange}
-                width={6}
-                required />
-          </FormGroup>
+          <Segment inverted color="brown">
+            <FormInput label="Particular" placeholder='Particular' name='particular' value={particular} onChange={this.handleChange} width={6} required />
+            <FormInput label="Amount" placeholder='Amount' name='amount' value={amount} onChange={this.handleChange} width={5} required type="number"/>
+            <FormGroup widths='head'>
+                <FormInput
+                  control={Select}
+                  options={account}
+                  label={{ children: 'Debit From', htmlFor: 'debitFrom' }}
+                  searchInput={{ id: 'debitFrom' }}
+                  placeholder='Debit From'
+                  name='debitFrom'
+                  value={debitFrom}
+                  onChange={this.handleChange}
+                  width={6}
+                  required />
+                <FormInput
+                  control={Select}
+                  options={account}
+                  label={{ children: 'Credit To', htmlFor: 'creditTo' }}
+                  searchInput={{ id: 'creditTo' }}
+                  placeholder='Credit To'
+                  name='creditTo'
+                  value={creditTo}
+                  onChange={this.handleChange}
+                  width={6}
+                  required />
+            </FormGroup>
+          </Segment>
           <Button type='submit' loading={formInProgress} color='teal' size='large' icon labelPosition='right'>
             Submit
             <Icon name='send' />

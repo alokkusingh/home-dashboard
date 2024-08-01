@@ -1,4 +1,4 @@
-import {postHeadersJson, fetch_retry, fetch_retry_async_json} from './APIUtils'
+import {postHeadersJson, fetch_retry_async_json} from './APIUtils'
 
 export async function submitExpenseForm(head, amount, comment) {
     var requestOptions = {
