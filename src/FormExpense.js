@@ -11,7 +11,9 @@ import {
   Label,
   Container,
   Header,
-  Popup
+  Icon,
+  Dimmer,
+  Loader
 } from 'semantic-ui-react'
 
 import {submitExpenseForm} from './api/FormAPIManager.js'
@@ -41,13 +43,19 @@ class FormExpense extends Component {
 
     return (
       <Segment inverted color="brown">
+        <Dimmer active={formInProgress}>
+          <Loader>Submitting</Loader>
+        </Dimmer>
         <Label ribbon size="huge">Expense Entry Form</Label>
         <Divider />
         <Form inverted size="large" onSubmit={this.handleSubmit} success error>
           <FormInput label="Head" placeholder='Head' name='head' value={head} onChange={this.handleChange} width={6} required />
           <FormInput label="Amount" placeholder='Amount' name='amount' value={amount} onChange={this.handleChange} width={5} required type="number"/>
           <FormInput label="Comment" placeholder='Comment' name='comment' value={comment} onChange={this.handleChange} width={10}  />
-          <Button type='submit' loading={formInProgress} color='teal'>Submit</Button>
+          <Button type='submit' loading={formInProgress} color='teal' size='large' icon labelPosition='right'>
+            Submit
+            <Icon name='send' />
+          </Button>
         </Form>
       </Segment>
     )

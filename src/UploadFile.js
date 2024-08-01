@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
+import {postHeadersJson, fetch_retry_async_json} from './api/APIUtils'
 
 class UploadFile extends Component {
   emptyItem = {
@@ -41,29 +42,37 @@ class UploadFile extends Component {
         else
           this.props.history.push('/');
       }).catch((error) => {
-        // Your error is here!
-         console.log(error)
-         this.props.history.push('/');
+        alert(error);
       });
 
       async function uploadFile(data) {
 
-        const response =  await fetch('/home/etl/file/upload', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('ID_TOKEN')
-            },
-            body: data
-        });
+//        const response =  await fetch('/home/etl/file/upload', {
+//            method: 'POST',
+//            headers: {
+//                'Accept': 'application/json',
+//                'Authorization': 'Bearer ' + sessionStorage.getItem('ID_TOKEN')
+//            },
+//            body: data
+//        });
+//
+//        if (!response.ok) {
+//          const message = `An error has occurred: ${response.status}`;
+//          throw new Error(message);
+//        }
+        var requestOptions = {
+          method: 'POST',
+          headers: postHeadersJson(),
+          body: data
+        };
 
-        if (!response.ok) {
-          const message = `An error has occurred: ${response.status}`;
-          throw new Error(message);
-        }
+        const responsePromise = await fetch_retry_async_json(
+          '/home/etl/file/upload',
+          requestOptions,
+          1
+        );
+        const responseJson = await responsePromise.json();
 
-        // waits until the request completes...
-        const responseJson = await response.json();
         return responseJson;
       }
   }

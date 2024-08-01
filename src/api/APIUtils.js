@@ -31,17 +31,25 @@ export function getHeadersOctet() {
     return myHeaders;
 }
 
-export async function fetch_retry_async(url, options, n)  {
+export async function fetch_retry_async_json(url, options, n)  {
     const promise = await fetch(url, options);
     if (promise.status === 200 || promise.status === 201 || promise.status === 202) {
        return promise;
+    }
+
+    if (promise.status === 403) {
+       throw "API call failed - authn/authz failed!"
+    }
+
+    if (promise.status === 400) {
+       throw "API call failed - bad request!"
     }
 
     if (n === 0) {
       throw "API call failed - max retry reached!"
     }
     await delay(1000);
-    return fetch_retry_async(url, options, n-1) ;
+    return fetch_retry_async_json(url, options, n-1) ;
 
 };
 

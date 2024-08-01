@@ -1,4 +1,4 @@
-import {postHeadersJson, fetch_retry, fetch_retry_async} from './APIUtils'
+import {postHeadersJson, fetch_retry, fetch_retry_async_json} from './APIUtils'
 
 export async function submitExpenseForm(head, amount, comment) {
     var requestOptions = {
@@ -10,8 +10,8 @@ export async function submitExpenseForm(head, amount, comment) {
         'comment': comment
       })
     };
-    const responsePromise = await fetch_retry_async(
-      '/home/etl/form/expense',
+    const responsePromise = await fetch_retry_async_json(
+      '/home/etl/form/expensex',
       requestOptions,
       3
     );
@@ -30,7 +30,7 @@ export async function submitEstateForm(particular, debitFrom, creditTo, amount) 
         'amount': amount
       })
     };
-    const responsePromise = await fetch_retry_async(
+    const responsePromise = await fetch_retry_async_json(
       '/home/etl/form/estate',
       requestOptions,
       3

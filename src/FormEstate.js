@@ -14,6 +14,9 @@ import {
   Dropdown,
   Select,
   FormField,
+  Icon,
+  Dimmer,
+  Loader
 } from 'semantic-ui-react'
 import {submitEstateForm} from './api/FormAPIManager.js'
 
@@ -99,6 +102,9 @@ class FormEstate extends Component {
 
     return (
       <Segment inverted color="brown">
+        <Dimmer active={formInProgress}>
+          <Loader>Submitting</Loader>
+        </Dimmer>
         <Label ribbon size="huge">Real Estate Transaction Entry Form</Label>
         <Divider />
         <Form inverted size="large" onSubmit={this.handleSubmit} >
@@ -128,7 +134,10 @@ class FormEstate extends Component {
                 width={6}
                 required />
           </FormGroup>
-          <Button type='submit' color='teal' loading={formInProgress} >Submit</Button>
+          <Button type='submit' loading={formInProgress} color='teal' size='large' icon labelPosition='right'>
+            Submit
+            <Icon name='send' />
+          </Button>
         </Form>
       </Segment>
     )
