@@ -48,7 +48,7 @@ class UploadFile extends Component {
     };
 
     const responsePromise = await fetch_retry_async_json(
-      '/home/etl/file/uploadx',
+      '/home/etl/file/upload',
       requestOptions,
       1
     );
