@@ -11,7 +11,7 @@ export async function submitExpenseForm(head, amount, comment) {
       })
     };
     const responsePromise = await fetch_retry_async_json(
-      '/home/etl/form/expensex',
+      '/home/etl/form/expense',
       requestOptions,
       3
     );
