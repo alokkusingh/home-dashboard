@@ -11,6 +11,7 @@ import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchExpensesJson, fetchExpenseByCategoryMonthJson, fetchExpenseByCategoryYearJson,
         fetchMonthlyExpensesForCategoryJson, fetchExpenseHeadsJson, fetchExpenseMonthsJson,
         fetchExpensesForYearMonthJson, fetchExpensesForYearMonthAndCategoryJson} from './api/ExpensesAPIManager.js'
+import "./css/modal.css"
 
 class ExpenseList extends Component {
 
@@ -367,8 +368,8 @@ class ExpenseList extends Component {
                           {expenseForCategoriesRows}
                         </tbody>
                     </Table>
-                    <Modal isOpen={expenseCategoryModalShow} onClose={this.closeExpenseCategoryModal} contentLabel="ExpenseCategory">
-                      <ModalHeader toggle={this.closeExpenseCategoryModal}/>
+                    <Modal isOpen={expenseCategoryModalShow} onClose={this.closeExpenseCategoryModal} modalClassName="custom-modal-style">
+                      <ModalHeader toggle={this.closeExpenseCategoryModal}>Expense Entries</ModalHeader>
                       <Table striped bordered hover>
                          <thead >
                            <tr>

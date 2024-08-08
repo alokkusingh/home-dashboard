@@ -10,6 +10,7 @@ import {fetchYearlyTaxPaidJson} from './api/SalaryAPIManager.js'
 import {fetchSalaryByCompanyJson} from './api/BankAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
 import {fetchInvestmentsForMonthProto} from './api/InvestmentAPIManager.js'
+import "./css/modal.css"
 
 class Salary extends Component {
 
@@ -287,8 +288,8 @@ class Salary extends Component {
                                   {monthlySummaryList}
                                   </tbody>
                               </Table>
-                              <Modal isOpen={monthDetailsModalShow} onClose={this.hideMonthDetailsModal} contentLabel="DailyRecords">
-                                <ModalHeader toggle={this.hideMonthDetailsModal}/>
+                              <Modal isOpen={monthDetailsModalShow} onClose={this.hideMonthDetailsModal} contentLabel="DailyRecords" modalClassName="custom-modal-style">
+                                <ModalHeader toggle={this.hideMonthDetailsModal}>Salary Investment Contribution</ModalHeader>
                                 <Table striped bordered hover>
                                    <thead >
                                      <tr>

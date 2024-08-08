@@ -6,6 +6,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import DrawPiChart from "./charts/drawPiChart";
 import {fetchAccountBalancesJson, fetchTransactionsJson, fetchATransactionJson} from './api/EstateAPIManager.js'
+import "./css/modal.css"
 
 class EstateSummary extends Component {
 
@@ -551,8 +552,8 @@ class EstateSummary extends Component {
                         {accountsBalanceRows}
                         </tbody>
                     </Table>
-                    <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="AccountTransactions">
-                      <ModalHeader toggle={this.hideModal}/>
+                    <Modal isOpen={transactionModalShow} onClose={this.hideModal} contentLabel="AccountTransactions" modalClassName="custom-modal-style">
+                      <ModalHeader toggle={this.hideModal}>Account Transactions</ModalHeader>
                       <Table striped bordered hover>
                          <thead >
                            <tr>

@@ -12,7 +12,6 @@ class EstateTransactionList extends Component {
       transactions: [],
       count: 0,
       lastTransactionDate: "",
-      transactionModalShow: false,
       tranDetails: []
     };
   }

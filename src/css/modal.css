@@ -1,9 +1,4 @@
 .custom-modal-style {
-width: 297px;
-height: 1802px;
-}
-
-.modal {
-width: 297px;
-height: 802px;
+width: 90% !important;
+height: 70% !important;
 }

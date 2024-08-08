@@ -18,6 +18,7 @@ import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmen
 import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
 import {TileCard} from './cards/tileCard'
 import {getCurrentMonth, getPreviousMonth, getCurrentMonthFull, getPreviousMonthFull, getCurrentYear, getPreviousYear} from './utils/dateUtils'
+import "./css/modal.css"
 
 class HomeCards extends Component {
 
@@ -432,8 +433,8 @@ class HomeCards extends Component {
                               {monthExpensesByDayList}
                             </tbody>
                         </Table>
-                        <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses">
-                        <ModalHeader toggle={this.closeExpenseModal}/>
+                        <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses" modalClassName="custom-modal-style">
+                        <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
                          <Table striped bordered hover>
                              <thead >
                                <tr>
@@ -464,8 +465,8 @@ class HomeCards extends Component {
                             {expensesByCategoryList}
                             </tbody>
                         </Table>
-                        <Modal isOpen={expenseCatModalShow} onClose={this.closeCategoryExpenseModal} contentLabel="Expenses">
-                          <ModalHeader toggle={this.closeCategoryExpenseModal}/>
+                        <Modal isOpen={expenseCatModalShow} onClose={this.closeCategoryExpenseModal} contentLabel="Expenses" modalClassName="custom-modal-style">
+                          <ModalHeader toggle={this.closeCategoryExpenseModal}>Category Transactions</ModalHeader>
                            <Table striped bordered hover>
                                <thead >
                                  <tr>

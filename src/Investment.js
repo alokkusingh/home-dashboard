@@ -6,6 +6,7 @@ import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { NumberFormatNoCurrencyFraction2 } from "./utils/NumberFormatNoCurrencyFraction2";
 import DrawLineChartShare from './charts/drawLineChart';
 import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
+import "./css/modal.css"
 
 class Investment extends Component {
 
@@ -256,8 +257,8 @@ class Investment extends Component {
                           {investmentSummaryRecordRows}
                        </tbody>
                    </Table>
-                   <Modal isOpen={monthDetailsModalShow} onClose={this.hideInvestmentheadRecordsModal} contentLabel="HeadRecords">
-                     <ModalHeader toggle={this.hideInvestmentheadRecordsModal}/>
+                   <Modal isOpen={monthDetailsModalShow} onClose={this.hideInvestmentheadRecordsModal} modalClassName="custom-modal-style">
+                     <ModalHeader toggle={this.hideInvestmentheadRecordsModal}>Monthly Investment Transaction Records</ModalHeader>
                      <Table striped bordered hover>
                         <thead >
                           <tr>
