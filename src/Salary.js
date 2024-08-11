@@ -48,6 +48,9 @@ class Salary extends Component {
   }
 
   handleYearlyTaxPaid = (body) => {
+    if (body == undefined || body.taxes == undefined) {
+      return;
+    }
     const taxByYearMap = new Map();
     body.taxes.map(record => {
       taxByYearMap.set(record.financialYear, Math.abs(record.paidAmount));
@@ -58,6 +61,8 @@ class Salary extends Component {
   }
 
   handleSalaryByCompany = (body) => {
+    if (body === undefined || body.total === undefined) {
+    }
     this.setState({
         total: body.total
     });
@@ -107,6 +112,9 @@ class Salary extends Component {
   }
 
   handleMonthlyIncomeExpenseSummary = (body) => {
+     if (body == undefined || body.records == undefined) {
+      return;
+     }
      this.setState({
          monthlySummary: body.records
      });

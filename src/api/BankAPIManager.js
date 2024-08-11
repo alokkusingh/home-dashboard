@@ -1,4 +1,5 @@
 import {getHeadersJson} from './APIUtils'
+import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function fetchSalaryByCompanyJson() {
     var requestOptions = {
@@ -6,6 +7,13 @@ export async function fetchSalaryByCompanyJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/bank/salary/bycompany', requestOptions);
+
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
     const body = await responsePromise.json();
     console.log(body);
 
@@ -18,6 +26,12 @@ export async function fetchAllTransactionsJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/bank/transactions', requestOptions);
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
     const body = await responsePromise.json();
     console.log(body);
 
@@ -30,6 +44,12 @@ export async function fetchTransactionByIdJson(id) {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/bank/transactions/' + id, requestOptions);
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
     const body = await responsePromise.json();
     console.log(body);
 

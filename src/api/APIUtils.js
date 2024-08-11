@@ -1,3 +1,5 @@
+import {redirectToLogin} from '../utils/SessionUtils'
+
 export function getHeadersJson() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
@@ -38,7 +40,7 @@ export async function fetch_retry_async_json(url, options, n)  {
     }
 
     if (promise.status === 403) {
-       throw "API call failed - authn/authz failed!"
+      redirectToLogin();
     }
 
     if (promise.status === 400) {

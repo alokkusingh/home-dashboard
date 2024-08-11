@@ -1,4 +1,5 @@
 import {getHeadersOctet} from './APIUtils'
+import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function etlDownloadTransactions() {
     var requestOptions = {
