@@ -80,6 +80,9 @@ class HomeCards extends Component {
   }
 
   handleCurrentMonthExpenseByDay = (body) => {
+      if (body === undefined || body.expenses === undefined) {
+        return;
+      }
       this.setState({
           monthExpensesByDay: body.expenses,
           monthExpensesByCategory: body.categoryExpenses
@@ -95,12 +98,19 @@ class HomeCards extends Component {
   }
 
   handleExpenseByCategoryMonth = (body) => {
+      if (body === undefined || body.expenseCategorySums == undefined) {
+        return
+      }
       this.setState({
           expensesByCategory: body.expenseCategorySums
       });
+
   }
 
   handleMonthlyIncomeExpenseSummary = (body) => {
+       if (body === undefined || body.records === undefined) {
+        return
+       }
        this.setState({
            monthlySummary: body.records
        });
@@ -157,6 +167,9 @@ class HomeCards extends Component {
 
   handleEstateAccountBalances = (body) => {
 
+    if (body === undefined || body.headAccountBalances == undefined) {
+      return;
+    }
     var estateOdionInvestment = 0;
     var estateAdarshInvestment = 0;
     var estateJGETInvestment = 0;
@@ -197,6 +210,10 @@ class HomeCards extends Component {
   }
 
   handleTransactionsJson = (body) => {
+
+    if (body === undefined || body.accountMonthTransaction === undefined) {
+      return;
+    }
 
     var loanInterestLastMonth = 0;
     var loanInterestThisYear = 0;

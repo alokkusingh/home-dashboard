@@ -6,6 +6,10 @@ export async function fetchAccountBalancesJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/odion/accounts', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const body = await responsePromise.json();
     console.log(body);
 
@@ -18,6 +22,10 @@ export async function fetchTransactionsJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/odion/monthly/transaction', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const body = await responsePromise.json();
     console.log(body);
 

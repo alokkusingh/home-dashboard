@@ -6,6 +6,10 @@ export async function fetchCurrentMonthExpenseByDayJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/expense/current_month_by_day', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const expenses = await responsePromise.json();
     console.log(expenses);
 
@@ -18,6 +22,10 @@ export async function fetchExpenseByCategoryMonthJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const expenses = await responsePromise.json();
     console.log(expenses);
 
@@ -30,6 +38,10 @@ export async function fetchExpenseByCategoryYearJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const expenses = await responsePromise.json();
     console.log(expenses);
 
@@ -42,6 +54,10 @@ export async function fetchMonthlyExpensesForCategoryJson(category) {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch("/home/api/expense/monthly/categories/" + category, requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const expenses = await responsePromise.json();
     console.log(expenses);
 
@@ -90,6 +106,10 @@ export async function fetchExpenseHeadsJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/expense/categories/names', requestOptions);
+    if (responsePromise.status === 403) {
+       console.error("API call failed - authn/authz failed!")
+       return;
+    }
     const heads = await responsePromise.json();
     console.log(heads);
 
