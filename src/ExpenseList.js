@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Table, Row, Col, Modal, ModalHeader, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
