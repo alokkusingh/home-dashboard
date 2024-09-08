@@ -19,6 +19,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 import {submitEstateForm} from './api/FormAPIManager.js'
+import "./css/formSelect.css"
 
 const account = [
     {
@@ -101,6 +102,7 @@ class FormEstate extends Component {
     const { particular, debitFrom, creditTo, amount, formInProgress } = this.state
 
     return (
+    <div className="custom-divider">
       <Segment raised color="brown">
         <Dimmer active={formInProgress}>
           <Loader>Submitting</Loader>
@@ -111,7 +113,7 @@ class FormEstate extends Component {
           <Segment inverted color="brown">
             <FormInput label="Particular" placeholder='Particular' name='particular' value={particular} onChange={this.handleChange} width={6} required />
             <FormInput label="Amount" placeholder='Amount' name='amount' value={amount} onChange={this.handleChange} width={5} required type="number"/>
-            <FormGroup widths='head'>
+            <FormGroup widths='head' >
                 <FormInput
                   control={Select}
                   options={account}
@@ -122,7 +124,8 @@ class FormEstate extends Component {
                   value={debitFrom}
                   onChange={this.handleChange}
                   width={6}
-                  required />
+                  required
+                  />
                 <FormInput
                   control={Select}
                   options={account}
@@ -133,7 +136,8 @@ class FormEstate extends Component {
                   value={creditTo}
                   onChange={this.handleChange}
                   width={6}
-                  required />
+                  required
+                  />
             </FormGroup>
           </Segment>
           <Button type='submit' loading={formInProgress} color='teal' size='large' icon labelPosition='right'>
@@ -142,6 +146,7 @@ class FormEstate extends Component {
           </Button>
         </Form>
       </Segment>
+      </div>
     )
   }
 }
