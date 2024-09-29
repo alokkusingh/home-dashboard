@@ -115,9 +115,9 @@ class HomeCards extends Component {
            monthlySummary: body.records
        });
 
-       var totalLastMonthExpense = 0;
-       var totalYearExpense = 0;
-       var totalLastYearExpense = 0;
+       let totalLastMonthExpense = 0;
+       let totalYearExpense = 0;
+       let totalLastYearExpense = 0;
        const today = new Date();
        body.records.forEach(function(d) {
            if (d.year === today.getFullYear() && d.month === today.getMonth()) {
@@ -139,10 +139,10 @@ class HomeCards extends Component {
   }
 
   handleInvestmentReturns = (investmentReturnList) => {
-    var investmentTotalValue = 0;
-    var investmentLastMonthReturn = 0;
-    var investmentThisYearReturn = 0;
-    var investmentCumulativeReturn = 0;
+    let investmentTotalValue = 0;
+    let investmentLastMonthReturn = 0;
+    let investmentThisYearReturn = 0;
+    let investmentCumulativeReturn = 0;
 
    investmentReturnList.forEach(function(d) {
       if (d.metric === ("RoR - " + getPreviousMonthFull().toUpperCase())) {
@@ -170,10 +170,10 @@ class HomeCards extends Component {
     if (body === undefined || body.headAccountBalances == undefined) {
       return;
     }
-    var estateOdionInvestment = 0;
-    var estateAdarshInvestment = 0;
-    var estateJGETInvestment = 0;
-    var loanAmount = 0;
+    let estateOdionInvestment = 0;
+    let estateAdarshInvestment = 0;
+    let estateJGETInvestment = 0;
+    let loanAmount = 0;
     for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
       if (head == "ODION") {
         accountsBalance.forEach(function(d) {
@@ -215,9 +215,9 @@ class HomeCards extends Component {
       return;
     }
 
-    var loanInterestLastMonth = 0;
-    var loanInterestThisYear = 0;
-    var loanInterestLastYear = 0;
+    let loanInterestLastMonth = 0;
+    let loanInterestThisYear = 0;
+    let loanInterestLastYear = 0;
     const today = new Date();
     for (const [month, amount] of Object.entries(body.accountMonthTransaction.INTEREST)) {
       if (month === formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")) {
