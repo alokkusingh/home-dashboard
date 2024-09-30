@@ -145,7 +145,7 @@ class HomeCards extends Component {
     let investmentCumulativeReturn = 0;
 
    investmentReturnList.forEach(function(d) {
-      if (d.metric === ("RoR - " + getPreviousMonthFull().toUpperCase())) {
+      if (d.metric === ("RoR - " + getPreviousMonth().toUpperCase())) {
         investmentLastMonthReturn = (d.total.end - d.total.beg - d.total.inv )
       }
       if (d.metric === "Cumulative Return (%)") {
