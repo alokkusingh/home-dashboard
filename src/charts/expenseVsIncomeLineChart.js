@@ -46,7 +46,7 @@ function ExpenseVsIncomeLineChart({ data }) {
           if (record.incomeAmount != null) {
                 incomeArray.push({
                      'date': date,
-                     'amount': record.incomeAmount
+                     'amount': record.incomeAmount + record.investmentByCompany
                 });
           }
 

@@ -368,7 +368,7 @@ class HomeCards extends Component {
      const monthlySummaryList = monthlySummary.map(record => {
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
                    <td id={'' + record.year + record.month + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount))}</td>
+                   <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount + record.investmentByCompany))}</td>
                    <td id={'' + record.year + record.month + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
                    <td id={'' + record.year + record.month + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
                    <td id={'' + record.year + record.month + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>

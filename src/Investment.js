@@ -231,6 +231,7 @@ class Investment extends Component {
               <td style={{textAlign: "center", fontSize: '.8rem'}}>{investment.lic === null || investment.lic === undefined? 0:NumberFormatNoCurrencyFraction2(investment.lic.ror)}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null || investment.total === undefined? 0:investment.total.inv}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null || investment.total === undefined? 0:investment.total.end}</td>
+              <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null || investment.total === undefined? 0: investment.total.end - investment.total.beg - investment.total.inv}</td>
               <td style={{textAlign: "center", fontSize: '.8rem', backgroundColor: "lightblue"}}>{investment.total === null || investment.total === undefined? 0:NumberFormatNoCurrencyFraction2(investment.total.ror)}</td>
           </tr>
          }
@@ -294,7 +295,7 @@ class Investment extends Component {
                            <th colspan="3" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Share</th>
                            <th colspan="3" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>PF</th>
                            <th colspan="3" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>LIC</th>
-                           <th colspan="3" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Total</th>
+                           <th colspan="4" width="17%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Total</th>
                          </tr>
                         <tr>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Inv</th>
@@ -314,6 +315,7 @@ class Investment extends Component {
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>Ret (%)</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Inv</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Value</th>
+                          <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Return</th>
                           <th width="6%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem', backgroundColor: "lightblue"}}>Ret (%)</th>
                         </tr>
                        </thead>

@@ -175,7 +175,7 @@ class Salary extends Component {
                    <td id={yearMonth} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
                    <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc)}</td>
                    <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
-                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc - Math.round(record.incomeAmount) - record.taxAmount)}</td>
+                   <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.investmentByCompany)}</td>
                    <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
                </tr>
       });
@@ -217,11 +217,12 @@ class Salary extends Component {
     aggregateSalaryByMonth(boschByMonth, salaryByYearMap);
     aggregateSalaryByMonth(jpmcByMonth, salaryByYearMap);
 
-    function aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap) {
+    function aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap, invByCompanyYearMap) {
        for (let monthRecord of monthlySummary) {
           let yearTotal = ctcByYearMap.get(monthRecord.year);
           let taxYearTotal = taxByYearMap.get(monthRecord.year);
           let invYearTotal = invByYearMap.get(monthRecord.year);
+          let invByCompanyYearTotal = invByCompanyYearMap.get(monthRecord.year);
           if (yearTotal === undefined) {
              yearTotal = 0;
           }
@@ -231,18 +232,24 @@ class Salary extends Component {
           if (invYearTotal === undefined) {
              invYearTotal = 0;
           }
+          if (invByCompanyYearTotal === undefined) {
+             invByCompanyYearTotal = 0;
+          }
           yearTotal = yearTotal + monthRecord.ctc;
           taxYearTotal = taxYearTotal + monthRecord.taxAmount;
           invYearTotal = invYearTotal + monthRecord.investmentAmount;
+          invByCompanyYearTotal = invByCompanyYearTotal + monthRecord.investmentByCompany;
           ctcByYearMap.set(monthRecord.year, yearTotal);
           taxByYearMap.set(monthRecord.year, taxYearTotal);
           invByYearMap.set(monthRecord.year, invYearTotal);
+          invByCompanyYearMap.set(monthRecord.year, invByCompanyYearTotal);
        }
     }
     const ctcByYearMap = new Map();
     const taxByYearMap = new Map();
     const invByYearMap = new Map();
-    aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap);
+    const invByCompanyYearMap = new Map();
+    aggregateSalaryComponentsByYear(monthlySummary, ctcByYearMap, taxByYearMap, invByYearMap, invByCompanyYearMap);
 
     return (
          <div id="cards" align="center" >
@@ -261,7 +268,7 @@ class Salary extends Component {
                                   inHandMap={salaryByYearMap}
                                   ctcMap={ctcByYearMap}
                                   taxMap={taxByYearMap}
-                                  invMap={invByYearMap}
+                                  invMap={invByCompanyYearMap}
                                   domain={[0, 6000000]} c
                                   olorDomain={[500000,2500000]}
                                   numberOfYaxisTicks="6"
