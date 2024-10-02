@@ -91,8 +91,8 @@ function ExpenseVsIncomeLineChart({ data }) {
 //       const width = 380;
 //       const margin = { top: 0, right: 10, bottom: 80, left: 10 };
        var margin = {top: 0, right: 0, bottom: 0, left: 0},
-                 outerWidth = 320,
-                 outerHeight = 220,
+                 outerWidth = 350,
+                 outerHeight = 250,
                  width = outerWidth - margin.left - margin.right,
                  height = outerHeight - margin.top - margin.bottom;
        const numberOfYaxisTicks = 8;

@@ -19,9 +19,9 @@ function DrawBarChart({ dataMap, divContainer, domain,  numberOfYaxisTicks, colo
   });
 
  function drawChart() {
-      const height = 220;
-      const width = 300;
-      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+      const height = 250;
+      const width = 350;
+      const margin = { top: 0, right: 10, bottom: 80, left: 0 };
 
       const colorScale = d3.scaleLinear()
         .domain(colorDomain)

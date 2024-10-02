@@ -42,9 +42,9 @@ function DrawSalaryBarChart({ inHandMap, ctcMap, invMap, taxMap, divContainer, d
   });
 
  function drawChart() {
-      const height = 220;
-      const width = 300;
-      const margin = { top: 0, right: 10, bottom: 80, left: 30 };
+      const height = 250;
+      const width = 350;
+      const margin = { top: 0, right: 0, bottom: 80, left: 0 };
 
      // Remove the old svg
      d3.select('#' + divContainer)
