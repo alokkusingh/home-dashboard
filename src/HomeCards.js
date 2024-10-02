@@ -372,7 +372,7 @@ class HomeCards extends Component {
                    <td id={'' + record.year + record.month + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
                    <td id={'' + record.year + record.month + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
                    <td id={'' + record.year + record.month + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>
-                   <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount + record.investmentByCompany - record.investmentAmount - record.expenseAmount - record.transferAmount))}</td>
                </tr>
       });
 
@@ -437,37 +437,6 @@ class HomeCards extends Component {
                 </Col>
               </Row>
               <Row >
-                <Col m={2} s={2} l={2}>
-                    <Card className="card-panel teal lighten-4" textClassName="black-text" title="Expenses by Day" >
-                       <Table striped bordered hover scrollable size="sm">
-                            <thead>
-                              <tr>
-                                <th width="25%" style={{textAlign: "center"}}>Date</th>
-                                <th width="25%" style={{textAlign: "right"}}>Amount</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {monthExpensesByDayList}
-                            </tbody>
-                        </Table>
-                        <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses" modalClassName="custom-modal-style">
-                        <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
-                         <Table striped bordered hover>
-                             <thead >
-                               <tr>
-                                 <th>Date</th>
-                                 <th>Head</th>
-                                 <th>Comment</th>
-                                 <th>Amount</th>
-                               </tr>
-                             </thead>
-                             <tbody>
-                               {dayExpensesRows}
-                             </tbody>
-                           </Table>
-                        </Modal>
-                    </Card>
-                </Col>
                 <Col m={4} s={4} l={3}>
                     <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Expenses by Category" >
                        <Table striped bordered hover size="sm">
@@ -498,6 +467,37 @@ class HomeCards extends Component {
                                </tbody>
                              </Table>
                           </Modal>
+                    </Card>
+                </Col>
+                <Col m={2} s={2} l={2}>
+                    <Card className="card-panel teal lighten-4" textClassName="black-text" title="Expenses by Day" >
+                       <Table striped bordered hover scrollable size="sm">
+                            <thead>
+                              <tr>
+                                <th width="25%" style={{textAlign: "center"}}>Date</th>
+                                <th width="25%" style={{textAlign: "right"}}>Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {monthExpensesByDayList}
+                            </tbody>
+                        </Table>
+                        <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses" modalClassName="custom-modal-style">
+                        <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
+                         <Table striped bordered hover>
+                             <thead >
+                               <tr>
+                                 <th>Date</th>
+                                 <th>Head</th>
+                                 <th>Comment</th>
+                                 <th>Amount</th>
+                               </tr>
+                             </thead>
+                             <tbody>
+                               {dayExpensesRows}
+                             </tbody>
+                           </Table>
+                        </Modal>
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
