@@ -32,7 +32,10 @@ function DrawSalaryBarChart({ inHandMap, ctcMap, invMap, taxMap, divContainer, d
     }
   });
 
-  var colors = ["steelblue", "gold", "#69b3a2", "#F9CAC8"];
+  //var colors = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
+  var colors = ["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
+
+  //var colors = ["steelblue", "gold", "#69b3a2", "#F9CAC8"];
 
   useEffect(() => {
       drawChart();
@@ -103,31 +106,85 @@ function DrawSalaryBarChart({ inHandMap, ctcMap, invMap, taxMap, divContainer, d
           .attr("y", function(d) { return yScale(d.inHandPlusInvPlusTax); })
           .attr("width", xScale.bandwidth())
           .attr("height", (d) => yScale(0) - yScale(d.inHandPlusInv))
-          svg
-            .append('g')
-            .selectAll(".bar")
-            .data(dataArr)
-            .enter()
-            .append("rect")
-                .attr("class", "bar")
-                .attr("fill", function(d) { return colors[1]; })
-                .attr("x", function(d) { return xScale(d.head); })
-                .attr("y", function(d) { return yScale(d.inHandPlusInv); })
-                .attr("width", xScale.bandwidth())
-                .attr("height", (d) => yScale(0) - yScale(d.inHandPlusInv))
+          .on('mouseenter', function (actual, i) {
+              d3.select(this).attr('opacity', 0.5)
+          })
+          .on('mouseleave', function (actual, i) {
+              d3.select(this).attr('opacity', 1)
+          })
+    svg
+          .append('g')
+          .selectAll("text")
+          .data(dataArr)
+          .enter()
+          .append("text")
+              .text(function(d) { return (d.inHandPlusInvPlusTax / 1_00_000).toFixed(1); })
+              .attr("x", function(d) { return xScale(d.head) + xScale.bandwidth() / 2; })
+              .attr("y", function(d) { return yScale(d.inHandPlusInvPlusTax) + 6; })
+              .style("font-size", 6.5)
+              .style("text-anchor", "middle")
+              .style('fill', 'white')
 
-      svg
-        .append('g')
-        .selectAll(".bar")
-        .data(dataArr)
-        .enter()
-        .append("rect")
-            .attr("class", "bar")
-            .attr("fill", function(d) { return colors[2]; })
-            .attr("x", function(d) { return xScale(d.head); })
-            .attr("y", function(d) { return yScale(d.inHand); })
-            .attr("width", xScale.bandwidth())
-            .attr("height", (d) => yScale(0) - yScale(d.inHand))
+    svg
+      .append('g')
+      .selectAll(".bar")
+      .data(dataArr)
+      .enter()
+      .append("rect")
+          .attr("class", "bar")
+          .attr("fill", function(d) { return colors[1]; })
+          .attr("x", function(d) { return xScale(d.head); })
+          .attr("y", function(d) { return yScale(d.inHandPlusInv); })
+          .attr("width", xScale.bandwidth())
+          .attr("height", (d) => yScale(0) - yScale(d.inHandPlusInv))
+          .on('mouseenter', function (actual, i) {
+              d3.select(this).attr('opacity', 0.5)
+          })
+          .on('mouseleave', function (actual, i) {
+              d3.select(this).attr('opacity', 1)
+          })
+    svg
+      .append('g')
+      .selectAll("text")
+      .data(dataArr)
+      .enter()
+      .append("text")
+          .text(function(d) { return (d.inHandPlusInv / 1_00_000).toFixed(1); })
+          .attr("x", function(d) { return xScale(d.head) + xScale.bandwidth() / 2; })
+          .attr("y", function(d) { return yScale(d.inHandPlusInv) + 6; })
+          .style("font-size", 6.5)
+          .style("text-anchor", "middle")
+
+    svg
+      .append('g')
+      .selectAll(".bar")
+      .data(dataArr)
+      .enter()
+      .append("rect")
+          .attr("class", "bar")
+          .attr("fill", function(d) { return colors[2]; })
+          .attr("x", function(d) { return xScale(d.head); })
+          .attr("y", function(d) { return yScale(d.inHand); })
+          .attr("width", xScale.bandwidth())
+          .attr("height", (d) => yScale(0) - yScale(d.inHand))
+          .on('mouseenter', function (actual, i) {
+              d3.select(this).attr('opacity', 0.5)
+          })
+          .on('mouseleave', function (actual, i) {
+              d3.select(this).attr('opacity', 1)
+          })
+    svg
+      .append('g')
+      .selectAll("text")
+      .data(dataArr)
+      .enter()
+      .append("text")
+          .text(function(d) { return (d.inHand / 1_00_000).toFixed(1); })
+          .attr("x", function(d) { return xScale(d.head) + xScale.bandwidth() / 2; })
+          .attr("y", function(d) { return yScale(d.inHand) + 6; })
+          .style("font-size", 6.5)
+          .style("text-anchor", "middle")
+          .style('fill', 'white')
 
     var legend = svg.append('g')
         .attr('class', 'legend')

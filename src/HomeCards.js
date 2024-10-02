@@ -9,7 +9,6 @@ import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import ExpenseMonthBarChart from './charts/expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChart';
-import ExpenseMonthByCategoryBarChart from './charts/expenseMonthByCategoryBarChart';
 import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson} from './api/ExpensesAPIManager.js'

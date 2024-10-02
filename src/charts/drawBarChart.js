@@ -88,6 +88,18 @@ function DrawBarChart({ dataMap, divContainer, domain,  numberOfYaxisTicks, colo
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
             .attr("height", (d) => yScale(0) - yScale(d.amount))
+      svg
+        .append('g')
+        .selectAll("text")
+        .data(dataArr)
+        .enter()
+        .append("text")
+            .text(function(d) { return (d.amount / 1_00_000).toFixed(1); })
+            .attr("x", function(d) { return xScale(d.head) + xScale.bandwidth() / 2; })
+            .attr("y", function(d) { return yScale(d.amount) + 6; })
+            .style("font-size", 6.5)
+            .style("text-anchor", "middle")
+            .style('fill', 'white')
 
       drawHorizontalLines();
 

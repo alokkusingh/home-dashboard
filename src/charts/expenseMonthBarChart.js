@@ -187,6 +187,18 @@ function ExpenseMonthBarChart({ data }) {
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
             .attr("height", (d) => yScale(0) - yScale(d.amount))
+      svg
+        .append('g')
+        .selectAll("text")
+        .data(dataArr)
+        .enter()
+        .append("text")
+            .text(function(d) { return (d.amount / 1_000).toFixed(1); })
+            .attr("x", function(d) { return xScale(parseD3Time(d.date)) + xScale.bandwidth() / 2; })
+            .attr("y", function(d) { return yScale(d.amount) + 6; })
+            .style("font-size", 6.5)
+            .style("text-anchor", "middle")
+            .style('fill', 'white')
 
 
       //drawHorizontalLines(numberOfYaxisTicks/2, .2);
