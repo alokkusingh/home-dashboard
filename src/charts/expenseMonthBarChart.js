@@ -44,6 +44,8 @@ function ExpenseMonthBarChart({ data }) {
           width = outerWidth - margin.left - margin.right,
           height = outerHeight - margin.top - margin.bottom;
 
+      const colors = ["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854","#ffd92f","#e5c494","#b3b3b3"]
+
       const numberOfYaxisTicks = 11;
 
       const colorScale = d3.scaleLinear()
@@ -86,6 +88,10 @@ function ExpenseMonthBarChart({ data }) {
         }
 
         return 28;
+      }
+
+      const getWeekDay = function(date) {
+        return date.getDay();
       }
 
 
@@ -183,6 +189,7 @@ function ExpenseMonthBarChart({ data }) {
         .append("rect")
             .attr("class", "bar")
             .attr("fill", function(d) { return colorScale(d.amount); })
+            .attr("fill", function(d) { return colors[getWeekDay(d.date)]; })
             .attr("x", function(d) { return xScale(parseD3Time(d.date)); })
             .attr("y", function(d) { return yScale(d.amount); })
             .attr("width", xScale.bandwidth())
