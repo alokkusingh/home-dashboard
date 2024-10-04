@@ -45,6 +45,7 @@ function ExpenseMonthBarChart({ data }) {
           height = outerHeight - margin.top - margin.bottom;
 
       const colors = ["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854","#ffd92f","#e5c494","#b3b3b3"]
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
       const numberOfYaxisTicks = 11;
 
@@ -207,6 +208,40 @@ function ExpenseMonthBarChart({ data }) {
             .style("text-anchor", "middle")
             .style('fill', 'white')
 
+
+   var legend = svg.append('g')
+           .attr('class', 'legend')
+           .attr('transform', 'translate(' + (20) + ',0)');
+
+       legend.selectAll('rect')
+           .data(days)
+           .enter()
+           .append('rect')
+           .attr('x', width - 50)
+           .attr('y', function(d, i){
+               return (i * 12) + 6;
+           })
+           .attr('width', 6)
+           .attr('height', 6)
+           .attr('fill', function(d,i){
+               return colors[i];
+           });
+
+       legend.selectAll('text')
+           .data(days)
+           .enter()
+           .append('text')
+           .text(function(d){
+               return d;
+           })
+           .attr('x', width - 40)
+           .attr('y', function(d, i){
+               return (i * 12) + 6;
+           })
+           .style('font-family', 'Patrick Hand SC')
+           .style('font-size', '.50em')
+           .attr('text-anchor', 'start')
+           .attr('alignment-baseline', 'hanging');
 
       //drawHorizontalLines(numberOfYaxisTicks/2, .2);
       drawHorizontalLines(numberOfYaxisTicks, .1);

@@ -102,7 +102,7 @@ function ExpenseMonthByCategoryPiChart({data, categories}) {
 
         legend.append("text")
             .attr("x", width - 87)
-            .attr("y", (d, i) => i * 14 - 53)
+            .attr("y", (d, i) => i * 14 - 55)
              .attr("dx", "-.8em")
              .attr("dy", ".15em")
             .attr("text-anchor", "left")
