@@ -269,9 +269,9 @@ class Salary extends Component {
                                   ctcMap={ctcByYearMap}
                                   taxMap={taxByYearMap}
                                   invMap={invByCompanyYearMap}
-                                  domain={[0, 6000000]} c
-                                  olorDomain={[500000,2500000]}
-                                  numberOfYaxisTicks="6"
+                                  domain={[0, 6500000]} c
+                                  colorDomain={[500000,2500000]}
+                                  numberOfYaxisTicks="13"
                                   divContainer="salary-by-year-bar-container"
                                 />
                             </div>
@@ -280,7 +280,7 @@ class Salary extends Component {
                     <Col m={3} s={3} l={3}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Tax Paid Yearly">
                             <div>
-                                <DrawBarChart dataMap={taxByYear} domain={[0, 1600000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="6" divContainer="tax-by-year-bar-container" />
+                                <DrawBarChart dataMap={taxByYear} domain={[0, 1600000]} colorDomain={[1000000, 200000]} numberOfYaxisTicks="8" divContainer="tax-by-year-bar-container" />
                             </div>
                         </Card>
                     </Col>

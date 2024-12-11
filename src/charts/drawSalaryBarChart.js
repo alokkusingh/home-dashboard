@@ -186,7 +186,7 @@ function DrawSalaryBarChart({ inHandMap, ctcMap, invMap, taxMap, divContainer, d
           .style("text-anchor", "middle")
           .style('fill', 'white')
 
-    var legend = svg.append('g')
+    let legend = svg.append('g')
         .attr('class', 'legend')
         .attr('transform', 'translate(' + (20) + ',0)');
 
