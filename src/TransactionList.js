@@ -3,9 +3,10 @@ import { Table } from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormat } from "./utils/NumberFormat";
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal, Input } from 'semantic-ui-react';
 import {fetchAllTransactionsJson, fetchTransactionByIdJson} from './api/BankAPIManager.js'
 import {etlDownloadTransactions} from './api/EtlAPIManager.js'
+import {searchTransactionsJson} from './api/SearchAPIManager.js'
 
 class TransactionList extends Component {
 
@@ -36,6 +37,25 @@ class TransactionList extends Component {
         lastTransactionDate: body.lastTransactionDate
     });
   }
+
+  searchTransactionByDescription = async(event) => {
+      console.log("event: ", event)
+      var description = document.getElementById("search-input").value;
+      console.log(Text)
+      try {
+        searchTransactionsJson(description).then(this.handleAllTransactions);
+      } catch(err) {
+        alert("Expense Refresh failed, error: " + err);
+      }
+  }
+
+  searchClear = async(event) => {
+        try {
+          fetchAllTransactionsJson().then(this.handleAllTransactions);
+        } catch(err) {
+          alert("Expense Refresh failed, error: " + err);
+        }
+    }
 
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("id"))
@@ -90,6 +110,13 @@ class TransactionList extends Component {
                       className="teal lighten-4"
                       textClassName="black-text"
                     >
+                    <div style={{float: 'left'}}>
+                      <Input id='search-input' type='text' placeholder='Search...' action>
+                          <input />
+                          <Button type='button' onClick={this.searchTransactionByDescription}>Search</Button>
+                          <Button type='button' onClick={this.searchClear}>Reset</Button>
+                      </Input>
+                    </div>
                     <div style={{float: 'right'}}>
                       <Button.Group basic size='medium'>
                         <Button icon='download' onClick={this.downloadTransactions} />
