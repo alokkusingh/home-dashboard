@@ -97,7 +97,7 @@ class HomeCards extends Component {
   }
 
   handleExpenseByCategoryMonth = (body) => {
-      if (body === undefined || body.expenseCategorySums == undefined) {
+      if (body === undefined || body.expenseCategorySums === undefined) {
         return
       }
       this.setState({
@@ -119,13 +119,20 @@ class HomeCards extends Component {
        let totalLastYearExpense = 0;
        const today = new Date();
        body.records.forEach(function(d) {
-           if (d.year === today.getFullYear() && d.month === today.getMonth()) {
+          // Date() month index starts with 0 (Jan) but d.month Jan is 1
+          if (today.getMonth() === 0) {
+            if (d.year === today.getFullYear() - 1 && d.month === 12) {
               totalLastMonthExpense += d.expenseAmount;
-           }
-           if (d.year === today.getFullYear()) {
+            }
+          } else if (d.year === today.getFullYear() && d.month === today.getMonth()) {
+              totalLastMonthExpense += d.expenseAmount;
+          }
+
+          if (d.year === today.getFullYear()) {
               totalYearExpense += d.expenseAmount;
-           }
-           if (d.year === today.getFullYear() - 1) {
+          }
+
+          if (d.year === today.getFullYear() - 1) {
               totalLastYearExpense += d.expenseAmount;
            }
        });
@@ -166,7 +173,7 @@ class HomeCards extends Component {
 
   handleEstateAccountBalances = (body) => {
 
-    if (body === undefined || body.headAccountBalances == undefined) {
+    if (body === undefined || body.headAccountBalances === undefined) {
       return;
     }
     let estateOdionInvestment = 0;
@@ -174,23 +181,23 @@ class HomeCards extends Component {
     let estateJGETInvestment = 0;
     let loanAmount = 0;
     for (const [head, accountsBalance] of Object.entries(body.headAccountBalances)) {
-      if (head == "ODION") {
+      if (head === "ODION") {
         accountsBalance.forEach(function(d) {
           estateOdionInvestment += d.balance;
         });
       }
-      if (head == "ADARSH") {
+      if (head === "ADARSH") {
         accountsBalance.forEach(function(d) {
           estateAdarshInvestment += d.balance;
         });
       }
-      if (head == "JYOTHI") {
+      if (head === "JYOTHI") {
         accountsBalance.forEach(function(d) {
           estateJGETInvestment += d.balance;
         });
       }
 
-      if (head == "SAVINGS_BANKS") {
+      if (head === "SAVINGS_BANKS") {
         accountsBalance.forEach(function(d) {
           if (d.account === "SBI_MAX_GAIN" || d.account === "BOB_ADVANTAGE") {
             loanAmount += d.balance;
@@ -219,7 +226,15 @@ class HomeCards extends Component {
     let loanInterestLastYear = 0;
     const today = new Date();
     for (const [month, amount] of Object.entries(body.accountMonthTransaction.INTEREST)) {
-      if (month === formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")) {
+      // Date() month index starts with 0 (Jan) but d.month Jan is 1
+      var lastYearMonth = null;
+      if (today.getMonth() === 0) {
+        lastYearMonth = formatYearMonth(today.getFullYear() - 1, 12, "yyyy-MM");
+      } else {
+        lastYearMonth = formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")
+      }
+
+      if (month === lastYearMonth) {
         loanInterestLastMonth += amount;
       }
       if (month.split("-")[0] == today.getFullYear()) {
@@ -230,7 +245,7 @@ class HomeCards extends Component {
       }
     }
     for (const [month, amount] of Object.entries(body.accountMonthTransaction.INTEREST_ADARSH)) {
-      if (month === formatYearMonth(today.getFullYear(), today.getMonth(), "yyyy-MM")) {
+      if (month === lastYearMonth) {
         loanInterestLastMonth += amount;
       }
       if (month.split("-")[0] == today.getFullYear()) {
@@ -308,7 +323,6 @@ class HomeCards extends Component {
       const {
         monthExpenses,
         expensesByCategory,
-        expensesByMonth,
         monthExpensesByDay,
         monthExpensesByCategory,
         monthlySummary,
