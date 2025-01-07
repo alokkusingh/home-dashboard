@@ -17,6 +17,14 @@ export function postHeadersJson() {
     return myHeaders;
 }
 
+export function uploadHeadersJson() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("Accept", "application/json");
+
+    return myHeaders;
+}
+
 export function getHeadersProto() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
@@ -39,8 +47,12 @@ export async function fetch_retry_async_json(url, options, n)  {
        return promise;
     }
 
-    if (promise.status === 403) {
+    if (promise.status === 401) {
       redirectToLogin();
+    }
+
+    if (responsePromise.status === 403) {
+      return;
     }
 
     if (promise.status === 400) {

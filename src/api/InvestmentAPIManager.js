@@ -11,8 +11,11 @@ export async function fetchInvestmentReturnsProto() {
       headers: getHeadersProto()
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
-    if (responsePromise.status === 403) {
+    if (responsePromise.status === 401) {
       redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
     }
     const responseBuffer = await responsePromise.arrayBuffer();
     var investmentsReturn = getInvestmentsRorMetricsResponse.GetInvestmentsRorMetricsResponse.read(new Pbf(responseBuffer));
@@ -28,8 +31,11 @@ export async function fetchInvestmentReturnsJson() {
       headers: getHeadersJson()
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
+    if (responsePromise.status === 401) {
+          redirectToLogin();
+    }
     if (responsePromise.status === 403) {
-      redirectToLogin();
+      return;
     }
     const investmentsReturn = await responsePromise.json();
     console.log(investmentsReturn);
@@ -45,8 +51,11 @@ export async function fetchInvestmentSummaryProto() {
       headers: getHeadersProto()
     };
     const responsePromise = await fetch('/home/api/investment/all', requestOptions);
+    if (responsePromise.status === 401) {
+          redirectToLogin();
+    }
     if (responsePromise.status === 403) {
-      redirectToLogin();
+      return;
     }
     const responseBuffer = await responsePromise.arrayBuffer();
     var investments = getInvestmentsResponse.GetInvestmentsResponse.read(new Pbf(responseBuffer));
