@@ -9,7 +9,7 @@ function ExpenseForCategoryBarChart({ data }) {
   var minAmount = 500;
   var total = 0;
   var count = 0;
-  var numberOfMonthsToDisplay = 24;
+  var numberOfMonthsToDisplay = 18;
   Object.keys(data).forEach(
     key => {
       if (count > numberOfMonthsToDisplay) {
@@ -134,7 +134,7 @@ function ExpenseForCategoryBarChart({ data }) {
         .data(dataArr)
         .enter()
         .append("text")
-            .text(function(d) { return (d.amount / 1_00_000).toFixed(1); })
+            .text(function(d) { return (d.amount / 1_000).toFixed(1); })
             .attr("x", function(d) { return xScale(format(d.month, "MMM yy")) + xScale.bandwidth() / 2; })
             .attr("y", function(d) { return yScale(d.amount) + 10; })
             .style("font-size", 6)

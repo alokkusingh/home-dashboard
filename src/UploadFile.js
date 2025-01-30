@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-//import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
 import {
   FormInput,
   FormGroup,
@@ -17,7 +16,7 @@ import {
   Dimmer,
   Loader
 } from 'semantic-ui-react'
-import {postHeadersJson, fetch_retry_async_json} from './api/APIUtils'
+import {uploadHeadersJson, fetch_retry_async_json} from './api/APIUtils'
 
 class UploadFile extends Component {
 
@@ -25,13 +24,26 @@ class UploadFile extends Component {
     formInProgress: false
   }
 
-  handleChange = (e, { name, value }) => this.setState({ [name]: value });
+  handleChange = (e, { name, value }) => {
+    console.log(e);
+    console.log(name);
+    console.log(value);
+    console.log(document.getElementById("fileInput").files[0]);
+    this.setState({ [name]: value });
+  }
 
   handleSubmit = async() => {
     this.setState({formInProgress: true});
     const { file } = this.state
     try {
-      await this.uploadFile(file);
+
+      const formFile = document.getElementById("fileInput").files[0];
+      const fileName = formFile.name;
+      console.log('Selected File', fileName);
+
+      let data = new FormData();
+      data.append('file', formFile, fileName);
+      await this.uploadFile(data);
       this.setState({ file: ''});
     } catch(err) {
       alert(err);
@@ -41,9 +53,10 @@ class UploadFile extends Component {
 
   uploadFile = async(data) => {
 
-    var requestOptions = {
+    console.log(data)
+    let requestOptions = {
       method: 'POST',
-      headers: postHeadersJson(),
+      headers: uploadHeadersJson(),
       body: data
     };
 
@@ -69,7 +82,7 @@ class UploadFile extends Component {
               <Divider />
               <Segment inverted color="brown">
                 <Form inverted size="large" onSubmit={this.handleSubmit} success error>
-                  <FormInput type="file" placeholder='File' name='file' value={file} onChange={this.handleChange} width={6} required />
+                  <FormInput id="fileInput" type="file" placeholder='File' name='file' value={file} onChange={this.handleChange} width={6} required />
                   <Button type='submit' loading={formInProgress} color='teal' size='large' icon labelPosition='right'>
                     Upload
                     <Icon name='upload' />

@@ -74,7 +74,7 @@ function ExpenseForYearCategoryBarChart({ data }) {
 
     const yAxis = d3
        .axisLeft(yScale)
-       .tickFormat(function(d){ return d/100000 + 'L'; })
+       .tickFormat(function(d){ return d/1000 + 'K'; })
        .ticks(numberOfYaxisTicks);
 
     svg.append('g')
@@ -119,7 +119,7 @@ function ExpenseForYearCategoryBarChart({ data }) {
         .data(dataArr)
         .enter()
         .append("text")
-            .text(function(d) { return (d.amount / 1_00_000).toFixed(1); })
+            .text(function(d) { return (d.amount / 1_000).toFixed(1); })
             .attr("x", function(d) { return xScale(d.month) + xScale.bandwidth() / 2; })
             .attr("y", function(d) { return yScale(d.amount) + 10; })
             .style("font-size", 10)

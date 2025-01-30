@@ -51,7 +51,7 @@ export async function fetch_retry_async_json(url, options, n)  {
       redirectToLogin();
     }
 
-    if (responsePromise.status === 403) {
+    if (promise.status === 403) {
       return;
     }
 

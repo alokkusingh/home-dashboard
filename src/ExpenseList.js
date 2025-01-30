@@ -29,8 +29,10 @@ class ExpenseList extends Component {
       lastTransactionDate: "",
       categoryDropDownValue: 'Grocery',
       categoryDropDownValueForBar: 'ALL',
+      yearlyDropDownValueForBar: 'Total',
       categoryDropdownOpen: false,
       categoryDropdownOpenForBar: false,
+      yearlyDropdownOpenForBar: false,
       monthExpDropDownValue: 'All Months',
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
@@ -140,6 +142,11 @@ class ExpenseList extends Component {
           categoryDropdownOpenForBar: !this.state.categoryDropdownOpenForBar
       });
   }
+  toggleYearlyForBar = () => {
+      this.setState({
+          yearlyDropdownOpenForBar: !this.state.yearlyDropdownOpenForBar
+      });
+  }
 
   changeCategoryValueForBar = (e) => {
       const selectedOption = e.currentTarget.textContent;
@@ -192,10 +199,10 @@ class ExpenseList extends Component {
 
   changeYearCategoryValueForBar = (e) => {
       const selectedOption = e.currentTarget.textContent;
-      this.setState({yearCategoryDropDownValueForBar: selectedOption});
+      this.setState({yearlyDropDownValueForBar: selectedOption});
 
       let expensesForSelectedCategory = [];
-      if (selectedOption === "ALL") {
+      if (selectedOption === "Total") {
           expensesForSelectedCategory = this.state.expensesByYearCategory.reduce((expensesForSelectedCategory, expense) => {
           expensesForSelectedCategory[expense.year] = (expensesForSelectedCategory[expense.year] || 0) + expense.sum;
           return expensesForSelectedCategory;
@@ -266,9 +273,11 @@ class ExpenseList extends Component {
       months,
       categoryDropDownValue,
       categoryDropDownValueForBar,
-      yearCategoryDropDownValueForBar,
+      yearlyDropDownValueForBar,
+      yearlyCategoryDropDownValueForBar,
       categoryDropdownOpen,
       categoryDropdownOpenForBar,
+      yearlyDropdownOpenForBar,
       expensesForCategory,
       expensesByCategory,
       expensesForSelectedCategoryForBar,
@@ -332,8 +341,20 @@ class ExpenseList extends Component {
                         <ExpenseForCategoryBarChart data={expensesForSelectedCategoryForBar} />
                       </div>
                   </Card>
-              </Col>
-              <Col m={3} s={3} l={6}>
+            </Col>
+            <Col m={3} s={3} l={6}>
+                  <div align="left" >
+                  <ButtonDropdown direction="right" isOpen={yearlyDropdownOpenForBar} toggle={this.toggleYearlyForBar}>
+                      <DropdownToggle caret size="sm">
+                          {yearlyDropDownValueForBar}
+                      </DropdownToggle>
+                      <DropdownMenu>
+                          {categories.map(e => {
+                              return <DropdownItem id={e} key={e} onClick={this.changeYearCategoryValueForBar}>{e}</DropdownItem>
+                          })}
+                      </DropdownMenu>
+                  </ButtonDropdown>
+                  </div>
                   <Card className="card-panel teal lighten-4" textClassName="black-text">
                       <div>
                         <ExpenseForYearCategoryBarChart data={expensesForSelectedYearCategoryForBar} />
