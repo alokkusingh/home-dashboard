@@ -55,3 +55,21 @@ export async function fetchTransactionByIdJson(id) {
 
     return body;
 }
+
+export async function fetchTransactionsByStatementFileJson(statementFile) {
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersJson()
+    };
+    const responsePromise = await fetch('/home/api/bank/transactions?statementFileName=' + statementFile, requestOptions);
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const body = await responsePromise.json();
+    console.log(body);
+
+    return body;
+}

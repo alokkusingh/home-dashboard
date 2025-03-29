@@ -8,6 +8,14 @@ export function getHeadersJson() {
     return myHeaders;
 }
 
+export function getEventStreamHeadersJson() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("Accept", "text/event-stream");
+
+    return myHeaders;
+}
+
 export function postHeadersJson() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));

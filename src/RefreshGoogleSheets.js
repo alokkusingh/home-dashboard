@@ -21,6 +21,8 @@ import {
   Loader
 } from 'semantic-ui-react'
 import {postHeadersJson, fetch_retry_async_json} from './api/APIUtils'
+import {subscribeForEventJson} from './api/EventAPIManager.js'
+
 
 class RefreshGoogleSheets extends Component {
 
@@ -30,6 +32,11 @@ class RefreshGoogleSheets extends Component {
     investmentRefreshInProgress: false,
     estateRefreshInProgress: false,
   }
+
+
+  // Function to process each chunk of data
+  eventCallback = async(data) => {
+  };
 
   refreshExpenseGSheet = async(e) => {
     this.setState({expenseRefreshInProgress: true});
@@ -42,6 +49,7 @@ class RefreshGoogleSheets extends Component {
   }
   refreshTaxGSheet = async(e) => {
     this.setState({taxRefreshInProgress: true});
+    subscribeForEventJson("abc");
     try {
       await refreshSheet('tax');
     } catch(err) {
