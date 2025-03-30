@@ -15,6 +15,10 @@ function DrawLineChart({ data, divContainer, domain }) {
        return date > yearsBackFromNow;
     });
 
+    filteredData = filteredData.filter(function(record) {
+       return record.asOnInvestment >= domain[0];
+    });
+
     filteredData.sort((a,b) => {
         if ( a.yearMonth < b.yearMonth ){
             return -1;
@@ -57,7 +61,7 @@ function DrawLineChart({ data, divContainer, domain }) {
        const height = 580;
        const width = 1200;
        const margin = { top: 0, right: 10, bottom: 80, left: 30 };
-       const numberOfYaxisTicks = 30;
+       const numberOfYaxisTicks = 15;
 
        let allGroup = ["Value: " + parseFloat(maxAsOnValue/100000).toFixed(2) + "L", "Invested: " + parseFloat(maxInvestmentAmount/100000).toFixed(2) + "L"]
        // A color scale: one color for each group

@@ -107,6 +107,7 @@ class UploadFile extends Component {
                     <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{record.bank}</td>
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.debit)}</td>
                     <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormatNoDecimal(record.credit)}</td>
+                    <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.6rem'}}>{record.description}</td>
                  </tr>
             });
             this.setState({ fileTransactionsRow: transactionRows });
@@ -124,10 +125,9 @@ class UploadFile extends Component {
 
         const processedFilesRows = processedFiles.map(record => {
           return <tr key={record.name}  >
-            <td transId={record.name} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}} onClick={this.fileTransactionsShowModal}>{record.id}</td>
-            <td transId={record.name} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}} onClick={this.fileTransactionsShowModal}>{record.name}</td>
-            <td transId={record.name} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}} onClick={this.fileTransactionsShowModal}>{record.type}</td>
+            <td transId={record.name} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.8rem'}} onClick={this.fileTransactionsShowModal}>{record.id}</td>
             <td transId={record.name} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}} onClick={this.fileTransactionsShowModal}>{record.date}</td>
+            <td transId={record.name} style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.9rem'}} onClick={this.fileTransactionsShowModal}>{record.name}</td>
           </tr>
         });
 
@@ -159,10 +159,9 @@ class UploadFile extends Component {
                   <Table striped bordered hover size="sm">
                       <thead>
                         <tr>
-                          <th width="10%" style={{textAlign: "center"}}>ID</th>
-                          <th width="10%" style={{textAlign: "center"}}>Name</th>
-                          <th width="10%" style={{textAlign: "center"}}>Type</th>
-                          <th width="10%" style={{textAlign: "center"}}>Date</th>
+                          <th width="1%" style={{textAlign: "center"}}>ID</th>
+                          <th width="2%" style={{textAlign: "center"}}>Date</th>
+                          <th width="5%" style={{textAlign: "left"}}>Name</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -180,6 +179,7 @@ class UploadFile extends Component {
                            <th>Bank</th>
                            <th>Debit</th>
                            <th>Credit</th>
+                           <th>Description</th>
                          </tr>
                        </thead>
                        <tbody>
