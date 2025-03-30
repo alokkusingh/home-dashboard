@@ -378,16 +378,43 @@ class HomeCards extends Component {
               </tr>
       });
 
+     const yearlySummary = new Map();
      const monthlySummaryList = monthlySummary.map(record => {
+          var income = record.incomeAmount + record.investmentByCompany;
+          var savings = income - record.investmentAmount - record.expenseAmount - record.transferAmount;
+
+          if (!yearlySummary.has(record.year)) {
+            yearlySummary.set(record.year, {income: 0, expenseAmount: 0, transferAmount: 0, investmentAmount: 0, savings: 0});
+          }
+          var summary = yearlySummary.get(record.year);
+          summary.income += income;
+          summary.expenseAmount += record.expenseAmount;
+          summary.transferAmount += record.transferAmount;
+          summary.investmentAmount += record.investmentAmount;
+          summary.savings += savings;
+          yearlySummary.set(record.year, summary);
+
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
                    <td id={'' + record.year + record.month + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
-                   <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount + record.investmentByCompany))}</td>
+                   <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(income))}</td>
                    <td id={'' + record.year + record.month + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
                    <td id={'' + record.year + record.month + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
                    <td id={'' + record.year + record.month + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>
-                   <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.incomeAmount + record.investmentByCompany - record.investmentAmount - record.expenseAmount - record.transferAmount))}</td>
+                   <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(savings))}</td>
                </tr>
       });
+
+      const yearlySummaryList = [];
+      yearlySummary.forEach((record, year) => {
+          yearlySummaryList.push(<tr key={year} onClick={this.showModal}>
+                   <td id={'' + year + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{year}</td>
+                   <td id={'' + year + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.income))}</td>
+                   <td id={'' + year + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
+                   <td id={'' + year + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
+                   <td id={'' + year + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>
+                   <td id={'' + year + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.savings))}</td>
+               </tr>)
+      })
 
       return (
           <div>
@@ -528,6 +555,25 @@ class HomeCards extends Component {
                               </thead>
                               <tbody>
                               {monthlySummaryList}
+                              </tbody>
+                          </Table>
+                    </Card>
+                </Col>
+                <Col m={4} s={4} l={3}>
+                    <Card className="card-panel teal lighten-4" closeIcon={<Icon>close</Icon>} revealIcon={<Icon>more_vert</Icon>} textClassName="black-text" title="Yearly Money Flow" >
+                        <Table striped bordered hover size="sm">
+                              <thead>
+                                <tr>
+                                  <th width="15%" style={{textAlign: "center"}}>Year</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Inc</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Exp</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Tra</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Inv</th>
+                                  <th width="15%" style={{textAlign: "center"}}>Svg</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                              {yearlySummaryList}
                               </tbody>
                           </Table>
                     </Card>

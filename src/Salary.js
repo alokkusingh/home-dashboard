@@ -168,8 +168,20 @@ class Salary extends Component {
          </tr>
     }
 
-    // Prepare Monthly Salary Summary
+     // Prepare Monthly Salary Summary
+     const yearlySummary = new Map();
      const monthlySummaryList = monthlySummary.map(record => {
+          if (!yearlySummary.has(record.year)) {
+              yearlySummary.set(record.year, {ctc: 0, incomeAmount: 0, investmentAmount: 0, investmentByCompany: 0, taxAmount: 0});
+          }
+          let yearRecord = yearlySummary.get(record.year);
+          yearRecord.ctc = yearRecord.ctc + record.ctc;
+          yearRecord.incomeAmount = yearRecord.incomeAmount + record.incomeAmount;
+          yearRecord.investmentAmount = yearRecord.investmentAmount + record.investmentAmount;
+          yearRecord.investmentByCompany = yearRecord.investmentByCompany + record.investmentByCompany;
+          yearRecord.taxAmount = yearRecord.taxAmount + record.taxAmount;
+          yearlySummary.set(record.year, yearRecord);
+
           var yearMonth = '' + record.year + '-' + (record.month < 10 ? '0' + record.month : record.month) ;
           return <tr key={yearMonth} onClick={this.showMonthDetailsModal}>
                    <td id={yearMonth} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
@@ -179,6 +191,17 @@ class Salary extends Component {
                    <td id={yearMonth} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
                </tr>
       });
+
+      const yearlySummaryList = [];
+      yearlySummary.forEach((record, year) => {
+        yearlySummaryList.push(<tr key={year} >
+                    <td id={year} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{year}</td>
+                    <td id={year} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.ctc)}</td>
+                    <td id={year} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(Math.round(record.incomeAmount))}</td>
+                    <td id={year} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.investmentByCompany)}</td>
+                    <td id={year} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoDecimal(record.taxAmount)}</td>
+                </tr>)
+      })
 
     // Prepare table rows for each company
     const jpmcRows = jpmcByMonth.map(record => prepareSalaryRow(record));
@@ -287,7 +310,7 @@ class Salary extends Component {
                 </Row>
                 <Row>
                     <Col m={3} s={3} l={3}>
-                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Salary Summary">
+                        <Card className="card-panel teal lighten-4" textClassName="black-text" title="Monthly Salary Summary">
                             <div>
                               <Table striped bordered hover size="sm">
                                   <thead>
@@ -322,11 +345,24 @@ class Salary extends Component {
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
-                      <Card className="card-panel teal lighten-4" textClassName="black-text">
+                      <Card className="card-panel teal lighten-4" textClassName="black-text" title="Yearly Salary Summary">
                         <div>
-                          <h3>Coming soon...</h3>
+                          <Table striped bordered hover size="sm">
+                              <thead>
+                                <tr>
+                                  <th width="20%" style={{textAlign: "center"}}>Year</th>
+                                  <th width="20%" style={{textAlign: "center"}}>CTC</th>
+                                  <th width="20%" style={{textAlign: "center"}}>In Hand Received</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Investment Received</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Tax Paid</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                              {yearlySummaryList}
+                              </tbody>
+                          </Table>
                         </div>
-                      </Card>
+                    </Card>
                     </Col>
                 </Row>
                 <Row>
