@@ -533,6 +533,24 @@ class EstateSummary extends Component {
                 </tr>
     });
 
+    var yearlySavings = new Map();;
+    monthlySavings.map(record => {
+        const year = format(parseISO(record.month), 'yyyy');
+        if (yearlySavings.has(year) === false) {
+            yearlySavings.set(year, 0)
+        }
+        yearlySavings.set(year, yearlySavings.get(year) + record.amount);
+      }
+    );
+
+    const yearlySavingRows = [];
+    yearlySavings.forEach((amount, year) => {
+        yearlySavingRows.push( <tr style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} >
+                  <td style={{whiteSpace: 'nowrap', textAlign: "Center", fontSize: '.8rem'}}>{year}</td>
+                  <td style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormatNoDecimal(amount)}</td>
+                </tr>)
+    });
+
     return (
             <div id="cards" align="center" >
               <Row>
@@ -660,25 +678,41 @@ class EstateSummary extends Component {
                      </div>
                    </Card>
                 </Col>
-                  <Col m={6} s={6} l={6}>
-                    <Card className="teal lighten-4" textClassName="black-text" title="Saving Monthly Transactions">
-                       <div>
-                         <Table striped bordered hover size="sm">
-                           <thead>
-                             <tr>
-                               <th width="10%" style={{textAlign: "center"}}>Month</th>
-                               <th width="10%" style={{textAlign: "center"}}>Amount</th>
-                             </tr>
-                           </thead>
-                           <tbody>
-                             {monthlySavingRows}
-                           </tbody>
-                         </Table>
-                       </div>
-                     </Card>
-                  </Col>
-                </Row>
-
+                <Col m={6} s={6} l={6}>
+                  <Card className="teal lighten-4" textClassName="black-text" title="Saving Monthly Transactions">
+                     <div>
+                       <Table striped bordered hover size="sm">
+                         <thead>
+                           <tr>
+                             <th width="10%" style={{textAlign: "center"}}>Month</th>
+                             <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           {monthlySavingRows}
+                         </tbody>
+                       </Table>
+                     </div>
+                   </Card>
+                </Col>
+                <Col m={6} s={6} l={6}>
+                  <Card className="teal lighten-4" textClassName="black-text" title="Saving Yearly Transactions">
+                     <div>
+                       <Table striped bordered hover size="sm">
+                         <thead>
+                           <tr>
+                             <th width="10%" style={{textAlign: "center"}}>Year</th>
+                             <th width="10%" style={{textAlign: "center"}}>Amount</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           {yearlySavingRows}
+                         </tbody>
+                       </Table>
+                     </div>
+                   </Card>
+                </Col>
+              </Row>
             </div>
     );
   }
