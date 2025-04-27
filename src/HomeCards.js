@@ -379,6 +379,7 @@ class HomeCards extends Component {
       });
 
      const yearlySummary = new Map();
+     const total = {income: 0, expenseAmount: 0, transferAmount: 0, investmentAmount: 0, savings: 0};
      const monthlySummaryList = monthlySummary.map(record => {
           var income = record.incomeAmount + record.investmentByCompany;
           var savings = income - record.investmentAmount - record.expenseAmount - record.transferAmount;
@@ -394,6 +395,12 @@ class HomeCards extends Component {
           summary.savings += savings;
           yearlySummary.set(record.year, summary);
 
+          total.income += income;
+          total.expenseAmount += record.expenseAmount;
+          total.transferAmount += record.transferAmount;
+          total.investmentAmount += record.investmentAmount;
+          total.savings += savings;
+
           return <tr key={'' + record.year + record.month} onClick={this.showModal}>
                    <td id={'' + record.year + record.month + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(record.year, record.month)}</td>
                    <td id={'' + record.year + record.month + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(income))}</td>
@@ -403,18 +410,27 @@ class HomeCards extends Component {
                    <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(savings))}</td>
                </tr>
       });
+      //yearlySummary.set("Total", total);
 
       const yearlySummaryList = [];
       yearlySummary.forEach((record, year) => {
           yearlySummaryList.push(<tr key={year} onClick={this.showModal}>
                    <td id={'' + year + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{year}</td>
-                   <td id={'' + year + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.income))}</td>
-                   <td id={'' + year + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount))}</td>
-                   <td id={'' + year + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount))}</td>
-                   <td id={'' + year + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount))}</td>
-                   <td id={'' + year + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.savings))}</td>
+                   <td id={'' + year + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.income)/1000)}K</td>
+                   <td id={'' + year + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount)/1000)}K</td>
+                   <td id={'' + year + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount)/1000)}K</td>
+                   <td id={'' + year + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount)/1000)}K</td>
+                   <td id={'' + year + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.savings)/1000)}K</td>
                </tr>)
-      })
+      });
+      yearlySummaryList.push(<tr key={"Total"}>
+                    <td id={'Total' + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem', fontWeight: 900}}>Total</td>
+                    <td id={'Total' + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem', fontWeight: 900}}>{NumberFormatNoCurrency(Math.round(total.income)/1_00_000) + 'L'}</td>
+                    <td id={'Total' + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem', fontWeight: 900}}>{NumberFormatNoCurrency(Math.round(total.expenseAmount)/1_00_000) + 'L'}</td>
+                    <td id={'Total' + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem', fontWeight: 900}}>{NumberFormatNoCurrency(Math.round(total.transferAmount)/1_00_000) + 'L'}</td>
+                    <td id={'Total' + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem', fontWeight: 900}}>{NumberFormatNoCurrency(Math.round(total.investmentAmount)/1_00_000)+ 'L'}</td>
+                    <td id={'Total' + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem', fontWeight: 900}}>{NumberFormatNoCurrency(Math.round(total.savings)/1_00_000) + 'L'}</td>
+                </tr>)
 
       return (
           <div>
@@ -557,6 +573,14 @@ class HomeCards extends Component {
                               {monthlySummaryList}
                               </tbody>
                           </Table>
+                          <div align="left" style={{fontSize: '.6rem'}}>
+                          Notes: <br/>
+                          1. Inc = Income, which includes salray credited in bank + investment by company - tax<br/>
+                          2. Exp = Expense <br/>
+                          3. Tra = Transfer, transferred to family and friend <br/>
+                          4. Inv = Investment, investment by company and own<br/>
+                          5. Svg = Savings, 1-2-3-4<br/>
+                          </div>
                     </Card>
                 </Col>
                 <Col m={4} s={4} l={3}>
@@ -576,6 +600,14 @@ class HomeCards extends Component {
                               {yearlySummaryList}
                               </tbody>
                           </Table>
+                          <div align="left" style={{fontSize: '.6rem'}}>
+                          Notes: <br/>
+                          1. Inc = Income, which includes salray credited in bank + investment by company - tax<br/>
+                          2. Exp = Expense <br/>
+                          3. Tra = Transfer, transferred to family and friend <br/>
+                          4. Inv = Investment, investment by company and own<br/>
+                          5. Svg = Savings, 1-2-3-4<br/>
+                          </div>
                     </Card>
                 </Col>
               </Row>

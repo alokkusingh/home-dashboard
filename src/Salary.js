@@ -282,6 +282,11 @@ class Salary extends Component {
                             <div>
                                 <DrawPiChart data={companySalaryChartDataObject} total={total} divContainer="salary-by-company-pie-container" heads={['Subex', 'Evolving', 'Wipro', 'Yodlee', 'Bosch', 'JPMC']} />
                             </div>
+                            <div align="left" style={{fontSize: '.6rem'}}>
+                            <br/>
+                            Notes: <br/>
+                            1. Salary credited in bank, doesnt include tax and investment by company<br/>
+                            </div>
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
@@ -317,9 +322,9 @@ class Salary extends Component {
                                     <tr>
                                       <th width="20%" style={{textAlign: "center"}}>Month</th>
                                       <th width="20%" style={{textAlign: "center"}}>CTC</th>
-                                      <th width="20%" style={{textAlign: "center"}}>In Hand Received</th>
+                                      <th width="20%" style={{textAlign: "center"}}>Salary Credited</th>
                                       <th width="20%" style={{textAlign: "center"}}>Investment Received</th>
-                                      <th width="20%" style={{textAlign: "center"}}>Tax Paid</th>
+                                      <th width="20%" style={{textAlign: "center"}}>Tax Deposited</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -342,6 +347,13 @@ class Salary extends Component {
                                  </Table>
                               </Modal>
                             </div>
+                        <div align="left" style={{fontSize: '.6rem'}}>
+                        Notes: <br/>
+                        1. CTC = Cost To Company, calculation: salary credited + investment by company + tax deposited by company, doesnt include insurance and gratuity<br/>
+                        2. Salary Credited = Salary received in bank <br/>
+                        3. Investment Received = Investment deposited by company<br/>
+                        4. Tax Deposited = Tax deposited by company<br/>
+                        </div>
                         </Card>
                     </Col>
                     <Col m={3} s={3} l={3}>
@@ -352,9 +364,9 @@ class Salary extends Component {
                                 <tr>
                                   <th width="20%" style={{textAlign: "center"}}>Year</th>
                                   <th width="20%" style={{textAlign: "center"}}>CTC</th>
-                                  <th width="20%" style={{textAlign: "center"}}>In Hand Received</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Salary credited</th>
                                   <th width="20%" style={{textAlign: "center"}}>Investment Received</th>
-                                  <th width="20%" style={{textAlign: "center"}}>Tax Paid</th>
+                                  <th width="20%" style={{textAlign: "center"}}>Tax Deposited</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -362,7 +374,14 @@ class Salary extends Component {
                               </tbody>
                           </Table>
                         </div>
-                    </Card>
+                        <div align="left" style={{fontSize: '.6rem'}}>
+                        Notes: <br/>
+                        1. CTC = Cost To Company, calculation: salary credited + investment by company + tax deposited by company, doesnt include insurance and gratuity<br/>
+                        2. Salary Credited = Salary received in bank <br/>
+                        3. Investment Received = Investment deposited by company<br/>
+                        4. Tax Deposited = Tax deposited by company<br/>
+                        </div>
+                      </Card>
                     </Col>
                 </Row>
                 <Row>
