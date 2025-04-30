@@ -11,7 +11,7 @@ import ExpenseMonthBarChart from './charts/expenseMonthBarChart';
 import ExpenseMonthByCategoryPiChart from './charts/expenseMonthByCategoryPiChart';
 import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
-import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson} from './api/ExpensesAPIManager.js'
+import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson, fetchExpenseByCategoryForYearJson} from './api/ExpensesAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
 import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
 import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
@@ -52,7 +52,9 @@ class HomeCards extends Component {
       expenseCatModalShow: false,
       dayExpensesRows: "",
       catExpensesRows: "",
-      dimmerActive: {}
+      dimmerActive: {},
+      isYearSummaryModalOpen: false,
+      yearlySummary: {}
     };
   }
 
@@ -319,6 +321,69 @@ class HomeCards extends Component {
       this.setState({ expenseCatModalShow: !this.state.expenseCatModalShow });
   };
 
+  showYearSummaryModal = async(event) => {
+      console.log("event: ", event.target.getAttribute("id"))
+      var year = event.target.getAttribute("id");
+      //var yearSummaryRecord = this.yearlySummary.get(year);
+
+      const yearSummaryModalRows = [];
+
+//      yearSummaryModalRows.push(<tr>);
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>"Income"</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.income)}</td>)
+//      yearSummaryModalRows.push(</tr>);
+//
+//      yearSummaryModalRows.push(<tr>);
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>"Transfer"</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.transferAmount)}</td>)
+//      yearSummaryModalRows.push(</tr>);
+//
+//      yearSummaryModalRows.push(<tr>);
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>"Savings"</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.savings)}</td>)
+//      yearSummaryModalRows.push(</tr>);
+//
+//      yearSummaryModalRows.push(<tr>);
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>"Investment"</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.investmentAmount)}</td>)
+//      yearSummaryModalRows.push(</tr>);
+//
+//      yearSummaryModalRows.push(<tr>);
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>"Expense"</td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
+//      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.expenseAmount)}</td>)
+//      yearSummaryModalRows.push(</tr>);
+
+      const response = await fetchExpenseByCategoryForYearJson(year);
+      if (response != undefined && response.expenseCategorySums != undefined) {
+         response.expenseCategorySums.forEach(function(record) {
+                     yearSummaryModalRows.push(<tr>
+                       <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>
+                       <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>Expense</td>
+                       <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{record.category}</td>
+                       <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(record.sum)}</td>
+                       </tr>);
+             }
+         );
+      }
+
+      this.setState({ yearSummaryModalRows: yearSummaryModalRows });
+      this.setState({ isYearSummaryModalOpen: !this.state.isYearSummaryModalOpen });
+  }
+
+  closeYearSummaryModal = () => {
+      this.setState({ isYearSummaryModalOpen: !this.state.isYearSummaryModalOpen });
+  };
+
   render() {
       const {
         monthExpenses,
@@ -347,7 +412,9 @@ class HomeCards extends Component {
         dayExpensesRows,
         catExpensesRows,
         expCategories,
-        dimmerActive
+        dimmerActive,
+        isYearSummaryModalOpen,
+        yearSummaryModalRows
       } =  this.state;
 
       const monthExpenseList = monthExpenses.map(expense => {
@@ -378,7 +445,7 @@ class HomeCards extends Component {
               </tr>
       });
 
-     const yearlySummary = new Map();
+       const yearlySummary = new Map();
      const total = {income: 0, expenseAmount: 0, transferAmount: 0, investmentAmount: 0, savings: 0};
      const monthlySummaryList = monthlySummary.map(record => {
           var income = record.incomeAmount + record.investmentByCompany;
@@ -410,17 +477,19 @@ class HomeCards extends Component {
                    <td id={'' + record.year + record.month + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(savings))}</td>
                </tr>
       });
-      //yearlySummary.set("Total", total);
+
+      // Sore in state to be used for modal on click
+      //this.setState({yearlySummary, yearlySummary});
 
       const yearlySummaryList = [];
       yearlySummary.forEach((record, year) => {
-          yearlySummaryList.push(<tr key={year} onClick={this.showModal}>
-                   <td id={'' + year + 0} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{year}</td>
-                   <td id={'' + year + 1} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.income)/1000)}K</td>
-                   <td id={'' + year + 2} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount)/1000)}K</td>
-                   <td id={'' + year + 3} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount)/1000)}K</td>
-                   <td id={'' + year + 4} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount)/1000)}K</td>
-                   <td id={'' + year + 5} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.savings)/1000)}K</td>
+          yearlySummaryList.push(<tr key={year} onClick={this.showYearSummaryModal}>
+                   <td id={year} width="15%" style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{year}</td>
+                   <td id={year} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.income)/1000)}K</td>
+                   <td id={year} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.expenseAmount)/1000)}K</td>
+                   <td id={year} width="20%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.transferAmount)/1000)}K</td>
+                   <td id={year} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.investmentAmount)/1000)}K</td>
+                   <td id={year} width="15%" style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormatNoCurrency(Math.round(record.savings)/1000)}K</td>
                </tr>)
       });
       yearlySummaryList.push(<tr key={"Total"}>
@@ -539,20 +608,20 @@ class HomeCards extends Component {
                             </tbody>
                         </Table>
                         <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal} contentLabel="Expenses" modalClassName="custom-modal-style">
-                        <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
-                         <Table striped bordered hover>
-                             <thead >
-                               <tr>
-                                 <th>Date</th>
-                                 <th>Head</th>
-                                 <th>Comment</th>
-                                 <th>Amount</th>
-                               </tr>
-                             </thead>
-                             <tbody>
+                          <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
+                            <Table striped bordered hover>
+                              <thead >
+                                <tr>
+                                  <th>Date</th>
+                                  <th>Head</th>
+                                  <th>Comment</th>
+                                  <th>Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody>
                                {dayExpensesRows}
-                             </tbody>
-                           </Table>
+                              </tbody>
+                            </Table>
                         </Modal>
                     </Card>
                 </Col>
@@ -600,6 +669,22 @@ class HomeCards extends Component {
                               {yearlySummaryList}
                               </tbody>
                           </Table>
+                          <Modal isOpen={isYearSummaryModalOpen} onClose={this.closeYearSummaryModal} contentLabel="YearSummary" modalClassName="custom-modal-style">
+                            <ModalHeader toggle={this.closeYearSummaryModal}>Year Summary</ModalHeader>
+                              <Table striped bordered hover>
+                                <thead >
+                                  <tr>
+                                    <th>Year</th>
+                                    <th>Head</th>
+                                    <th>Sub Head</th>
+                                    <th>Amount</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                 {yearSummaryModalRows}
+                                </tbody>
+                              </Table>
+                          </Modal>
                           <div align="left" style={{fontSize: '.6rem'}}>
                           Notes: <br/>
                           1. Inc = Income, which includes salray credited in bank + investment by company - tax<br/>

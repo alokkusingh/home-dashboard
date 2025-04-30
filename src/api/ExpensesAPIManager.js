@@ -55,6 +55,24 @@ export async function fetchExpenseByCategoryYearJson() {
     return expenses;
 }
 
+export async function fetchExpenseByCategoryForYearJson(year) {
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersJson()
+    };
+    const responsePromise = await fetch('/home/api/expense/sum_by_category_year?year=' + year, requestOptions);
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const expenses = await responsePromise.json();
+    console.log(expenses);
+
+    return expenses;
+}
+
 export async function fetchMonthlyExpensesForCategoryJson(category) {
     var requestOptions = {
       method: 'GET',
