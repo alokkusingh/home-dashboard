@@ -13,7 +13,7 @@ import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson, fetchExpenseByCategoryForYearJson} from './api/ExpensesAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
-import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
+import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto, fetchInvestmentsForYearJson} from './api/InvestmentAPIManager.js'
 import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
 import {TileCard} from './cards/tileCard'
 import {getCurrentMonth, getPreviousMonth, getCurrentMonthFull, getPreviousMonthFull, getCurrentYear, getPreviousYear} from './utils/dateUtils'
@@ -362,6 +362,19 @@ class HomeCards extends Component {
 //      yearSummaryModalRows.push(<td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}></td>)
 //      yearSummaryModalRows.push(<td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(yearSummaryRecord.expenseAmount)}</td>)
 //      yearSummaryModalRows.push(</tr>);
+
+      const investmentResponse = await fetchInvestmentsForYearJson(year);
+      if (investmentResponse != undefined) {
+         investmentResponse.forEach(function(record) {
+                     yearSummaryModalRows.push(<tr>
+                       <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{year}</td>
+                       <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>Investment</td>
+                       <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{record.head}</td>
+                       <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{NumberFormat(record.contribution)}</td>
+                       </tr>);
+             }
+         );
+      }
 
       const response = await fetchExpenseByCategoryForYearJson(year);
       if (response != undefined && response.expenseCategorySums != undefined) {

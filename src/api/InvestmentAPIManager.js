@@ -104,6 +104,29 @@ export async function fetchInvestmentsForMonthProto(month) {
     return investments;
 }
 
+export async function fetchInvestmentsForYearJson(year) {
+
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersJson()
+    };
+    const responsePromise = await fetch('/home/api/investment/year/' + year, requestOptions);
+    if (responsePromise.status === 401) {
+      redirectToLogin();
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    if (responsePromise.status === 404) {
+        return;
+    }
+
+    const investments = await responsePromise.json();
+    console.log(investments);
+
+    return investments;
+}
+
 export async function fetchInvestmentSummaryJson() {
 
     var requestOptions = {
