@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
-import {postHeadersJson, fetch_retry_async_json} from './api/APIUtils'
+import {postHeadersNoAuthJson, fetch_retry_async_json} from './api/APIUtils'
 
 class UploadFileCopy extends Component {
   emptyItem = {
@@ -62,7 +62,7 @@ class UploadFileCopy extends Component {
 //        }
         var requestOptions = {
           method: 'POST',
-          headers: postHeadersJson(),
+          headers: postHeadersNoAuthJson(),
           body: data
         };
 

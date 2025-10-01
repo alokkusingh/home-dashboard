@@ -227,13 +227,13 @@ class Jyothi extends Component {
   showModal = (event) => {
     console.log("event: ", event.target.getAttribute("id"))
 
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders
-    };
+//    var myHeaders = new Headers();
+//    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+//
+//    var requestOptions = {
+//      method: 'GET',
+//      headers: myHeaders
+//    };
 
     fetchATransactionJson(event.target.getAttribute("id"))
         .then(transactionsJson => {

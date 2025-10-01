@@ -20,7 +20,7 @@ import {
   Dimmer,
   Loader
 } from 'semantic-ui-react'
-import {postHeadersJson, fetch_retry_async_json} from './api/APIUtils'
+import {fetch_retry_async_json} from './api/APIUtils'
 import {subscribeForEventJson} from './api/EventAPIManager.js'
 
 

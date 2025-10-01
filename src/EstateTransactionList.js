@@ -18,7 +18,7 @@ class EstateTransactionList extends Component {
 
   async componentDidMount() {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+      myHeaders.append("issuer", "home-stack-auth");
 
       var requestOptions = {
         method: 'GET',

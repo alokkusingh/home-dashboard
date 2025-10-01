@@ -1,13 +1,5 @@
 import {redirectToLogin} from '../utils/SessionUtils'
 
-export function getHeadersJson() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-    myHeaders.append("Accept", "application/json");
-
-    return myHeaders;
-}
-
 export function getHeadersNoAuthJson() {
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -17,17 +9,8 @@ export function getHeadersNoAuthJson() {
 
 export function getEventStreamHeadersJson() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("issuer", "home-stack-auth");
     myHeaders.append("Accept", "text/event-stream");
-
-    return myHeaders;
-}
-
-export function postHeadersJson() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("Content-Type", "application/json");
 
     return myHeaders;
 }
@@ -43,24 +26,15 @@ export function postHeadersNoAuthJson() {
 
 export function uploadHeadersJson() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("issuer", "home-stack-auth");
     myHeaders.append("Accept", "application/json");
-
-    return myHeaders;
-}
-
-export function getHeadersProto() {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
-    myHeaders.append("Accept", "application/x-protobuf");
 
     return myHeaders;
 }
 
 export function getHeadersNoAuthProto() {
     var myHeaders = new Headers();
-    // TODO: remove this line after testing
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("issuer", "home-stack-auth");
     myHeaders.append("Accept", "application/x-protobuf");
 
     return myHeaders;
@@ -68,6 +42,7 @@ export function getHeadersNoAuthProto() {
 
 export function getHeadersOctet() {
     var myHeaders = new Headers();
+    myHeaders.append("issuer", "home-stack-auth");
     myHeaders.append("Accept", "application/octet-stream");
 
     return myHeaders;
