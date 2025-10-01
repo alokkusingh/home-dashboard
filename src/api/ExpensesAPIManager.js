@@ -1,10 +1,10 @@
-import {getHeadersJson} from './APIUtils'
+import {getHeadersNoAuthJson} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function fetchCurrentMonthExpenseByDayJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/current_month_by_day', requestOptions);
     if (responsePromise.status === 401) {
@@ -22,7 +22,7 @@ export async function fetchCurrentMonthExpenseByDayJson() {
 export async function fetchExpenseByCategoryMonthJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
     if (responsePromise.status === 401) {
@@ -40,7 +40,7 @@ export async function fetchExpenseByCategoryMonthJson() {
 export async function fetchExpenseByCategoryYearJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
     if (responsePromise.status === 401) {
@@ -58,7 +58,7 @@ export async function fetchExpenseByCategoryYearJson() {
 export async function fetchExpenseByCategoryForYearJson(year) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_year?year=' + year, requestOptions);
     if (responsePromise.status === 401) {
@@ -76,7 +76,7 @@ export async function fetchExpenseByCategoryForYearJson(year) {
 export async function fetchMonthlyExpensesForCategoryJson(category) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch("/home/api/expense/monthly/categories/" + category, requestOptions);
     if (responsePromise.status === 401) {
@@ -94,7 +94,7 @@ export async function fetchMonthlyExpensesForCategoryJson(category) {
 export async function fetchExpensesJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense', requestOptions);
     if (responsePromise.status === 401) {
@@ -112,7 +112,7 @@ export async function fetchExpensesJson() {
 export async function fetchExpensesForYearMonthJson(yearMonth) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch("/home/api/expense?yearMonth=" + yearMonth, requestOptions)
     if (responsePromise.status === 401) {
@@ -130,7 +130,7 @@ export async function fetchExpensesForYearMonthJson(yearMonth) {
 export async function fetchExpensesForYearMonthAndCategoryJson(yearMonth, category) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch("/home/api/expense?yearMonth=" + yearMonth + "&category=" + category, requestOptions)
     if (responsePromise.status === 401) {
@@ -148,7 +148,7 @@ export async function fetchExpensesForYearMonthAndCategoryJson(yearMonth, catego
 export async function fetchExpenseHeadsJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/categories/names', requestOptions);
     if (responsePromise.status === 401) {
@@ -166,7 +166,7 @@ export async function fetchExpenseHeadsJson() {
 export async function fetchExpenseMonthsJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/expense/months', requestOptions);
     if (responsePromise.status === 401) {

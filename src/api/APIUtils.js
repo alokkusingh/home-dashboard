@@ -8,6 +8,13 @@ export function getHeadersJson() {
     return myHeaders;
 }
 
+export function getHeadersNoAuthJson() {
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("issuer", "home-stack-auth");
+    return myHeaders;
+}
+
 export function getEventStreamHeadersJson() {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
@@ -21,6 +28,15 @@ export function postHeadersJson() {
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
+
+    return myHeaders;
+}
+
+export function postHeadersNoAuthJson() {
+    var myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("issuer", "home-stack-auth");
 
     return myHeaders;
 }
@@ -41,9 +57,17 @@ export function getHeadersProto() {
     return myHeaders;
 }
 
+export function getHeadersNoAuthProto() {
+    var myHeaders = new Headers();
+    // TODO: remove this line after testing
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
+    myHeaders.append("Accept", "application/x-protobuf");
+
+    return myHeaders;
+}
+
 export function getHeadersOctet() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
     myHeaders.append("Accept", "application/octet-stream");
 
     return myHeaders;

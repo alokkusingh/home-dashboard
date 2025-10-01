@@ -1,9 +1,9 @@
-import {postHeadersJson, fetch_retry_async_json} from './APIUtils'
+import {postHeadersNoAuthJson, fetch_retry_async_json} from './APIUtils'
 
 export async function submitExpenseForm(head, amount, comment) {
     var requestOptions = {
       method: 'POST',
-      headers: postHeadersJson(),
+      headers: postHeadersNoAuthJson(),
       body: JSON.stringify({
         'head': head,
         'amount': amount,
@@ -22,7 +22,7 @@ export async function submitExpenseForm(head, amount, comment) {
 export async function submitEstateForm(particular, debitFrom, creditTo, amount) {
     var requestOptions = {
       method: 'POST',
-      headers: postHeadersJson(),
+      headers: postHeadersNoAuthJson(),
       body: JSON.stringify({
         'particular': particular,
         'debitFrom': debitFrom,

@@ -1,4 +1,4 @@
-import {getHeadersOctet, getHeadersJson} from './APIUtils'
+import {getHeadersOctet, getHeadersNoAuthJson} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function etlDownloadTransactions() {
@@ -20,7 +20,7 @@ export async function etlDownloadTransactions() {
 export async function fetchProcessedFilesJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/etl/file/processed', requestOptions);
     if (responsePromise.status === 401) {

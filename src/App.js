@@ -40,7 +40,7 @@ function App() {
           console.log(data);
           if (data.id !== undefined) {
             sessionStorage.setItem("ID_TOKEN", res.tokenObj.id_token);
-            setProfile(res.profileObj);
+            //setProfile(res.profileObj);
           } else {
             alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
             logOut();
@@ -51,6 +51,23 @@ function App() {
           logOut();
           alert("There was some error please try after sometime!");
         });
+
+        myHeaders.append("grant-type", "token_exchange");
+        myHeaders.append("token-provider", "GOOGLE");
+        // only for dev environment
+        // myHeaders.append("secure", "false");
+        fetch("/home/auth/home/token/exchange", requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Data: " );
+            console.log(data);
+            setProfile(res.profileObj);
+          })
+          .catch(error => {
+            console.log('error', error);
+            logOut();
+            alert("There was some error please try after sometime!");
+          });
    };
 
     const onFailure = (err) => {

@@ -30,7 +30,11 @@ class FormExpense extends Component {
       transactionEmailRecords: [],
       transactionEmailIdRecordMap: new Map(),
       transactionModalShow: false,
-      transactionRow: ""
+      transactionRow: "",
+      head: "",
+      amount: "",
+      comment: "",
+      ids: []
     }
   }
 
@@ -55,14 +59,16 @@ class FormExpense extends Component {
 
   handleSubmit = async() => {
     this.setState({formInProgress: true});
-    const { head, amount, comment, copiedFromUnverifiedTrans, id } = this.state
+    const { head, amount, comment, copiedFromUnverifiedTrans, ids } = this.state
     try {
       await submitExpenseForm(head, amount, comment);
       this.setState({ head: '', amount: '', comment: '' });
       if (copiedFromUnverifiedTrans) {
         console.log("Copied from unverified transaction");
         try {
-          await updateEmailTransactionAccepted(id, head, amount, comment);
+          ids.forEach(async (id) => {
+            await updateEmailTransactionAccepted(id);
+          })
         } catch(err) {
           alert(err);
         }
@@ -78,22 +84,33 @@ class FormExpense extends Component {
   }
 
   handleAccept = async(event) => {
-    const { transactionEmailIdRecordMap} = this.state
+    const { transactionEmailIdRecordMap, amount, comment, ids} = this.state
     const id = event.target.getAttribute("transId");
     console.log("Accepted: " + id);
     console.log(transactionEmailIdRecordMap.get(id));
+    var oldAmount = amount;
+    if (oldAmount === "") {
+      oldAmount = 0;
+    }
+
+    var oldComment = comment;
+    if (oldComment !== "") {
+      oldComment = oldComment + ", ";
+    }
+
     this.handleChange(event, {
       name: "amount",
-      value: transactionEmailIdRecordMap.get(id).amount
+      value: oldAmount + transactionEmailIdRecordMap.get(id).amount
     })
     this.handleChange(event, {
       name: "comment",
-      value: transactionEmailIdRecordMap.get(id).description
+      value: oldComment + transactionEmailIdRecordMap.get(id).description
     })
-    this.handleChange(event, {
-      name: "id",
-      value: id
-    })
+//    this.handleChange(event, {
+//      name: "id",
+//      value: id
+//    })
+    ids.push(id);
     this.handleChange(event, {
       name: "copiedFromUnverifiedTrans",
       value: true

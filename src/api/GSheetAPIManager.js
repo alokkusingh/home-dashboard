@@ -1,9 +1,9 @@
-import {getHeadersJson, fetch_retry_async_json} from './APIUtils'
+import {getHeadersNoAuthJson, fetch_retry_async_json} from './APIUtils'
 
 export async function refreshSheet(sheet) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
 
     const responsePromise = await fetch_retry_async_json(

@@ -1,10 +1,10 @@
-import {getHeadersJson} from './APIUtils'
+import {getHeadersNoAuthJson} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function fetchSalaryByCompanyJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/bank/salary/bycompany', requestOptions);
 
@@ -23,7 +23,7 @@ export async function fetchSalaryByCompanyJson() {
 export async function fetchAllTransactionsJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/bank/transactions', requestOptions);
     if (responsePromise.status === 401) {
@@ -41,7 +41,7 @@ export async function fetchAllTransactionsJson() {
 export async function fetchTransactionByIdJson(id) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/bank/transactions/' + id, requestOptions);
     if (responsePromise.status === 401) {
@@ -59,7 +59,7 @@ export async function fetchTransactionByIdJson(id) {
 export async function fetchTransactionsByStatementFileJson(statementFile) {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/bank/transactions?statementFileName=' + statementFile, requestOptions);
     if (responsePromise.status === 401) {

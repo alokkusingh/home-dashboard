@@ -2,13 +2,13 @@ import Pbf from 'pbf'
 import getInvestmentsResponse from '../proto/getInvestmentsResponse'
 import getInvestmentsRorMetricsResponse from '../proto/getInvestmentsRorMetricsResponse'
 import getRawInvestmentsResponse from '../proto/getRawInvestmentsResponse'
-import {getHeadersJson, getHeadersProto} from './APIUtils'
+import {getHeadersNoAuthJson, getHeadersNoAuthProto} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function fetchInvestmentReturnsProto() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersProto()
+      headers: getHeadersNoAuthProto()
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
     if (responsePromise.status === 401) {
@@ -28,7 +28,7 @@ export async function fetchInvestmentReturnsProto() {
 export async function fetchInvestmentReturnsJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
     if (responsePromise.status === 401) {
@@ -48,7 +48,7 @@ export async function fetchInvestmentSummaryProto() {
 
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersProto()
+      headers: getHeadersNoAuthProto()
     };
     const responsePromise = await fetch('/home/api/investment/all', requestOptions);
     if (responsePromise.status === 401) {
@@ -68,7 +68,7 @@ export async function fetchInvestmentsForHeadProto(head) {
 
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersProto()
+      headers: getHeadersNoAuthProto()
     };
     const responsePromise = await fetch('/home/api/investment/head/' + head, requestOptions);
     if (responsePromise.status === 401) {
@@ -88,7 +88,7 @@ export async function fetchInvestmentsForMonthProto(month) {
 
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersProto()
+      headers: getHeadersNoAuthProto()
     };
     const responsePromise = await fetch('/home/api/investment/month/' + month, requestOptions);
     if (responsePromise.status === 401) {
@@ -108,7 +108,7 @@ export async function fetchInvestmentsForYearJson(year) {
 
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/investment/year/' + year, requestOptions);
     if (responsePromise.status === 401) {
@@ -131,7 +131,7 @@ export async function fetchInvestmentSummaryJson() {
 
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/investment/all', requestOptions);
     if (responsePromise.status === 401) {

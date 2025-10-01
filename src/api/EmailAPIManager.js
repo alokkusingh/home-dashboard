@@ -1,10 +1,10 @@
-import {getHeadersJson, postHeadersJson, fetch_retry_async_json} from './APIUtils'
+import {getHeadersNoAuthJson, postHeadersNoAuthJson, fetch_retry_async_json} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 export async function fetchUnverifiedTransactionEmailsJson() {
     let requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/email/transactions?verified=false', requestOptions);
 
@@ -20,13 +20,13 @@ export async function fetchUnverifiedTransactionEmailsJson() {
     return body;
 }
 
-export async function updateEmailTransactionAccepted(id, head, amount, comment) {
+export async function updateEmailTransactionAccepted(id) {
 
     //await submitExpenseForm(head, amount, comment);
 
     let requestOptions = {
       method: 'PUT',
-      headers: postHeadersJson(),
+      headers: postHeadersNoAuthJson(),
       body: JSON.stringify({
         'verified': true,
         'accepted': true
@@ -50,7 +50,7 @@ export async function updateEmailTransactionAccepted(id, head, amount, comment) 
 export async function updateEmailTransactionRejected(id) {
     let requestOptions = {
       method: 'PUT',
-      headers: postHeadersJson(),
+      headers: postHeadersNoAuthJson(),
       body: JSON.stringify({
         'verified': true,
         'accepted': false

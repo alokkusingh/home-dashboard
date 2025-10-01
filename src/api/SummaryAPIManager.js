@@ -1,11 +1,11 @@
-import {getHeadersJson} from './APIUtils'
+import {getHeadersNoAuthJson} from './APIUtils'
 import {redirectToLogin} from '../utils/SessionUtils'
 
 
 export async function fetchMonthlyIncomeExpenseSummaryJson() {
     var requestOptions = {
       method: 'GET',
-      headers: getHeadersJson()
+      headers: getHeadersNoAuthJson()
     };
     const responsePromise = await fetch('/home/api/summary/monthly?sinceMonth=2007-06', requestOptions);
     if (responsePromise.status === 401) {
