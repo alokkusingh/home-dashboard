@@ -4,6 +4,7 @@ import Home from './Home';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
+import {aValidateSession, logout} from './utils/SessionUtils.js'
 
 function App() {
 
@@ -33,45 +34,32 @@ function App() {
         redirect: 'follow'
       };
 
-      fetch("/home/auth/google/validate/id-token", requestOptions)
+      myHeaders.append("grant-type", "token_exchange");
+      myHeaders.append("token-provider", "GOOGLE");
+      // only for dev environment
+      // myHeaders.append("secure", "false");
+      fetch("/home/auth/home/token/exchange", requestOptions)
         .then((response) => response.json())
         .then((data) => {
           console.log("Data: " );
           console.log(data);
-          if (data.id !== undefined) {
-            sessionStorage.setItem("ID_TOKEN", res.tokenObj.id_token);
-            //setProfile(res.profileObj);
-          } else {
-            alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
-            logOut();
-          }
+          if (data.accessToken !== undefined) {
+              //sessionStorage.setItem("LOGGED_IN", true);
+              setProfile(res.profileObj);
+            } else {
+              alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
+              logOut();
+            }
         })
         .catch(error => {
           console.log('error', error);
           logOut();
           alert("There was some error please try after sometime!");
         });
-
-        myHeaders.append("grant-type", "token_exchange");
-        myHeaders.append("token-provider", "GOOGLE");
-        // only for dev environment
-        // myHeaders.append("secure", "false");
-        fetch("/home/auth/home/token/exchange", requestOptions)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Data: " );
-            console.log(data);
-            setProfile(res.profileObj);
-          })
-          .catch(error => {
-            console.log('error', error);
-            logOut();
-            alert("There was some error please try after sometime!");
-          });
    };
 
     const onFailure = (err) => {
-        sessionStorage.setItem("ID_TOKEN", null);
+        //sessionStorage.setItem("LOGGED_IN", null);
         alert("Logged in Failed!");
         console.log('failed', err);
     };
@@ -79,8 +67,9 @@ function App() {
     const logOut = () => {
         alert("Logging out!");
         setProfile(null);
-        sessionStorage.setItem("ID_TOKEN", null);
+        //sessionStorage.setItem("LOGGED_IN", null);
         try {
+          logout();
           gapi.auth2.getAuthInstance().disconnect();
         } catch(err) {
            console.log("Log Out Error");
@@ -89,25 +78,27 @@ function App() {
 
     try {
        //alert("Going to Login!0"  + sessionStorage.getItem("ID_TOKEN"));
-       var userToken = sessionStorage.getItem("ID_TOKEN");
-       if (userToken === undefined || userToken === null) {
-           return (<div className="center">
-               <img alt="Home Dashboard" src="/logo512.png" style={{ height: 100, width: 100 }} />
-               <br />
-               <br />
-               <GoogleLogin
-                   clientId={clientId}
-                   buttonText="Sign in with Google"
-                   onSuccess={onSuccess}
-                   onFailure={onFailure}
-                   cookiePolicy={'single_host_origin'}
-                   //isSignedIn={true}
-               />
-           </div>)
-       }
+       //var loggedIn = sessionStorage.getItem("LOGGED_IN");
+        if (aValidateSession() !== true) {
+            console.log("Not Logged In!");
+             return (<div className="center">
+                 <img alt="Home Dashboard" src="/logo512.png" style={{ height: 100, width: 100 }} />
+                 <br />
+                 <br />
+                 <GoogleLogin
+                     clientId={clientId}
+                     buttonText="Sign in with Google"
+                     onSuccess={onSuccess}
+                     onFailure={onFailure}
+                     cookiePolicy={'single_host_origin'}
+                     //isSignedIn={true}
+                 />
+             </div>)
+        }
    } catch(error) {
-     if (userToken === undefined || userToken === null) {
-       return <div className="center">
+      if (aValidateSession() !== true) {
+        console.log("Not Logged In!");
+        return <div className="center">
            <img alt="Home Dashboard" src="/logo512.png" style={{ height: 100, width: 100 }} />
            <br />
            <br />

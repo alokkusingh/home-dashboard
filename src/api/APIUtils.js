@@ -7,13 +7,6 @@ export function getHeadersNoAuthJson() {
     return myHeaders;
 }
 
-export function getHeadersRefreshJson() {
-    var myHeaders = new Headers();
-    myHeaders.append("Accept", "application/json");
-    myHeaders.append("grant-type", "refresh_token");
-    return myHeaders;
-}
-
 export function getEventStreamHeadersJson() {
     var myHeaders = new Headers();
     myHeaders.append("issuer", "home-stack-auth");

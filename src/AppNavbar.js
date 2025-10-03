@@ -2,9 +2,11 @@ import React from 'react';
 import {Navbar, NavbarBrand, NavbarText} from 'reactstrap';
 import { GoogleLogout } from 'react-google-login';
 import './css/App.css';
+import {logout} from './utils/SessionUtils.js'
 
 function clearOnLogOut() {
-  sessionStorage.removeItem("ID_TOKEN");
+  sessionStorage.removeItem("LOGGED_IN");
+  logout();
   console.log("clearOnLogOut");
 }
 

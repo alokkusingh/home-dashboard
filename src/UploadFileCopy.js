@@ -51,7 +51,6 @@ class UploadFileCopy extends Component {
 //            method: 'POST',
 //            headers: {
 //                'Accept': 'application/json',
-//                'Authorization': 'Bearer ' + sessionStorage.getItem('ID_TOKEN')
 //            },
 //            body: data
 //        });

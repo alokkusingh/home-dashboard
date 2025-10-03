@@ -49,7 +49,7 @@ class RefreshGoogleSheets extends Component {
   }
   refreshTaxGSheet = async(e) => {
     this.setState({taxRefreshInProgress: true});
-    subscribeForEventJson("abc");
+    //subscribeForEventJson("abc");
     try {
       await refreshSheet('tax');
     } catch(err) {

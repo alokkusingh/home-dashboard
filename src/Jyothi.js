@@ -228,7 +228,6 @@ class Jyothi extends Component {
     console.log("event: ", event.target.getAttribute("id"))
 
 //    var myHeaders = new Headers();
-//    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem("ID_TOKEN"));
 //
 //    var requestOptions = {
 //      method: 'GET',

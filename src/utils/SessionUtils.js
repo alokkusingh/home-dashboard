@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from '../App';
-import {getHeadersRefreshJson} from '../api/APIUtils'
 
 export function redirectToLogin() {
     console.log("redirectToLogin");
-    sessionStorage.removeItem("ID_TOKEN");
+    sessionStorage.removeItem("LOGGED_IN");
     return ReactDOM.render(
             <React.StrictMode>
               <App />
@@ -14,32 +13,53 @@ export function redirectToLogin() {
           );
 }
 
-export function refreshToken() {
-    console.log("refreshToken");
-    var requestOptions = {
-      method: 'POST',
-      headers: getHeadersRefreshJson()
-    };
+export function aValidateSession() {
+  console.log("validateSession");
 
-     fetch("/home/auth/home/token/refresh", requestOptions)
-        .then(response => {
-           if (response.status === 401) {
-             console.error('Authentication required: 401 Unauthorized');
-             redirectToLogin();
-           } else if (!response.ok) {
-             // Handle other non-successful HTTP status codes (e.g., 404, 500)
-             console.error(`HTTP error! Status: ${response.status}`);
-             throw new Error(`HTTP error! Status: ${response.status}`);
-           }
-           // Process the successful response (e.g., parse JSON)
-           return response.json();
-         })
-         .then(token => {
-           // Handle the successful data
-           console.log('Token received:', token);
-         })
-         .catch(error => {
-           // Handle network errors or errors thrown in the .then() block
-           console.error('Fetch error:', error);
-         });
+  const request = new XMLHttpRequest();
+  request.open("GET", "/home/auth/home/token/validate", false); // `false` makes the request synchronous
+  request.send(null);
+
+  if (request.status === 200) {
+    console.log(request.responseText);
+    return true;
+  }
+  return false;
+}
+
+export function refreshToken() {
+      console.log("refreshToken");
+
+      const request = new XMLHttpRequest();
+      request.open("POST", "/home/auth/home/token/refresh", false); // `false` makes the request synchronous
+      request.setRequestHeader("Accept", "application/json");
+      request.setRequestHeader("grant-type", "refresh_token");
+
+      request.send(null);
+
+      if (request.status === 200) {
+        console.log(request.responseText);
+        return true;
+      } else if (request.status === 401) {
+        console.error('Authentication required: 401 Unauthorized');
+        redirectToLogin();
+      } else {
+        console.error(`HTTP error! Status: ${request.status}`);
+        throw new Error(`HTTP error! Status: ${request.status}`);
+      }
+      return false;
  }
+
+ export function logout() {
+     console.log("logout");
+
+     const request = new XMLHttpRequest();
+     request.open("POST", "/home/auth/home/token/logout", false); // `false` makes the request synchronous
+     request.send(null);
+
+     if (request.status === 200) {
+       console.log(request.responseText);
+       return true;
+     }
+     return false;
+  }
