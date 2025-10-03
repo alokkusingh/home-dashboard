@@ -1,5 +1,5 @@
 import {getEventStreamHeadersJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function subscribeForEventJson(eventId) {
 

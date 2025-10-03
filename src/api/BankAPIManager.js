@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchSalaryByCompanyJson() {
     var requestOptions = {
@@ -9,7 +9,8 @@ export async function fetchSalaryByCompanyJson() {
     const responsePromise = await fetch('/home/api/bank/salary/bycompany', requestOptions);
 
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchSalaryByCompanyJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -27,7 +28,8 @@ export async function fetchAllTransactionsJson() {
     };
     const responsePromise = await fetch('/home/api/bank/transactions', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchAllTransactionsJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -45,7 +47,8 @@ export async function fetchTransactionByIdJson(id) {
     };
     const responsePromise = await fetch('/home/api/bank/transactions/' + id, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchTransactionByIdJson(id);
     }
     if (responsePromise.status === 403) {
       return;
@@ -63,7 +66,7 @@ export async function fetchTransactionsByStatementFileJson(statementFile) {
     };
     const responsePromise = await fetch('/home/api/bank/transactions?statementFileName=' + statementFile, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      return refreshToken();
     }
     if (responsePromise.status === 403) {
       return;

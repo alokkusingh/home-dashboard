@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 
 export async function fetchMonthlyIncomeExpenseSummaryJson() {
@@ -9,7 +9,8 @@ export async function fetchMonthlyIncomeExpenseSummaryJson() {
     };
     const responsePromise = await fetch('/home/api/summary/monthly?sinceMonth=2007-06', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchMonthlyIncomeExpenseSummaryJson();
     }
     if (responsePromise.status === 403) {
       return;

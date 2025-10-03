@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchCurrentMonthExpenseByDayJson() {
     var requestOptions = {
@@ -8,7 +8,8 @@ export async function fetchCurrentMonthExpenseByDayJson() {
     };
     const responsePromise = await fetch('/home/api/expense/current_month_by_day', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchCurrentMonthExpenseByDayJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -26,7 +27,8 @@ export async function fetchExpenseByCategoryMonthJson() {
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpenseByCategoryMonthJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -44,7 +46,8 @@ export async function fetchExpenseByCategoryYearJson() {
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpenseByCategoryYearJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -62,7 +65,8 @@ export async function fetchExpenseByCategoryForYearJson(year) {
     };
     const responsePromise = await fetch('/home/api/expense/sum_by_category_year?year=' + year, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpenseByCategoryForYearJson(year);
     }
     if (responsePromise.status === 403) {
       return;
@@ -80,7 +84,8 @@ export async function fetchMonthlyExpensesForCategoryJson(category) {
     };
     const responsePromise = await fetch("/home/api/expense/monthly/categories/" + category, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchMonthlyExpensesForCategoryJson(category);
     }
     if (responsePromise.status === 403) {
       return;
@@ -98,7 +103,8 @@ export async function fetchExpensesJson() {
     };
     const responsePromise = await fetch('/home/api/expense', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpensesJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -116,7 +122,8 @@ export async function fetchExpensesForYearMonthJson(yearMonth) {
     };
     const responsePromise = await fetch("/home/api/expense?yearMonth=" + yearMonth, requestOptions)
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpensesForYearMonthJson(yearMonth);
     }
     if (responsePromise.status === 403) {
       return;
@@ -134,7 +141,8 @@ export async function fetchExpensesForYearMonthAndCategoryJson(yearMonth, catego
     };
     const responsePromise = await fetch("/home/api/expense?yearMonth=" + yearMonth + "&category=" + category, requestOptions)
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpensesForYearMonthAndCategoryJson(yearMonth, category);
     }
     if (responsePromise.status === 403) {
       return;
@@ -152,7 +160,8 @@ export async function fetchExpenseHeadsJson() {
     };
     const responsePromise = await fetch('/home/api/expense/categories/names', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpenseHeadsJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -170,7 +179,8 @@ export async function fetchExpenseMonthsJson() {
     };
     const responsePromise = await fetch('/home/api/expense/months', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchExpenseMonthsJson();
     }
     if (responsePromise.status === 403) {
       return;

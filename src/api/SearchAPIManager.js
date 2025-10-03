@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function searchTransactionsJson(description) {
     var requestOptions = {
@@ -8,7 +8,8 @@ export async function searchTransactionsJson(description) {
     };
     const responsePromise = await fetch('/home/search/transactions?description=' + description, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return searchTransactionsJson(description);
     }
     if (responsePromise.status === 403) {
       return;

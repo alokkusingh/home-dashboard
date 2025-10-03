@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchAccountBalancesJson() {
     var requestOptions = {
@@ -8,7 +8,8 @@ export async function fetchAccountBalancesJson() {
     };
     const responsePromise = await fetch('/home/api/odion/accounts', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchAccountBalancesJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -26,7 +27,8 @@ export async function fetchTransactionsJson() {
     };
     const responsePromise = await fetch('/home/api/odion/monthly/transaction', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchTransactionsJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -44,7 +46,8 @@ export async function fetchATransactionJson(id) {
     };
     const responsePromise = await fetch("/home/api/odion/transactions/" + id, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchATransactionJson(id);
     }
     if (responsePromise.status === 403) {
       return;

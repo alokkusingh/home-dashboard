@@ -3,7 +3,7 @@ import getInvestmentsResponse from '../proto/getInvestmentsResponse'
 import getInvestmentsRorMetricsResponse from '../proto/getInvestmentsRorMetricsResponse'
 import getRawInvestmentsResponse from '../proto/getRawInvestmentsResponse'
 import {getHeadersNoAuthJson, getHeadersNoAuthProto} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchInvestmentReturnsProto() {
     var requestOptions = {
@@ -12,7 +12,8 @@ export async function fetchInvestmentReturnsProto() {
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchInvestmentReturnsProto();
     }
     if (responsePromise.status === 403) {
       return;
@@ -32,7 +33,9 @@ export async function fetchInvestmentReturnsJson() {
     };
     const responsePromise = await fetch('/home/api/investment/return', requestOptions);
     if (responsePromise.status === 401) {
-          redirectToLogin();
+          refreshToken();
+          return fetchInvestmentReturnsJson();
+
     }
     if (responsePromise.status === 403) {
       return;
@@ -52,7 +55,9 @@ export async function fetchInvestmentSummaryProto() {
     };
     const responsePromise = await fetch('/home/api/investment/all', requestOptions);
     if (responsePromise.status === 401) {
-          redirectToLogin();
+          refreshToken();
+          return fetchInvestmentSummaryProto();
+
     }
     if (responsePromise.status === 403) {
       return;
@@ -72,7 +77,9 @@ export async function fetchInvestmentsForHeadProto(head) {
     };
     const responsePromise = await fetch('/home/api/investment/head/' + head, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchInvestmentsForHeadProto(head);
+
     }
     if (responsePromise.status === 403) {
       return;
@@ -92,7 +99,9 @@ export async function fetchInvestmentsForMonthProto(month) {
     };
     const responsePromise = await fetch('/home/api/investment/month/' + month, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchInvestmentsForMonthProto(month);
+
     }
     if (responsePromise.status === 403) {
       return;
@@ -112,7 +121,8 @@ export async function fetchInvestmentsForYearJson(year) {
     };
     const responsePromise = await fetch('/home/api/investment/year/' + year, requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchInvestmentsForYearJson(year);
     }
     if (responsePromise.status === 403) {
       return;
@@ -135,7 +145,9 @@ export async function fetchInvestmentSummaryJson() {
     };
     const responsePromise = await fetch('/home/api/investment/all', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchInvestmentSummaryJson() ;
+
     }
     if (responsePromise.status === 403) {
       return;

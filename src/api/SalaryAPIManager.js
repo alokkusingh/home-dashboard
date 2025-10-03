@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchYearlyTaxPaidJson() {
     var requestOptions = {
@@ -8,7 +8,8 @@ export async function fetchYearlyTaxPaidJson() {
     };
     const responsePromise = await fetch('/home/api/tax/all', requestOptions);
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+            return fetchYearlyTaxPaidJson();
     }
     if (responsePromise.status === 403) {
       return;

@@ -1,5 +1,5 @@
 import {getHeadersNoAuthJson, postHeadersNoAuthJson, fetch_retry_async_json} from './APIUtils'
-import {redirectToLogin} from '../utils/SessionUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchUnverifiedTransactionEmailsJson() {
     let requestOptions = {
@@ -9,7 +9,8 @@ export async function fetchUnverifiedTransactionEmailsJson() {
     const responsePromise = await fetch('/home/email/transactions?verified=false', requestOptions);
 
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return fetchUnverifiedTransactionEmailsJson();
     }
     if (responsePromise.status === 403) {
       return;
@@ -38,7 +39,8 @@ export async function updateEmailTransactionAccepted(id) {
       3
     );
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return updateEmailTransactionAccepted(id);
     }
     if (responsePromise.status === 403) {
       return;
@@ -62,7 +64,8 @@ export async function updateEmailTransactionRejected(id) {
       3
     );
     if (responsePromise.status === 401) {
-      redirectToLogin();
+      refreshToken();
+      return updateEmailTransactionRejected(id);
     }
     if (responsePromise.status === 403) {
       return;
