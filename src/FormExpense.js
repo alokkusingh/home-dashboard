@@ -69,17 +69,15 @@ class FormExpense extends Component {
       if (copiedFromUnverifiedTrans) {
         console.log("Copied from unverified transaction");
         try {
-          ids.forEach(async (id) => {
-            await updateEmailTransactionAccepted(id);
-          })
+          await Promise.all(ids.map(id => updateEmailTransactionAccepted(id)));
         } catch(err) {
           alert(err);
         }
-        await Promise.all([
-          fetchUnverifiedTransactionEmailsJson().then(this.handleUnverifiedTransactionEmails)
-        ]);
         this.setState({ copiedFromUnverifiedTrans: false, id: '' });
       }
+      await Promise.all([
+        fetchUnverifiedTransactionEmailsJson().then(this.handleUnverifiedTransactionEmails)
+      ]);
     } catch(err) {
       alert(err);
     }
