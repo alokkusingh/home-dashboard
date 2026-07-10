@@ -331,7 +331,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Years Investment">
                             <div>
-                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[1000000, 8500000]} divContainer="total-investment-line-container" />
+                                <DrawLineChartShare data={totalMonthlyInvestment} domain={[1500000, 11000000]} divContainer="total-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -340,7 +340,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year PF Investment">
                             <div>
-                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[0, 5000000]} divContainer="PF-investment-line-container" />
+                                <DrawLineChartShare data={pfMonthlyInvestment} domain={[0, 6000000]} divContainer="PF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -349,7 +349,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year NPS Investment">
                             <div>
-                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[130000, 1800000]} divContainer="NPS-investment-line-container" />
+                                <DrawLineChartShare data={npsMonthlyInvestment} domain={[300000, 2500000]} divContainer="NPS-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -358,7 +358,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year Mutual Fund Investment">
                             <div>
-                                <DrawLineChartShare data={mfMonthlyInvestment} domain={[100000, 1100000]} divContainer="MF-investment-line-container" />
+                                <DrawLineChartShare data={mfMonthlyInvestment} domain={[100000, 1800000]} divContainer="MF-investment-line-container" />
                             </div>
                         </Card>
                     </Col>
@@ -376,7 +376,7 @@ class Investment extends Component {
                     <Col m={12} s={12} l={12}>
                         <Card className="card-panel teal lighten-4" textClassName="black-text" title="Last 5 Year LIC Investment">
                             <div>
-                                <DrawLineChartShare data={licMonthlyInvestment} domain={[300000, 800000]} divContainer="LIC-investment-line-container" />
+                                <DrawLineChartShare data={licMonthlyInvestment} domain={[350000, 850000]} divContainer="LIC-investment-line-container" />
                             </div>
                         </Card>
                     </Col>

@@ -46,6 +46,7 @@ function App() {
           if (data.accessToken !== undefined) {
               //sessionStorage.setItem("LOGGED_IN", true);
               setProfile(res.profileObj);
+              localStorage.setItem("profile", JSON.stringify(res.profileObj));
             } else {
               alert(res.profileObj.name + " you are not authorize to access this page please contact Alok!");
               logOut();

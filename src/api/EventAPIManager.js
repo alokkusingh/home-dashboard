@@ -3,7 +3,8 @@ import {refreshToken} from '../utils/SessionUtils'
 
 export async function subscribeForEventJson(eventId) {
 
-    const sseUrl = "/home/event/" + eventId + "/subscribe?token=Bearer " + sessionStorage.getItem("ID_TOKEN");
+    //const sseUrl = "/home/event/" + eventId + "/subscribe?token=Bearer " + sessionStorage.getItem("ID_TOKEN");
+    const sseUrl = "/home/event/" + eventId + "/subscribe";
     const eventSource = new EventSource(sseUrl);
 
     // Event listener for receiving messages

@@ -123,7 +123,7 @@ function ExpenseVsIncomeLineChart({ data }) {
             .range([0, width]);
 
        const yScale = d3.scaleLinear()
-          .domain([-100000, 850000])
+          .domain([-100000, 1100000])
           .range([height, 0]);
 
       // Setting up the axis
