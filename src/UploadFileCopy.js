@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
 import {postHeadersNoAuthJson, fetch_retry_async_json} from './api/APIUtils'
+import {getOrCreateIdempotencyKey, clearIdempotencyKey} from './utils/IdempotencyUtils'
 
 class UploadFileCopy extends Component {
   emptyItem = {
@@ -59,9 +60,10 @@ class UploadFileCopy extends Component {
 //          const message = `An error has occurred: ${response.status}`;
 //          throw new Error(message);
 //        }
+        const idempotencyKey = getOrCreateIdempotencyKey('upload-file-copy-form');
         var requestOptions = {
           method: 'POST',
-          headers: postHeadersNoAuthJson(),
+          headers: postHeadersNoAuthJson(idempotencyKey),
           body: data
         };
 
@@ -71,6 +73,7 @@ class UploadFileCopy extends Component {
           1
         );
         const responseJson = await responsePromise.json();
+        clearIdempotencyKey('upload-file-copy-form');
 
         return responseJson;
       }

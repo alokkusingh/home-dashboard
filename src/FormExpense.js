@@ -18,6 +18,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatDate } from "./utils/FormatDate";
 
 import {submitExpenseForm} from './api/FormAPIManager.js'
+import {getOrCreateIdempotencyKey, clearIdempotencyKey} from './utils/IdempotencyUtils'
 import {fetchUnverifiedTransactionEmailsJson, updateEmailTransactionAccepted, updateEmailTransactionRejected} from './api/EmailAPIManager.js'
 
 class FormExpense extends Component {
@@ -61,7 +62,9 @@ class FormExpense extends Component {
     this.setState({formInProgress: true});
     const { head, amount, comment, copiedFromUnverifiedTrans, ids } = this.state
     try {
-      await submitExpenseForm(head, amount, comment);
+      const idempotencyKey = getOrCreateIdempotencyKey('form-expense');
+      await submitExpenseForm(head, amount, comment, idempotencyKey);
+      clearIdempotencyKey('form-expense');
       this.setState({ head: '', amount: '', comment: '' });
       if (copiedFromUnverifiedTrans) {
         console.log("Copied from unverified transaction");

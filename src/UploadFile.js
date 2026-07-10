@@ -18,6 +18,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import {uploadHeadersJson, fetch_retry_async_json} from './api/APIUtils'
 import {fetchProcessedFilesJson} from './api/EtlAPIManager.js'
 import {fetchTransactionsByStatementFileJson} from './api/BankAPIManager.js'
+import {getOrCreateIdempotencyKey, clearIdempotencyKey} from './utils/IdempotencyUtils'
 
 class UploadFile extends Component {
 
@@ -65,7 +66,9 @@ class UploadFile extends Component {
 
       let data = new FormData();
       data.append('file', formFile, fileName);
-      await this.uploadFile(data);
+      const idempotencyKey = getOrCreateIdempotencyKey('upload-file-form');
+      await this.uploadFile(data, idempotencyKey);
+      clearIdempotencyKey('upload-file-form');
       this.setState({ file: ''});
     } catch(err) {
       alert(err);
@@ -73,12 +76,12 @@ class UploadFile extends Component {
     this.setState({formInProgress: false});
   }
 
-  uploadFile = async(data) => {
+  uploadFile = async(data, idempotencyKey) => {
 
     console.log(data)
     let requestOptions = {
       method: 'POST',
-      headers: uploadHeadersJson(),
+      headers: uploadHeadersJson(idempotencyKey),
       body: data
     };
 

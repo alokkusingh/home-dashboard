@@ -19,6 +19,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 import {submitEstateForm} from './api/FormAPIManager.js'
+import {getOrCreateIdempotencyKey, clearIdempotencyKey} from './utils/IdempotencyUtils'
 import "./css/formSelect.css"
 
 const account = [
@@ -90,7 +91,9 @@ class FormEstate extends Component {
     this.setState({formInProgress: true});
     const { particular, debitFrom, creditTo, amount } = this.state
     try {
-      await submitEstateForm(particular, debitFrom, creditTo, amount);
+      const idempotencyKey = getOrCreateIdempotencyKey('form-estate');
+      await submitEstateForm(particular, debitFrom, creditTo, amount, idempotencyKey);
+      clearIdempotencyKey('form-estate');
       this.setState({ particular: '', amount: '', debitFrom: '', creditTo: '' });
     } catch(err) {
       alert(err);

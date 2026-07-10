@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap';
 import AppNavbar from './AppNavbar';
+import {getOrCreateIdempotencyKey, clearIdempotencyKey} from '../utils/IdempotencyUtils'
 
 class UploadExpense extends Component {
   emptyItem = {
@@ -26,13 +27,16 @@ class UploadExpense extends Component {
       data.append('file', selectedFile);
       console.log('Form', data);
 
+      const idempotencyKey = getOrCreateIdempotencyKey('upload-expense-form');
       await fetch('/home/etl/expense/upload', {
           method: 'POST',
           headers: {
-              'Accept': 'application/json'
+              'Accept': 'application/json',
+              'Idempotency-Key': idempotencyKey
           },
           body: data,
       });
+      clearIdempotencyKey('upload-expense-form');
       this.props.history.push('/expenses');
   }
 

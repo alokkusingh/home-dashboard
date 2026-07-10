@@ -1,4 +1,5 @@
 import {redirectToLogin} from '../utils/SessionUtils'
+import {getOrCreateIdempotencyKey} from '../utils/IdempotencyUtils'
 
 export function getHeadersNoAuthJson() {
     var myHeaders = new Headers();
@@ -15,20 +16,24 @@ export function getEventStreamHeadersJson() {
     return myHeaders;
 }
 
-export function postHeadersNoAuthJson() {
+export function postHeadersNoAuthJson(idempotencyKey) {
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("issuer", "home-stack-auth");
-
+    if (idempotencyKey) {
+        myHeaders.append("Idempotency-Key", idempotencyKey);
+    }
     return myHeaders;
 }
 
-export function uploadHeadersJson() {
+export function uploadHeadersJson(idempotencyKey) {
     var myHeaders = new Headers();
     myHeaders.append("issuer", "home-stack-auth");
     myHeaders.append("Accept", "application/json");
-
+    if (idempotencyKey) {
+        myHeaders.append("Idempotency-Key", idempotencyKey);
+    }
     return myHeaders;
 }
 
