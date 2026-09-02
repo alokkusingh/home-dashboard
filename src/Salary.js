@@ -9,7 +9,7 @@ import DrawSalaryBarChart from "./charts/drawSalaryBarChart";
 import {fetchYearlyTaxPaidJson} from './api/SalaryAPIManager.js'
 import {fetchSalaryByCompanyJson} from './api/BankAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
-import {fetchInvestmentsForMonthProto} from './api/InvestmentAPIManager.js'
+import {fetchInvestmentsForMonthProto, fetchInvestmentsForMonthJson} from './api/InvestmentAPIManager.js'
 import "./css/modal.css"
 
 class Salary extends Component {
@@ -121,7 +121,7 @@ class Salary extends Component {
   }
 
   showMonthDetailsModal = (event) => {
-    fetchInvestmentsForMonthProto(event.target.getAttribute("id"))
+      fetchInvestmentsForMonthJson(event.target.getAttribute("id"))
         .then(recordsJson => {
             const monthDetailsRows = recordsJson.map( record => {
                 return <tr>

@@ -5,7 +5,7 @@ import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { NumberFormatNoCurrency } from "./utils/NumberFormatNoCurrency";
 import { NumberFormatNoCurrencyFraction2 } from "./utils/NumberFormatNoCurrencyFraction2";
 import DrawLineChartShare from './charts/drawLineChart';
-import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto} from './api/InvestmentAPIManager.js'
+import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto, fetchInvestmentsForHeadJson} from './api/InvestmentAPIManager.js'
 import "./css/modal.css"
 
 class Investment extends Component {
@@ -151,7 +151,7 @@ class Investment extends Component {
   showInvestmentHeadRecordsModal = (event) => {
     console.log(event);
 
-    fetchInvestmentsForHeadProto(event.target.getAttribute("id"))
+    fetchInvestmentsForHeadJson(event.target.getAttribute("id"))
       .then(investments => {
           var prevMonthClosing = 0;
           const investmentHeadRecordsRows = investments.reverse().map( record => {

@@ -13,7 +13,7 @@ import ExpenseVsIncomeLineChart from './charts/expenseVsIncomeLineChart';
 import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchCurrentMonthExpenseByDayJson, fetchExpenseByCategoryMonthJson, fetchExpenseHeadsJson, fetchExpenseByCategoryForYearJson} from './api/ExpensesAPIManager.js'
 import {fetchMonthlyIncomeExpenseSummaryJson} from './api/SummaryAPIManager.js'
-import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto, fetchInvestmentsForYearJson} from './api/InvestmentAPIManager.js'
+import {fetchInvestmentReturnsProto, fetchInvestmentSummaryProto, fetchInvestmentsForHeadProto, fetchInvestmentsForHeadJson, fetchInvestmentsForYearJson} from './api/InvestmentAPIManager.js'
 import {fetchAccountBalancesJson, fetchTransactionsJson} from './api/EstateAPIManager.js'
 import {TileCard} from './cards/tileCard'
 import {getCurrentMonth, getPreviousMonth, getCurrentMonthFull, getPreviousMonthFull, getCurrentYear, getPreviousYear} from './utils/dateUtils'

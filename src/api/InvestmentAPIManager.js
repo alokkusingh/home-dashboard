@@ -91,6 +91,27 @@ export async function fetchInvestmentsForHeadProto(head) {
     return investments;
 }
 
+export async function fetchInvestmentsForHeadJson(head) {
+
+    var requestOptions = {
+        method: 'GET',
+        headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/investment/head/' + head, requestOptions);
+    if (responsePromise.status === 401) {
+        refreshToken();
+        return fetchInvestmentsForHeadJson(head);
+
+    }
+    if (responsePromise.status === 403) {
+        return;
+    }
+
+    const investmentsReturn = await responsePromise.json();
+    console.log(investmentsReturn);
+    return investmentsReturn;
+}
+
 export async function fetchInvestmentsForMonthProto(month) {
 
     var requestOptions = {
@@ -108,6 +129,28 @@ export async function fetchInvestmentsForMonthProto(month) {
     }
     const responseBuffer = await responsePromise.arrayBuffer();
     var investments = getRawInvestmentsResponse.GetRawInvestmentsResponse.read(new Pbf(responseBuffer)).investments;
+    console.log(investments);
+
+    return investments;
+}
+
+export async function fetchInvestmentsForMonthJson(month) {
+
+    var requestOptions = {
+        method: 'GET',
+        headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/investment/month/' + month, requestOptions);
+    if (responsePromise.status === 401) {
+        refreshToken();
+        return fetchInvestmentsForMonthJson(month);
+
+    }
+    if (responsePromise.status === 403) {
+        return;
+    }
+
+    const investments = await responsePromise.json();
     console.log(investments);
 
     return investments;
