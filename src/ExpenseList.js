@@ -15,8 +15,32 @@ import "./css/modal.css"
 
 class ExpenseList extends Component {
 
+  getPreviousMonthYearMonth = () => {
+    const today = new Date();
+    const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const year = prevMonth.getFullYear();
+    const month = String(prevMonth.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
+
+  getPreviousMonthDisplay = () => {
+    const today = new Date();
+    const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const year = prevMonth.getFullYear();
+    const month = prevMonth.getMonth() + 1;
+    return formatYearMonth(year, month);
+  }
+
+  getCurrentYear = () => {
+    return new Date().getFullYear();
+  }
+
   constructor() {
     super();
+    const previousMonthYearMonth = this.getPreviousMonthYearMonth();
+    const previousMonthDisplay = this.getPreviousMonthDisplay();
+    const currentYear = this.getCurrentYear();
+    
     this.state = {
       expenses: [],
       expensesForCategory: [],
@@ -35,11 +59,13 @@ class ExpenseList extends Component {
       categoryDropdownOpen: false,
       categoryDropdownOpenForBar: false,
       yearlyDropdownOpenForBar: false,
-      monthExpDropDownValue: 'All Months',
-      monthExpByCatDropDownValue: 'All Months',
+      monthExpDropDownValue: previousMonthDisplay,
+      monthExpByCatDropDownValue: previousMonthDisplay,
+      previousMonthYearMonth: previousMonthYearMonth,
       monthExpDropdownOpen: false,
       monthExpByCatDropdownOpen: false,
-      yearExpByCatDropDownValue: 'All Years',
+      yearExpByCatDropDownValue: String(currentYear),
+      currentYear: currentYear,
       yearExpByCatDropdownOpen: false,
       expenseCategoryModalShow: false,
       expenseCategoryMonthRows: "",
@@ -55,7 +81,16 @@ class ExpenseList extends Component {
           fetchExpenseByCategoryYearJson().then(this.handleExpenseByCategoryYear),
           fetchMonthlyExpensesForCategoryJson(this.state.categoryDropDownValue).then(this.handleMonthlyExpensesForCategory),
           fetchExpenseHeadsJson().then(this.handleExpenseHeads),
-          fetchExpenseMonthsJson().then(this.handleExpenseMonths)
+          fetchExpenseMonthsJson().then(this.handleExpenseMonths),
+          fetchExpenseByCategoryMonthJson(this.state.previousMonthYearMonth).then(expensesJson => {
+              this.setState({ filteredExpensesByCategory: expensesJson.expenseCategorySums || [] });
+          }),
+          fetchExpenseByCategoryYearJson(this.state.currentYear).then(expensesJson => {
+              this.setState({ expensesByYearCategory: expensesJson.expenseCategorySums || [] });
+          }),
+          fetchExpensesForYearMonthJson(this.state.previousMonthYearMonth).then(expensesJson => {
+              this.setState({ expenses: expensesJson.expenses || [] });
+          })
       ]);
       // All fetch calls are done now
       console.log(this.state);
