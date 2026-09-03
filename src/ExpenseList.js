@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Table, Row, Col, Modal, ModalHeader, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
-import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
+import { NumberFormatNoDecimal } from "./utils/NumberFormatUtil";
 import { formatYearMonth } from "./utils/FormatYearMonth";
 import { getPreviousMonthYearMonth, getPreviousMonthDisplay, getCurrentYear } from "./utils/dateUtils";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
@@ -115,7 +115,7 @@ class ExpenseList extends Component {
       this.setState({
           expensesForSelectedCategoryForBar: expensesForSelectedCategory,
           expensesByCategory: body.expenseCategorySums,
-          filteredExpensesByCategory: body.expenseCategorySums,
+          //filteredExpensesByCategory: body.expenseCategorySums,
           dimmerActive: false
         }
       );
