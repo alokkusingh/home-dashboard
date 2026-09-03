@@ -4,7 +4,7 @@ import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
-import { getPreviousMonthYearMonth, getPreviousMonthDisplay, getCurrentYear } from "./utils/DateUtils";
+import { getPreviousMonthYearMonth, getPreviousMonthDisplay, getCurrentYear } from "./utils/dateUtils";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
 import ExpenseForYearCategoryBarChart from "./charts/expenseForYearCategoryBarChart";
 import { Dimmer, Loader } from 'semantic-ui-react'
