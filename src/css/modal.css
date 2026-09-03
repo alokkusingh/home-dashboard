@@ -1,4 +1,89 @@
 .custom-modal-style {
-width: 90% !important;
-height: 70% !important;
+  width: 85% !important;
+  max-width: 1200px !important;
+  max-height: 85vh !important;
+  margin: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.custom-modal-style .modal-body {
+  padding: 15px !important;
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  display: block !important;
+}
+
+.custom-modal-style table {
+  width: 100% !important;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+  table-layout: auto;
+  margin: 0 !important;
+}
+
+.custom-modal-style tbody td {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  padding: 8px !important;
+  border: 1px solid #ddd !important;
+}
+
+.custom-modal-style thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f5;
+  padding: 8px !important;
+  border: 1px solid #ddd !important;
+  font-weight: 600;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .custom-modal-style {
+    width: 95% !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+  }
+
+  .custom-modal-style .modal-body {
+    padding: 10px !important;
+  }
+
+  .custom-modal-style table {
+    font-size: 0.8rem;
+  }
+
+  .custom-modal-style tbody td,
+  .custom-modal-style thead th {
+    padding: 5px !important;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .custom-modal-style {
+    width: 98% !important;
+    max-width: 98vw !important;
+    max-height: 95vh !important;
+  }
+
+  .custom-modal-style .modal-body {
+    padding: 8px !important;
+  }
+
+  .custom-modal-style table {
+    font-size: 0.75rem;
+  }
+
+  .custom-modal-style tbody td,
+  .custom-modal-style thead th {
+    padding: 4px !important;
+  }
 }
