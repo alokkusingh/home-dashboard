@@ -1,7 +1,7 @@
 FROM arm64v8/node as builder1
 
-COPY package.json /tmp/package.json
-RUN cd /tmp && npm install
+COPY package.json package-lock.json /tmp/
+RUN cd /tmp && npm ci --no-audit --no-fund
 RUN mkdir -p /app && cp -a /tmp/node_modules /app/
 
 WORKDIR /app

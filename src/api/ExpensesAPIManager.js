@@ -20,15 +20,16 @@ export async function fetchCurrentMonthExpenseByDayJson() {
     return expenses;
 }
 
-export async function fetchExpenseByCategoryMonthJson() {
+export async function fetchExpenseByCategoryMonthJson(yearMonth) {
     var requestOptions = {
       method: 'GET',
       headers: getHeadersNoAuthJson()
     };
-    const responsePromise = await fetch('/home/api/expense/sum_by_category_month', requestOptions);
+    const queryParams = yearMonth ? '?yearMonth=' + yearMonth : '';
+    const responsePromise = await fetch('/home/api/expense/sum_by_category_month' + queryParams, requestOptions);
     if (responsePromise.status === 401) {
       refreshToken();
-            return fetchExpenseByCategoryMonthJson();
+            return fetchExpenseByCategoryMonthJson(yearMonth);
     }
     if (responsePromise.status === 403) {
       return;
@@ -39,15 +40,35 @@ export async function fetchExpenseByCategoryMonthJson() {
     return expenses;
 }
 
-export async function fetchExpenseByCategoryYearJson() {
+export async function fetchExpenseByCategoryYearJson(year) {
     var requestOptions = {
       method: 'GET',
       headers: getHeadersNoAuthJson()
     };
-    const responsePromise = await fetch('/home/api/expense/sum_by_category_year', requestOptions);
+    const queryParams = year ? '?year=' + year : '';
+    const responsePromise = await fetch('/home/api/expense/sum_by_category_year' + queryParams, requestOptions);
     if (responsePromise.status === 401) {
       refreshToken();
-            return fetchExpenseByCategoryYearJson();
+            return fetchExpenseByCategoryYearJson(year);
+    }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const expenses = await responsePromise.json();
+    console.log(expenses);
+
+    return expenses;
+}
+
+export async function fetchExpensesForYearAndCategoryJson(year, category) {
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/expense?year=' + year + '&category=' + category, requestOptions);
+    if (responsePromise.status === 401) {
+      refreshToken();
+            return fetchExpensesForYearAndCategoryJson(year, category);
     }
     if (responsePromise.status === 403) {
       return;

@@ -9,7 +9,7 @@ Home dashboard
 npm start
 ```
 
-### Launch Test Nunner
+### Launch Test Runner
 ```shell
 npm test
 ```

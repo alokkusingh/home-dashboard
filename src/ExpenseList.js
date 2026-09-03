@@ -9,7 +9,8 @@ import ExpenseForYearCategoryBarChart from "./charts/expenseForYearCategoryBarCh
 import { Dimmer, Loader } from 'semantic-ui-react'
 import {fetchExpensesJson, fetchExpenseByCategoryMonthJson, fetchExpenseByCategoryYearJson,
         fetchMonthlyExpensesForCategoryJson, fetchExpenseHeadsJson, fetchExpenseMonthsJson,
-        fetchExpensesForYearMonthJson, fetchExpensesForYearMonthAndCategoryJson} from './api/ExpensesAPIManager.js'
+        fetchExpensesForYearMonthJson, fetchExpensesForYearMonthAndCategoryJson,
+        fetchExpensesForYearAndCategoryJson} from './api/ExpensesAPIManager.js'
 import "./css/modal.css"
 
 class ExpenseList extends Component {
@@ -21,6 +22,7 @@ class ExpenseList extends Component {
       expensesForCategory: [],
       expensesForSelectedCategoryForBar: [],
       expensesByCategory: [],
+      filteredExpensesByCategory: [],
       expensesForSelectedYearCategoryForBar: [],
       expensesByYearCategory: [],
       categories: [],
@@ -36,6 +38,9 @@ class ExpenseList extends Component {
       monthExpDropDownValue: 'All Months',
       monthExpByCatDropDownValue: 'All Months',
       monthExpDropdownOpen: false,
+      monthExpByCatDropdownOpen: false,
+      yearExpByCatDropDownValue: 'All Years',
+      yearExpByCatDropdownOpen: false,
       expenseCategoryModalShow: false,
       expenseCategoryMonthRows: "",
       dimmerActive: {}
@@ -94,6 +99,7 @@ class ExpenseList extends Component {
       this.setState({
           expensesForSelectedCategoryForBar: expensesForSelectedCategory,
           expensesByCategory: body.expenseCategorySums,
+          filteredExpensesByCategory: body.expenseCategorySums,
           dimmerActive: false
         }
       );
@@ -227,6 +233,12 @@ class ExpenseList extends Component {
       });
   }
 
+  toggleExpMonthByCategory = () => {
+      this.setState({
+          monthExpByCatDropdownOpen: !this.state.monthExpByCatDropdownOpen
+      });
+  }
+
   changeExpMonthValue = (e) => {
       const yearMonth = e.currentTarget.getAttribute("id");
       this.setState({monthExpDropDownValue: e.currentTarget.textContent});
@@ -241,21 +253,82 @@ class ExpenseList extends Component {
       );
   }
 
-  showExpenseCategoryModal = (event) => {
-      console.log("event: ", event.target.getAttribute("tranId"))
+  changeExpMonthByCategoryValue = (e) => {
+      const yearMonth = e.currentTarget.getAttribute("id");
+      const selectedMonth = e.currentTarget.textContent;
+      this.setState({
+          monthExpByCatDropDownValue: selectedMonth,
+          monthExpByCatDropdownOpen: false
+      });
 
-      fetchExpensesForYearMonthAndCategoryJson(event.target.getAttribute("tranId"), this.state.categoryDropDownValue)
+      fetchExpenseByCategoryMonthJson(yearMonth || undefined)
           .then(expensesJson => {
-              const expenseCategoryMonthRows = expensesJson.expenses.map( expense => {
-                  return <tr>
+              this.setState({ filteredExpensesByCategory: expensesJson.expenseCategorySums || [] });
+          });
+  }
+
+  toggleYearlyExpByCategory = () => {
+      this.setState({
+          yearExpByCatDropdownOpen: !this.state.yearExpByCatDropdownOpen
+      });
+  }
+
+  changeYearlyExpByCategoryValue = (e) => {
+      const year = e.currentTarget.getAttribute("id");
+      const selectedYear = e.currentTarget.textContent;
+      this.setState({
+          yearExpByCatDropDownValue: selectedYear,
+          yearExpByCatDropdownOpen: false
+      });
+
+      fetchExpenseByCategoryYearJson(year || undefined)
+          .then(expensesJson => {
+              this.setState({ expensesByYearCategory: expensesJson.expenseCategorySums || [] });
+          });
+  }
+
+  showExpenseCategoryModal = (event) => {
+      const yearMonth = event.currentTarget.getAttribute("tranId");
+      const category = event.currentTarget.getAttribute("category");
+      if (!yearMonth || !category || yearMonth === 'null' || category === 'null') {
+          return;
+      }
+
+      console.log("event: ", { yearMonth, category })
+
+      fetchExpensesForYearMonthAndCategoryJson(yearMonth, category)
+          .then(expensesJson => {
+              const expenseCategoryMonthRows = expensesJson.expenses.map((expense, index) => {
+                  return <tr key={expense.id || (yearMonth + '-' + category + '-' + index)}>
                       <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
                       <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{expense.head}</td>
                       <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
                       <td style={{whiteSpace: 'wrap', textAlign: "left", fontWeight: '200', fontSize: '.8rem'}}>{expense.comment}</td>
                    </tr>
               });
-              this.setState({ expenseCategoryMonthRows: expenseCategoryMonthRows });
-              this.setState({ expenseCategoryModalShow: !this.state.expenseCategoryModalShow });
+              this.setState({ expenseCategoryMonthRows: expenseCategoryMonthRows, expenseCategoryModalShow: true });
+          }
+      );
+  }
+
+  showYearlyExpenseCategoryModal = (event) => {
+      const year = event.currentTarget.getAttribute("year");
+      const category = event.currentTarget.getAttribute("category");
+      if (!year || !category || year === 'null' || category === 'null') {
+          return;
+      }
+
+      fetchExpensesForYearAndCategoryJson(year, category)
+          .then(expensesJson => {
+              const expenseCategoryMonthRows = expensesJson.expenses.map((expense, index) => {
+                  return <tr key={expense.id || (year + '-' + category + '-' + index)}>
+                      <td style={{whiteSpace: 'nowrap', textAlign: "Left", fontSize: '.8rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                      <td style={{whiteSpace: 'wrap', textAlign: "Left" , fontSize: '.8rem'}}>{expense.head}</td>
+                      <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
+                      <td style={{whiteSpace: 'wrap', textAlign: "left", fontWeight: '200', fontSize: '.8rem'}}>{expense.comment}</td>
+                   </tr>
+              });
+              this.setState({ expenseCategoryMonthRows: expenseCategoryMonthRows, expenseCategoryModalShow: true });
           }
       );
   }
@@ -280,30 +353,44 @@ class ExpenseList extends Component {
       yearlyDropdownOpenForBar,
       expensesForCategory,
       expensesByCategory,
+      filteredExpensesByCategory,
       expensesForSelectedCategoryForBar,
       expensesForSelectedYearCategoryForBar,
+      expensesByYearCategory,
       monthExpDropdownOpen,
       monthExpDropDownValue,
       monthExpByCatDropDownValue,
+      monthExpByCatDropdownOpen,
+      yearExpByCatDropDownValue,
+      yearExpByCatDropdownOpen,
       expenseCategoryModalShow,
       expenseCategoryMonthRows,
       dimmerActive
     } = this.state;
 
     const title = "Expenses";
+    const years = Array.from(new Set(months.map(month => month.year))).sort((a, b) => b - a);
 
     const expenseForCategoriesRows = expensesForCategory.map(record => {
-       return <tr key={record.year +'-'+ record.month} onClick={this.showExpenseCategoryModal}>
-               <td tranId={record.year +'-'+ record.month} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(record.year, record.month)}</td>
-               <td tranId={record.year +'-'+ record.month} style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(record.sum)}</td>
+       return <tr key={record.year +'-'+ record.month} tranId={record.year +'-'+ record.month} category={categoryDropDownValue} onClick={this.showExpenseCategoryModal}>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(record.year, record.month)}</td>
+               <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(record.sum)}</td>
              </tr>
     });
 
-    const expenseByCategoryListRows = expensesByCategory.map(expense => {
-        return <tr key={expense.id} >
-                <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
-                <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.category}</td>
-                <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(expense.sum)}</td>
+    const expenseByCategoryListRows = filteredExpensesByCategory.map(expense => {
+        return <tr key={expense.id} tranId={expense.year +'-'+ expense.month} category={expense.category} onClick={this.showExpenseCategoryModal}>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
+               <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.category}</td>
+               <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(expense.sum)}</td>
+            </tr>
+    });
+
+    const yearlyExpenseByCategoryListRows = expensesByYearCategory.map(expense => {
+        return <tr key={expense.id || (expense.year + '-' + expense.category)} year={expense.year} category={expense.category} onClick={this.showYearlyExpenseCategoryModal}>
+               <td style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.9rem'}}>{expense.year}</td>
+               <td style={{textAlign: "center", fontSize: '.9rem'}}>{expense.category}</td>
+               <td style={{textAlign: "right", fontSize: '.9rem'}}>{NumberFormatNoDecimal(expense.sum)}</td>
             </tr>
     });
 
@@ -363,6 +450,64 @@ class ExpenseList extends Component {
               </Col>
             </Row>
             <Row>
+                <Col m={2} s={2} l={2}>
+                    <div align="left" >
+                        <ButtonDropdown direction="right" isOpen={monthExpByCatDropdownOpen} toggle={this.toggleExpMonthByCategory}>
+                            <DropdownToggle caret size="sm">
+                                {monthExpByCatDropDownValue}
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem id="" key="all-months" onClick={this.changeExpMonthByCategoryValue}>All Months</DropdownItem>
+                                {months.map(e => {
+                                    return <DropdownItem id={e.year + '-' + e.month} key={e.monthStr} onClick={this.changeExpMonthByCategoryValue}>{e.monthStr}</DropdownItem>
+                                })}
+                            </DropdownMenu>
+                        </ButtonDropdown>
+                    </div>
+                    <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expenses by Category" >
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                            <tr>
+                                <th width="10%" style={{textAlign: "center"}}>Month</th>
+                                <th width="10%" style={{textAlign: "center"}}>Category</th>
+                                <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {expenseByCategoryListRows}
+                            </tbody>
+                        </Table>
+                    </Card>
+                </Col>
+              <Col m={2} s={2} l={2}>
+                <div align="left" >
+                <ButtonDropdown direction="right" isOpen={yearExpByCatDropdownOpen} toggle={this.toggleYearlyExpByCategory}>
+                    <DropdownToggle caret size="sm">
+                        {yearExpByCatDropDownValue}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem id="" key="all-years" onClick={this.changeYearlyExpByCategoryValue}>All Years</DropdownItem>
+                        {years.map(year => {
+                            return <DropdownItem id={year} key={year} onClick={this.changeYearlyExpByCategoryValue}>{year}</DropdownItem>
+                        })}
+                    </DropdownMenu>
+                </ButtonDropdown>
+                </div>
+                <Card className="teal lighten-4" textClassName="black-text" title="Yearly Expenses by Category" >
+                <Table striped bordered hover size="sm">
+                    <thead>
+                      <tr>
+                        <th width="10%" style={{textAlign: "center"}}>Year</th>
+                        <th width="10%" style={{textAlign: "center"}}>Category</th>
+                        <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {yearlyExpenseByCategoryListRows}
+                    </tbody>
+                </Table>
+                </Card>
+              </Col>
               <Col m={2} s={2} l={2}>
                 <div align="left" >
                 <ButtonDropdown direction="right" isOpen={categoryDropdownOpen} toggle={this.toggleCategory}>
@@ -404,29 +549,6 @@ class ExpenseList extends Component {
                          </tbody>
                        </Table>
                     </Modal>
-                </Card>
-              </Col>
-              <Col m={2} s={2} l={2}>
-                <div align="left" >
-                <ButtonDropdown direction="right" >
-                    <DropdownToggle caret size="sm">
-                        {monthExpByCatDropDownValue}
-                    </DropdownToggle>
-                </ButtonDropdown>
-                </div>
-                <Card className="teal lighten-4" textClassName="black-text" title="Monthly Expenses by Category" >
-                <Table striped bordered hover size="sm">
-                    <thead>
-                      <tr>
-                        <th width="10%" style={{textAlign: "center"}}>Month</th>
-                        <th width="10%" style={{textAlign: "center"}}>Category</th>
-                        <th width="10%" style={{textAlign: "right"}}>Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {expenseByCategoryListRows}
-                    </tbody>
-                </Table>
                 </Card>
               </Col>
               <Col m={2} s={2} l={2}>
