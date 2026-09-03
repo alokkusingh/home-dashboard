@@ -4,6 +4,7 @@ import { parseISO, format } from 'date-fns';
 import {Card} from 'react-materialize';
 import { NumberFormatNoDecimal } from "./utils/NumberFormatNoDecimal";
 import { formatYearMonth } from "./utils/FormatYearMonth";
+import { getPreviousMonthYearMonth, getPreviousMonthDisplay, getCurrentYear } from "./utils/DateUtils";
 import ExpenseForCategoryBarChart from "./charts/expenseForCategoryBarChart";
 import ExpenseForYearCategoryBarChart from "./charts/expenseForYearCategoryBarChart";
 import { Dimmer, Loader } from 'semantic-ui-react'
@@ -15,31 +16,11 @@ import "./css/modal.css"
 
 class ExpenseList extends Component {
 
-  getPreviousMonthYearMonth = () => {
-    const today = new Date();
-    const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const year = prevMonth.getFullYear();
-    const month = String(prevMonth.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  }
-
-  getPreviousMonthDisplay = () => {
-    const today = new Date();
-    const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const year = prevMonth.getFullYear();
-    const month = prevMonth.getMonth() + 1;
-    return formatYearMonth(year, month);
-  }
-
-  getCurrentYear = () => {
-    return new Date().getFullYear();
-  }
-
   constructor() {
     super();
-    const previousMonthYearMonth = this.getPreviousMonthYearMonth();
-    const previousMonthDisplay = this.getPreviousMonthDisplay();
-    const currentYear = this.getCurrentYear();
+    const previousMonthYearMonth = getPreviousMonthYearMonth();
+    const previousMonthDisplay = getPreviousMonthDisplay();
+    const currentYear = getCurrentYear();
     
     this.state = {
       expenses: [],

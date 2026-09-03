@@ -1,4 +1,2 @@
-export const NumberFormatNoCurrency = value =>
-  new Intl.NumberFormat("en-IN", {
-    maximumFractionDigits: 0
-  }).format(value);
+// Backward compatibility - re-export from consolidated NumberFormatUtil
+export { NumberFormatNoCurrency } from './NumberFormatUtil';

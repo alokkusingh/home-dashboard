@@ -1,5 +1,2 @@
-export const NumberFormat = value =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR"
-  }).format(value);
+// Backward compatibility - re-export from consolidated NumberFormatUtil
+export { NumberFormat } from './NumberFormatUtil';

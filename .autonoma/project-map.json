@@ -1,0 +1,49 @@
+{
+  "frontends": [
+    {
+      "path": ".",
+      "framework": "react",
+      "dependsOn": [
+        "home-api-service",
+        "home-etl-service"
+      ],
+      "why": "Root directory contains a React application (package.json with react-scripts, src/App.js)."
+    }
+  ],
+  "backends": [
+    {
+      "path": "home-api-service",
+      "language": "unknown",
+      "framework": "unknown",
+      "why": "Proxied by Nginx at /home/api; likely an external microservice as it is not in this repo."
+    },
+    {
+      "path": "home-etl-service",
+      "language": "unknown",
+      "framework": "unknown",
+      "why": "Proxied by Nginx at /home/etl; likely an external microservice as it is not in this repo."
+    }
+  ],
+  "ignore": [
+    {
+      "path": "nginx",
+      "why": "Contains Nginx configuration for routing and tracing, not part of the application logic."
+    },
+    {
+      "path": "public",
+      "why": "Static assets for the React frontend."
+    },
+    {
+      "path": "IDEMPOTENCY.md",
+      "why": "Documentation file."
+    },
+    {
+      "path": "IDEMPOTENCY_QUICK_REFERENCE.md",
+      "why": "Documentation file."
+    },
+    {
+      "path": "tax.md",
+      "why": "Documentation file."
+    }
+  ]
+}

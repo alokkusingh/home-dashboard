@@ -1,0 +1,77 @@
+{
+  "src/Home.js": {
+    "route": "/",
+    "path": "src/Home.js",
+    "description": "The main landing page after login, which includes a sidebar for navigating between different sub-views like Summary, Expense, Salary, etc."
+  },
+  "src/HomeCards.js": {
+    "route": "/?page=Summary",
+    "path": "src/HomeCards.js",
+    "description": "Summary view showing financial overview cards."
+  },
+  "src/ExpenseList.js": {
+    "route": "/?page=Expense",
+    "path": "src/ExpenseList.js",
+    "description": "List of expenses with charts and filters."
+  },
+  "src/Salary.js": {
+    "route": "/?page=Salary",
+    "path": "src/Salary.js",
+    "description": "Salary summary and details with bar charts."
+  },
+  "src/Investment.js": {
+    "route": "/?page=Investment",
+    "path": "src/Investment.js",
+    "description": "Investment summary and performance metrics."
+  },
+  "src/TransactionList.js": {
+    "route": "/?page=Transaction",
+    "path": "src/TransactionList.js",
+    "description": "List of bank transactions."
+  },
+  "src/UploadFile.js": {
+    "route": "/?page=UploadFile",
+    "path": "src/UploadFile.js",
+    "description": "Page for uploading expense or bank statement files."
+  },
+  "src/RefreshGoogleSheets.js": {
+    "route": "/?page=Refresh",
+    "path": "src/RefreshGoogleSheets.js",
+    "description": "Page to trigger a refresh of data from Google Sheets."
+  },
+  "src/FormExpense.js": {
+    "route": "/?page=form-expense",
+    "path": "src/FormExpense.js",
+    "description": "Form for adding new expenses."
+  },
+  "src/FormEstate.js": {
+    "route": "/?page=form-estate",
+    "path": "src/FormEstate.js",
+    "description": "Form for adding estate-related transactions."
+  },
+  "src/EstateSummary.js": {
+    "route": "/?page=e-Summary",
+    "path": "src/EstateSummary.js",
+    "description": "Summary of estate investments and values."
+  },
+  "src/Odion.js": {
+    "route": "/?page=Odion",
+    "path": "src/Odion.js",
+    "description": "Specific details for Odion estate."
+  },
+  "src/AdarshTropica.js": {
+    "route": "/?page=AdarshTropics",
+    "path": "src/AdarshTropica.js",
+    "description": "Specific details for Adarsh Tropica estate."
+  },
+  "src/Jyothi.js": {
+    "route": "/?page=Jyothi",
+    "path": "src/Jyothi.js",
+    "description": "Specific details for Jyothi estate."
+  },
+  "src/EstateTransactionList.js": {
+    "route": "/?page=e-Trans",
+    "path": "src/EstateTransactionList.js",
+    "description": "List of estate-related transactions."
+  }
+}
