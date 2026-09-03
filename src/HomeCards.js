@@ -1,5 +1,6 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import './css/App.css';
+import './css/tables.css';
 import { Table, Row, Col, Modal, ModalHeader} from 'reactstrap';
 import { format, parseISO } from 'date-fns';
 import {Icon, Card} from 'react-materialize';
@@ -275,12 +276,12 @@ class HomeCards extends Component {
             }
         }
       );
-      const dayExpensesRows = expenseDayDetails.map(expense => {
-        return <tr>
-                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.date}</td>
-                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.head}</td>
-                  <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{expense.comment}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
+      const dayExpensesRows = expenseDayDetails.map((expense, index) => {
+        return <tr key={`day-expense-${index}-${expense.date}`}>
+                  <td className="table-cell-left">{expense.date}</td>
+                  <td className="table-cell-left">{expense.head}</td>
+                  <td className="table-cell-left">{expense.comment}</td>
+                  <td className="table-cell-right">{expense.amount}</td>
                </tr>
         });
 
@@ -303,12 +304,12 @@ class HomeCards extends Component {
             }
         }
       );
-      const catExpensesRows = expenses.map(expense => {
-        return <tr>
-                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.date}</td>
-                  <td style={{whiteSpace: 'wrap', textAlign: "Left", fontSize: '.8rem'}}>{expense.head}</td>
-                  <td style={{whiteSpace: 'wrap', textAlign: "left", fontSize: '.8rem'}}>{expense.comment}</td>
-                  <td style={{whiteSpace: 'nowrap', textAlign: "right", fontSize: '.8rem'}}>{expense.amount}</td>
+      const catExpensesRows = expenses.map((expense, index) => {
+        return <tr key={`cat-expense-${index}-${expense.date}`}>
+                  <td className="table-cell-left">{expense.date}</td>
+                  <td className="table-cell-left">{expense.head}</td>
+                  <td className="table-cell-left">{expense.comment}</td>
+                  <td className="table-cell-right">{expense.amount}</td>
                </tr>
         });
 
@@ -432,16 +433,16 @@ class HomeCards extends Component {
 
       const monthExpenseList = monthExpenses.map(expense => {
           return <tr key={expense.id} onClick={this.showModal}>
-                  <td id={expense.id} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td id={expense.id} style={{whiteSpace: 'wrap', textAlign: "center", fontSize: '.75rem'}}>{expense.head}</td>
-                  <td id={expense.id} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td id={expense.id} className="table-cell-center-sm">{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td id={expense.id} className="table-cell-center-sm">{expense.head}</td>
+                  <td id={expense.id} className="table-cell-right-sm">{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
       const monthExpensesByDayList = monthExpensesByDay.map(expense => {
           return <tr key={expense.date} onClick={this.showExpenseModal}>
-                  <td id={expense.date} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                  <td id={expense.date} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.amount)}</td>
+                  <td id={expense.date} className="table-cell-date">{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
+                  <td id={expense.date} className="table-cell-right-sm">{NumberFormat(expense.amount)}</td>
               </tr>
       });
 
@@ -452,9 +453,9 @@ class HomeCards extends Component {
      const expensesByCategoryList = expensesByCategory.map(expense => {
           if (expense.year === currentYear && expense.month === currentMonth)
           return <tr key={expense.category} onClick={this.showCategoryExpenseModal}>
-                  <td id={expense.category} style={{whiteSpace: 'nowrap', textAlign: "center", fontSize: '.75rem'}}>{formatYearMonth(expense.year, expense.month)}</td>
-                  <td id={expense.category} style={{textAlign: "center", fontSize: '.75rem'}}>{expense.category}</td>
-                  <td id={expense.category} style={{textAlign: "right", fontSize: '.75rem'}}>{NumberFormat(expense.sum)}</td>
+                  <td id={expense.category} className="table-cell-center-sm">{formatYearMonth(expense.year, expense.month)}</td>
+                  <td id={expense.category} className="table-cell-center-sm">{expense.category}</td>
+                  <td id={expense.category} className="table-cell-right-sm">{NumberFormat(expense.sum)}</td>
               </tr>
       });
 

@@ -1,0 +1,60 @@
+/* Table cell styles to eliminate inline style duplication */
+
+/* Common table cell styles */
+.table-cell {
+  white-space: wrap;
+  font-size: 0.8rem;
+}
+
+.table-cell-left {
+  text-align: left;
+  white-space: wrap;
+  font-size: 0.8rem;
+}
+
+.table-cell-center {
+  text-align: center;
+  white-space: wrap;
+  font-size: 0.8rem;
+}
+
+.table-cell-right {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+/* Smaller variant for compact tables */
+.table-cell-sm {
+  font-size: 0.75rem;
+}
+
+.table-cell-center-sm {
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+
+.table-cell-right-sm {
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+/* Date cells */
+.table-cell-date {
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+
+/* Amount/numeric cells */
+.table-cell-amount {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.table-cell-amount-sm {
+  text-align: right;
+  font-size: 0.75rem;
+}
