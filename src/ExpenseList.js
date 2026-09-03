@@ -57,7 +57,7 @@ class ExpenseList extends Component {
   async componentDidMount() {
 
     await Promise.all([
-          fetchExpensesJson().then(this.handleExpenses),
+          //fetchExpensesJson().then(this.handleExpenses),
           fetchExpenseByCategoryMonthJson().then(this.handleExpenseByCategoryMonth),
           fetchExpenseByCategoryYearJson().then(this.handleExpenseByCategoryYear),
           fetchMonthlyExpensesForCategoryJson(this.state.categoryDropDownValue).then(this.handleMonthlyExpensesForCategory),
