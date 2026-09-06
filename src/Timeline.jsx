@@ -8,7 +8,6 @@ import {
     fetchTimelineEventByIdJson
 } from './api/TimelineAPIManager.js';
 
-
 class Timeline extends Component {
 
     constructor(props) {
@@ -80,6 +79,7 @@ class Timeline extends Component {
                 eventDetails: {
                     id: data.id,
                     eventDate: data.eventDate,
+                    eventEndDate: data.endDate,
                     eventType: data.eventType,
                     participants: participantsList,
                     eventAge: data.eventAge,
@@ -139,19 +139,19 @@ class Timeline extends Component {
                     <td style={{textAlign: "center", fontSize: '.8rem', fontFamily: 'monospace'}}>
                         {event.eventAge}
                     </td>
-                    <td style={{textAlign: "center", fontSize: '.8rem', fontFamily: 'monospace'}}>
-                        {event.duration ? event.duration : '—'}
-                    </td>
-                    <td style={{
-                        textAlign: "left",
-                        fontSize: '.8rem',
-                        maxWidth: '220px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                    }}>
-                        {event.notes ? event.notes : '—'}
-                    </td>
+                    {/*<td style={{textAlign: "center", fontSize: '.8rem', fontFamily: 'monospace'}}>*/}
+                    {/*    {event.duration ? event.duration : '—'}*/}
+                    {/*</td>*/}
+                    {/*<td style={{*/}
+                    {/*    textAlign: "left",*/}
+                    {/*    fontSize: '.8rem',*/}
+                    {/*    maxWidth: '220px',*/}
+                    {/*    whiteSpace: 'nowrap',*/}
+                    {/*    overflow: 'hidden',*/}
+                    {/*    textOverflow: 'ellipsis'*/}
+                    {/*}}>*/}
+                    {/*    {event.notes ? event.notes : '—'}*/}
+                    {/*</td>*/}
                 </tr>
             );
         });
@@ -173,8 +173,6 @@ class Timeline extends Component {
                 <th width="20%" style={{ textAlign: "center", fontSize: '1rem' }}>Event / Milestone</th>
                 <th width="15%" style={{ textAlign: "center", fontSize: '1rem' }}>Participants</th>
                 <th width="15%" style={{ textAlign: "center", fontSize: '1rem' }}>Elapsed Age</th>
-                <th width="13%" style={{ textAlign: "center", fontSize: '1rem' }}>Duration</th>
-                <th width="25%" style={{ textAlign: "left", fontSize: '1rem' }}>Tracking Notes</th>
             </tr>
             </thead>
         );
@@ -297,6 +295,12 @@ class Timeline extends Component {
                                         <td style={{textAlign: "center", fontSize: '1rem'}}>Event Date</td>
                                         <td style={{textAlign: "left", fontSize: '.8rem'}}>
                                             {eventDetails.eventDate ? format(parseISO(eventDetails.eventDate), 'dd MMM yyyy') : '—'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{textAlign: "center", fontSize: '1rem'}}>End Date</td>
+                                        <td style={{textAlign: "left", fontSize: '.8rem'}}>
+                                            {eventDetails.eventEndDate ? format(parseISO(eventDetails.eventEndDate), 'dd MMM yyyy') : '—'}
                                         </td>
                                     </tr>
                                     <tr>
