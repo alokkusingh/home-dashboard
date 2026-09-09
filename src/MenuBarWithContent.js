@@ -16,6 +16,7 @@ import Jyothi from './Jyothi';
 import FormExpense from './FormExpense';
 import FormEstate from './FormEstate';
 import Timeline from "./Timeline";
+import MedicalTracker from "./MedicalTracker";
 
 export default class MenuBarWithContent extends Component {
     state = {activeItem: 'Summary'}
@@ -72,6 +73,9 @@ export default class MenuBarWithContent extends Component {
             }
             if (page === 'timeline') {
                 return <Timeline/>
+            }
+            if (page === 'medical-tracker') {
+                return <MedicalTracker/>
             }
 
             return <TbdPage/>;
@@ -209,12 +213,12 @@ export default class MenuBarWithContent extends Component {
                                 Health
                             </Menu.Header>
                             <Menu.Menu>
-                                <Menu.Item name='h-Alok' active={activeItem === 'h-Alok'}
+                                <Menu.Item name='medical-tracker' active={activeItem === 'medical-tracker'}
                                            onClick={this.handleItemClick}>
-                                    <Icon name='male'/>
-                                    Alok
+                                    <Icon name='lab'/>
+                                    Lab Report
                                 </Menu.Item>
-                                <Menu.Item name='h-Rachna' active={activeItem === 'h-Rachna'}
+                                {/*<Menu.Item name='h-Rachna' active={activeItem === 'h-Rachna'}
                                            onClick={this.handleItemClick}>
                                     <Icon name='female'/>
                                     Rachna
@@ -223,7 +227,7 @@ export default class MenuBarWithContent extends Component {
                                            onClick={this.handleItemClick}>
                                     <Icon name='child'/>
                                     Saanvi
-                                </Menu.Item>
+                                </Menu.Item>*/}
                             </Menu.Menu>
 
                             <Divider horizontal/>

@@ -195,14 +195,14 @@ class Timeline extends Component {
                             color={activeTab === 'alok' ? 'blue' : null}
                             onClick={() => this.setState({activeTab: 'alok'})}
                         >
-                            👤 Alok
+                            👨 Alok
                         </Button>
                         <Button
                             type='button'
                             color={activeTab === 'rachna' ? 'pink' : null}
                             onClick={() => this.setState({activeTab: 'rachna'})}
                         >
-                            👤 Rachna
+                            👩‍🦰 Rachna
                         </Button>
                         <Button
                             type='button'
