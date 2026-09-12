@@ -276,28 +276,40 @@ class HomeCards extends Component {
     }
 
     showExpenseModal = (event) => {
-        console.log("event: ", event.target.getAttribute("id"))
-        let expenseDayDetails = [];
-        this.state.monthExpensesByDay.forEach(
-            record => {
-                if (record.date == event.target.getAttribute("id")) {
-                    expenseDayDetails = record.expenses;
-                }
-            }
-        );
+        console.log("Event triggered")
+        // 1. CurrentTarget guarantees resolving the parent identifier string even when clicking nested cell text nodes
+        const targetDate = event.currentTarget.getAttribute("data-id");
+        if (!targetDate) return;
+
+        console.log("Processing expense drilldown modal for Date: ", targetDate);
+
+        // 2. Optimize lookup traversal using .find() instead of looping over every single entry via .forEach
+        const dayRecord = this.state.monthExpensesByDay.find(record => record.date === targetDate);
+        const expenseDayDetails = dayRecord ? dayRecord.expenses : [];
+
+        // 3. Map through data lines using explicit local helpers matching your standard layout styles
         const dayExpensesRows = expenseDayDetails.map((expense, index) => {
-            return <tr key={`day-expense-${index}-${expense.date}`}>
-                <td className="table-cell-left">{expense.date}</td>
-                <td className="table-cell-left">{expense.head}</td>
-                <td className="table-cell-left">{expense.comment}</td>
-                <td className="table-cell-right">{expense.amount}</td>
-            </tr>
+            // Fallback checks prevent syntax formatting crashes if numbers are fetched uninitialized
+            const formattedAmount = typeof NumberFormatNoCurrency === 'function'
+                ? NumberFormatNoCurrency(expense.amount)
+                : expense.amount;
+
+            return (
+                <tr key={`day-expense-${index}-${expense.date || targetDate}`}>
+                    <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left' }}>{expense.date}</td>
+                    <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left', fontWeight: '500' }}>{expense.head}</td>
+                    <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left', color: '#4a5568' }}>{expense.comment}</td>
+                    <td className="table-cell-right" style={{ fontSize: '.8rem', textAlign: 'right', fontWeight: '600' }}>{formattedAmount}</td>
+                </tr>
+            );
         });
 
-        this.setState({dayExpensesRows: dayExpensesRows});
-
-        this.setState({expenseModalShow: !this.state.expenseModalShow});
-    }
+        // 4. Consolidate into a single batched state mutation pass to prevent multi-render thread lags
+        this.setState({
+            dayExpensesRows: dayExpensesRows,
+            expenseModalShow: !this.state.expenseModalShow
+        });
+    };
 
     closeExpenseModal = () => {
         this.setState({expenseModalShow: !this.state.expenseModalShow});
@@ -458,11 +470,28 @@ class HomeCards extends Component {
         });
 
         const monthExpensesByDayList = monthExpensesByDay.map(expense => {
-            return <tr key={expense.date} onClick={this.showExpenseModal}>
-                <td id={expense.date} className="table-cell-date">{format(parseISO(expense.date), 'dd MMM yyyy')}</td>
-                <td id={expense.date} className="table-cell-right-sm">{NumberFormat(expense.amount)}</td>
-            </tr>
+            return (
+                /*
+                   1. Added data-id to the <tr> parent row element.
+                   2. Replaced the individual cell 'id' tags to stop DOM duplicate identifier warnings.
+                   3. Added a clean pointer cursor styling to tell users the row is clickable.
+                */
+                <tr
+                    key={expense.date}
+                    data-id={expense.date}
+                    onClick={this.showExpenseModal}
+                    style={{ cursor: 'pointer' }}
+                >
+                    <td className="table-cell-date" style={{ fontSize: '.8rem' }}>
+                        {format(parseISO(expense.date), 'dd MMM yyyy')}
+                    </td>
+                    <td className="table-cell-right-sm" style={{ textAlign: 'right', fontSize: '.8rem', fontWeight: '500' }}>
+                        {NumberFormat(expense.amount)}
+                    </td>
+                </tr>
+            );
         });
+
 
         // Lets show only current month
         const currentDate = new Date();

@@ -92,7 +92,7 @@ pages:
     description: "Granular expense analysis and filtering."
   - page: "src/Salary.js"
     description: "Income and tax tracking."
-  - page: "src/Investment.js"
+  - page: "src/Investment.jsx"
     description: "Portfolio performance monitoring."
   - page: "src/TransactionList.js"
     description: "Historical transaction logs."
