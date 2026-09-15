@@ -1,65 +1,88 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from '../App';
+// SessionUtils.js
 
+/**
+ * Validates the session with the backend asynchronously.
+ * @returns {Promise<boolean>}
+ */
+export async function aValidateSession() {
+    console.log("validateSession invoked");
+    try {
+        const response = await fetch("/home/auth/home/token/validate", {
+            method: "GET"
+        });
+
+        if (response.ok) {
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Session validation network error:", error);
+        return false;
+    }
+}
+
+/**
+ * Refreshes the session token asynchronously.
+ * @returns {Promise<boolean>}
+ */
+export async function refreshToken() {
+    console.log("refreshToken invoked");
+    try {
+        const response = await fetch("/home/auth/home/token/refresh", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "grant-type": "refresh_token"
+            }
+        });
+
+        if (response.ok) {
+            return true;
+        } else if (response.status === 401) {
+            console.error('Authentication required: 401 Unauthorized');
+            return false; // Let the calling component handle state teardown cleanly
+        } else {
+            console.error(`HTTP error! Status: ${response.status}`);
+            return false;
+        }
+    } catch (error) {
+        console.error("Token refresh network error:", error);
+        return false;
+    }
+}
+
+/**
+ * Logs out the backend session asynchronously.
+ * @returns {Promise<boolean>}
+ */
+export async function logout() {
+    console.log("logout invoked");
+    try {
+        const response = await fetch("/home/auth/home/token/logout", {
+            method: "POST"
+        });
+
+        if (response.ok) {
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Logout network error:", error);
+        return false;
+    }
+}
+
+/**
+ * Safe fallback replacement for legacy external rendering redirects.
+ * Clears local context states and forces a clean application fallback redirect.
+ */
 export function redirectToLogin() {
-    console.log("redirectToLogin");
+    console.warn("Legacy external redirect fallback invoked.");
+
+    // Clear out local cache trace flags
+    localStorage.removeItem("profile");
     sessionStorage.removeItem("LOGGED_IN");
-    return ReactDOM.render(
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>,
-            document.getElementById('root')
-          );
+
+    // Smoothly reset back to the root router authentication path
+    window.location.href = "/";
 }
-
-export function aValidateSession() {
-  console.log("validateSession");
-
-  const request = new XMLHttpRequest();
-  request.open("GET", "/home/auth/home/token/validate", false); // `false` makes the request synchronous
-  request.send(null);
-
-  if (request.status === 200) {
-    console.log(request.responseText);
-    return true;
-  }
-  return false;
-}
-
-export function refreshToken() {
-      console.log("refreshToken");
-
-      const request = new XMLHttpRequest();
-      request.open("POST", "/home/auth/home/token/refresh", false); // `false` makes the request synchronous
-      request.setRequestHeader("Accept", "application/json");
-      request.setRequestHeader("grant-type", "refresh_token");
-
-      request.send(null);
-
-      if (request.status === 200) {
-        console.log(request.responseText);
-        return true;
-      } else if (request.status === 401) {
-        console.error('Authentication required: 401 Unauthorized');
-        redirectToLogin();
-      } else {
-        console.error(`HTTP error! Status: ${request.status}`);
-        throw new Error(`HTTP error! Status: ${request.status}`);
-      }
-      return false;
- }
-
- export function logout() {
-     console.log("logout");
-
-     const request = new XMLHttpRequest();
-     request.open("POST", "/home/auth/home/token/logout", false); // `false` makes the request synchronous
-     request.send(null);
-
-     if (request.status === 200) {
-       console.log(request.responseText);
-       return true;
-     }
-     return false;
-  }
