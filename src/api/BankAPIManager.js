@@ -1,61 +1,78 @@
-// BankAPIManager.js
-import { fetch_retry_async_json, getHeadersNoAuthJson } from './APIUtils';
-
-/**
- * Helper to standardise GET requests through our central retry engine
- */
-async function secureGet(url) {
-    const requestOptions = {
-        method: 'GET',
-        headers: getHeadersNoAuthJson()
-    };
-
-    // Leverages the robust error handling, status parsing, and retries from APIUtils
-    const response = await fetch_retry_async_json(url, requestOptions, 1);
-    return await response.json();
-}
+import {getHeadersNoAuthJson} from './APIUtils'
+import {refreshToken} from '../utils/SessionUtils'
 
 export async function fetchSalaryByCompanyJson() {
-    try {
-        const body = await secureGet('/home/api/bank/salary/bycompany');
-        console.log("Salary by company data:", body);
-        return body;
-    } catch (error) {
-        console.error("Failed to fetch salary data:", error);
-        throw error; // Let the calling UI handle the catch block smoothly
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/bank/salary/bycompany', requestOptions);
+
+    if (responsePromise.status === 401) {
+      refreshToken();
+      return fetchSalaryByCompanyJson();
     }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const body = await responsePromise.json();
+    console.log(body);
+
+    return body;
 }
 
 export async function fetchAllTransactionsJson() {
-    try {
-        const body = await secureGet('/home/api/bank/transactions');
-        console.log("All transactions data:", body);
-        return body;
-    } catch (error) {
-        console.error("Failed to fetch all transactions:", error);
-        throw error;
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/bank/transactions', requestOptions);
+    if (responsePromise.status === 401) {
+      refreshToken();
+      return fetchAllTransactionsJson();
     }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const body = await responsePromise.json();
+    console.log(body);
+
+    return body;
 }
 
 export async function fetchTransactionByIdJson(id) {
-    try {
-        const body = await secureGet(`/home/api/bank/transactions/${id}`);
-        console.log(`Transaction profile data (${id}):`, body);
-        return body;
-    } catch (error) {
-        console.error(`Failed to fetch transaction with ID ${id}:`, error);
-        throw error;
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/bank/transactions/' + id, requestOptions);
+    if (responsePromise.status === 401) {
+      refreshToken();
+      return fetchTransactionByIdJson(id);
     }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const body = await responsePromise.json();
+    console.log(body);
+
+    return body;
 }
 
 export async function fetchTransactionsByStatementFileJson(statementFile) {
-    try {
-        const encodedFile = encodeURIComponent(statementFile);
-        const body = await secureGet(`/home/api/bank/transactions?statementFileName=${encodedFile}`);
-        console.log(`Transactions for file (${statementFile}):`, body);
-        return body;
-    } catch (error) {
-        console.error(`Failed to fetch transactions for file ${statementFile}:`, error);
-        throw error;
+    var requestOptions = {
+      method: 'GET',
+      headers: getHeadersNoAuthJson()
+    };
+    const responsePromise = await fetch('/home/api/bank/transactions?statementFileName=' + statementFile, requestOptions);
+    if (responsePromise.status === 401) {
+      return refreshToken();
     }
+    if (responsePromise.status === 403) {
+      return;
+    }
+    const body = await responsePromise.json();
+    console.log(body);
+
+    return body;
 }

@@ -64,28 +64,6 @@
   height: 40px;
 }
 
-.sidebar-scroller {
-  position: sticky;
-  top: 0;
-  /* Adjust calculation based on your navbar height */
-  height: calc(100vh - 60px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-bottom: 20px;
-}
-
-/* Custom minimal scrollbar styling for a cleaner look */
-.sidebar-scroller::-webkit-scrollbar {
-  width: 6px;
-}
-.sidebar-scroller::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-.sidebar-scroller::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 
 @keyframes App-logo-spin {
   from {
