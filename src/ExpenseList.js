@@ -648,20 +648,23 @@ class ExpenseList extends Component {
                             </ButtonDropdown>
                         </div>
                         <Card className="teal lighten-4" textClassName="black-text" title="Total Expenses">
-                            <Table striped bordered hover size="sm">
-                                <thead>
-                                <tr>
-                                    <th width="10%" style={{textAlign: "center"}}>Date</th>
-                                    <th width="10%" style={{textAlign: "center"}}>Head</th>
-                                    <th width="10%" style={{textAlign: "right"}}>Amount</th>
-                                    <th width="10%" style={{textAlign: "center"}}>Category</th>
-                                    <th width="20%" style={{textAlign: "center"}}>Comment</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {expenseList}
-                                </tbody>
-                            </Table>
+                            {/* 1. Add this wrapper div around the table */}
+                            <div className="table-responsive">
+                                <Table striped bordered hover size="sm">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%" style={{textAlign: "center"}}>Date</th>
+                                        <th width="10%" style={{textAlign: "center"}}>Head</th>
+                                        <th width="10%" style={{textAlign: "right"}}>Amount</th>
+                                        <th width="10%" style={{textAlign: "center"}}>Category</th>
+                                        <th width="20%" style={{textAlign: "center"}}>Comment</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {expenseList}
+                                    </tbody>
+                                </Table>
+                            </div>
                         </Card>
                     </Col>
                 </Row>
