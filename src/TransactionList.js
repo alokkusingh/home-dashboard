@@ -1,191 +1,175 @@
-import React, { Component } from 'react'
-import { Table } from 'reactstrap';
-import { format, parseISO } from 'date-fns';
+import React, {Component} from 'react';
+import {Table} from 'reactstrap';
+import {format, parseISO} from 'date-fns';
+import {Button, Input, Modal} from 'semantic-ui-react';
 import {Card} from 'react-materialize';
-import { NumberFormat } from "./utils/NumberFormat";
-import { Button, Modal, Input } from 'semantic-ui-react';
-import {fetchAllTransactionsJson, fetchTransactionByIdJson} from './api/BankAPIManager.js'
-import {etlDownloadTransactions} from './api/EtlAPIManager.js'
-import {searchTransactionsJson} from './api/SearchAPIManager.js'
+import {fetchAllTransactionsJson, fetchTransactionByIdJson} from './api/BankAPIManager.js';
+import {searchTransactionsJson} from './api/SearchAPIManager.js';
 
 class TransactionList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            transactions: [],
+            count: 0,
+            lastTransactionDate: "",
+            transactionModalShow: false,
+            tranDetails: []
+        };
+    }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      transactions: [],
-      count: 0,
-      lastTransactionDate: "",
-      transactionModalShow: false,
-      tranDetails: []
-    };
-  }
+    async componentDidMount() {
+        await Promise.all([
+            fetchAllTransactionsJson().then(this.handleAllTransactions),
+        ]);
+    }
 
-  async componentDidMount() {
-
-    await Promise.all([
-      fetchAllTransactionsJson().then(this.handleAllTransactions),
-    ]);
-    // All fetch calls are done now
-    console.log(this.state);
-  }
-
-  handleAllTransactions = (body) => {
-    this.setState({
-        transactions: body.transactions,
-        count: body.count,
-        lastTransactionDate: body.lastTransactionDate
-    });
-  }
-
-  searchTransactionByDescription = async(event) => {
-      console.log("event: ", event)
-      var description = document.getElementById("search-input").value;
-      console.log(Text)
-      try {
-        searchTransactionsJson(description).then(this.handleAllTransactions);
-      } catch(err) {
-        alert("Expense Refresh failed, error: " + err);
-      }
-  }
-
-  searchClear = async(event) => {
-        try {
-          fetchAllTransactionsJson().then(this.handleAllTransactions);
-        } catch(err) {
-          alert("Expense Refresh failed, error: " + err);
+    handleAllTransactions = (body) => {
+        if (body) {
+            this.setState({
+                transactions: body.transactions || [],
+                count: body.count || 0,
+                lastTransactionDate: body.lastTransactionDate || ""
+            });
         }
     }
 
-  showModal = (event) => {
-    console.log("event: ", event.target.getAttribute("id"))
-
-    let tranDetails = [];
-    fetchTransactionByIdJson(event.target.getAttribute("id"))
-        .then(data => {
-            tranDetails[1] = data.id;
-            tranDetails[2] = data.date;
-            tranDetails[3] = data.debit;
-            tranDetails[4] = data.credit;
-            tranDetails[5] = data.head;
-            tranDetails[6] = data.description;
-
-            this.setState(
-              {
-                tranDetails: tranDetails,
-                transactionModalShow: !this.state.transactionModalShow
-              }
-            );
+    searchTransactionByDescription = async (event) => {
+        var description = document.getElementById("search-input").value;
+        try {
+            searchTransactionsJson(description).then(this.handleAllTransactions);
+        } catch (err) {
+            alert("Expense Refresh failed, error: " + err);
         }
-    );
-  };
+    }
 
-  hideModal = () => {
-    this.setState({ transactionModalShow: !this.state.transactionModalShow});
-  };
+    searchClear = async (event) => {
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) searchInput.value = "";
+        try {
+            fetchAllTransactionsJson().then(this.handleAllTransactions);
+        } catch (err) {
+            alert("Expense Refresh failed, error: " + err);
+        }
+    }
 
-  downloadTransactions = () => {
-    etlDownloadTransactions();
-  }
+    // Updated to accept the transaction ID directly instead of reading a DOM attribute
+    showModal = (id) => {
+        if (!id) return;
 
-  render() {
-    const {transactions} = this.state;
-    const {tranDetails} = this.state;
-    const {transactionModalShow} = this.state;
+        let tranDetails = [];
+        fetchTransactionByIdJson(id)
+            .then(data => {
+                tranDetails[1] = data.id;
+                tranDetails[2] = data.date;
+                tranDetails[3] = data.debit;
+                tranDetails[4] = data.credit;
+                tranDetails[5] = data.head;
+                tranDetails[6] = data.description;
 
-    const transactionList = transactions.map(transaction => {
-        return <tr id={transaction.id} style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}} onClick={this.showModal}>
-                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{format(parseISO(transaction.date), 'dd MMM yyyy')}</td>
-                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.head}</td>
-                <td id={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.credit)}</td>
-                <td id={transaction.id} style={{textAlign: "right", fontSize: '.8rem', whiteSpace: 'wrap'}}>{NumberFormat(transaction.debit)}</td>
-                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.bank}</td>
-                <td id={transaction.id} style={{textAlign: "center", fontSize: '.8rem', whiteSpace: 'wrap'}}>{transaction.subHead}</td>
-            </tr>
-    });
+                this.setState({
+                    tranDetails: tranDetails,
+                    transactionModalShow: true
+                });
+            });
+    };
 
-    return (
-            <div id="cards" align="center" >
+    hideModal = () => {
+        this.setState({
+            transactionModalShow: false
+        });
+    };
+
+    render() {
+        const {transactions, count, lastTransactionDate, transactionModalShow, tranDetails} = this.state;
+
+        // FIXED: Correctly targeting transactions[0] to inspect individual item properties
+        const columns = transactions.length > 0
+            ? Object.keys(transactions[0]).filter(key => {
+                const lowerKey = key.toLowerCase();
+                return lowerKey !== 'id' && lowerKey !== 'description';
+            })
+            : [];
+
+        return (
+            <div id="cards" align="center">
                 <Card
-                      className="teal lighten-4"
-                      textClassName="black-text"
-                    >
-                    <div style={{float: 'left'}}>
-                      <Input id='search-input' type='text' placeholder='Search...' action>
-                          <input />
-                          <Button type='button' onClick={this.searchTransactionByDescription}>Search</Button>
-                          <Button type='button' onClick={this.searchClear}>Reset</Button>
-                      </Input>
-                    </div>
-                    <div style={{float: 'right'}}>
-                      <Button.Group basic size='medium'>
-                        <Button icon='download' onClick={this.downloadTransactions} />
-                      </Button.Group>
-                    </div>
-                    <div>
-                    <Table className="mt-4" hover>
-                        <thead>
-                          <tr>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Date</th>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Head</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Debit</th>
-                            <th width="10%" style={{textAlign: "right", fontSize: '1rem'}}>Credit</th>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Bank</th>
-                            <th width="10%" style={{textAlign: "center", fontSize: '1rem'}}>Sub Head</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {transactionList}
-                        </tbody>
-                    </Table>
-                    <Modal size='tiny' open={transactionModalShow} onClose={this.hideModal}>
-                      <Modal.Header>Transaction Details</Modal.Header>
-                      <Modal.Content>
-                        <Table striped bordered hover>
-                          <thead >
-                            <tr>
-                              <th style={{textAlign: "center", fontSize: '1rem'}}>Field</th>
-                              <th style={{textAlign: "center", fontSize: '1rem'}}>Value</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Id</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[1]}</td>
-                            </tr>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Date</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[2]}</td>
-                            </tr>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Debit</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[3]}</td>
-                            </tr>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Credit</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[4]}</td>
-                            </tr>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Head</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[5]}</td>
-                            </tr>
-                            <tr>
-                              <td style={{textAlign: "center", fontSize: '1rem', whiteSpace: 'wrap'}}>Description</td>
-                              <td style={{textAlign: "left", fontSize: '.8rem', whiteSpace: 'wrap'}}>{tranDetails[6]}</td>
-                            </tr>
-                          </tbody>
-                        </Table>
-                      </Modal.Content>
-                      <Modal.Actions>
-                        <Button positive onClick={this.hideModal}>
-                          Close
-                        </Button>
-                      </Modal.Actions>
-                    </Modal>
-                    </div>
-                    </Card>
+                    className="teal lighten-4"
+                    textClassName="black-text"
+                >
+                <h2>Transaction List ({count} items)</h2>
+                {/*{lastTransactionDate && <p>Last Transaction: {lastTransactionDate}</p>}*/}
+
+                <div style={{marginBottom: '20px', display: 'flex', gap: '10px'}}>
+                    <Input id="search-input" placeholder="Search by description..."/>
+                    <Button primary onClick={this.searchTransactionByDescription}>Search</Button>
+                    <Button secondary onClick={this.searchClear}>Clear</Button>
+                </div>
+
+                <Table striped responsive hover>
+                    <thead>
+                    <tr>
+                        {columns.map((col) => (
+                            <th key={col} style={{textTransform: 'capitalize'}}>
+                                {col}
+                            </th>
+                        ))}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {transactions.map((transaction, index) => (
+                        <tr
+                            key={transaction.id || index}
+                            onClick={() => this.showModal(transaction.id)}
+                            style={{cursor: 'pointer'}}
+                        >
+                            {columns.map((col) => {
+                                const value = transaction[col];
+
+                                if (col.toLowerCase() === 'date' && value) {
+                                    try {
+                                        return <td key={col}>{format(parseISO(value), 'yyyy-MM-dd')}</td>;
+                                    } catch {
+                                        return <td key={col}>{value.toString()}</td>;
+                                    }
+                                }
+
+                                return (
+                                    <td key={col}>
+                                        {value !== null && value !== undefined ? value.toString() : ''}
+                                    </td>
+                                );
+                            })}
+                        </tr>
+                    ))}
+                    {transactions.length === 0 && (
+                        <tr>
+                            <td colSpan="100%" style={{textAlign: 'center'}}>
+                                No transactions found.
+                            </td>
+                        </tr>
+                    )}
+                    </tbody>
+                </Table>
+
+                <Modal open={transactionModalShow} onClose={this.hideModal} size="tiny">
+                    <Modal.Header>Transaction Details</Modal.Header>
+                    <Modal.Content>
+                        <p><strong>ID:</strong> {tranDetails[1]}</p>
+                        <p><strong>Date:</strong> {tranDetails[2]}</p>
+                        <p><strong>Debit:</strong> {tranDetails[3]}</p>
+                        <p><strong>Credit:</strong> {tranDetails[4]}</p>
+                        <p><strong>Head:</strong> {tranDetails[5]}</p>
+                        <p><strong>Description:</strong> {tranDetails[6]}</p>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={this.hideModal}>Close</Button>
+                    </Modal.Actions>
+                </Modal>
+                </Card>
             </div>
-    );
-  }
+        );
+    }
 }
+
 export default TransactionList;
