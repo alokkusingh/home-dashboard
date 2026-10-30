@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Col, Row, Button, Input } from 'reactstrap';
-import { fetchPdfTreeJson, fetchPdfStream } from './api/PdfAPIManager.js';
+import { fetchDocsTreeJson, fetchDocsStream } from './api/DocsAPIManager.js';
 import { getHeadersNoAuthJson } from "./api/APIUtils";
 
 // Recursive PDF Folder Tree Node Component
@@ -103,7 +103,7 @@ class HomeDocs extends Component {
 
     async componentDidMount() {
         try {
-            const data = await fetchPdfTreeJson();
+            const data = await fetchDocsTreeJson();
             this.setState({ pdfTree: data });
         } catch (error) {
             console.error("Error loading PDF tree configuration structure:", error);
@@ -189,7 +189,7 @@ class HomeDocs extends Component {
                                     size="sm"
                                 />
                             </div>
-                            <h4 className="mb-3" style={{ fontSize: '1.25rem' }}>PDF Explorer</h4>
+                            <h4 className="mb-3" style={{ fontSize: '1.25rem' }}>Doc Explorer</h4>
                             {filteredTree.length > 0 ? (
                                 filteredTree.map((childNode, idx) => (
                                     <DocsTreeNode

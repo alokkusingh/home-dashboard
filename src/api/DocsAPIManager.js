@@ -3,7 +3,7 @@ import {refreshToken} from "../utils/SessionUtils";
 
 const BASE_URL = '/home/docs/pdfs'; // Adjust context path to match your application configuration
 
-export async function fetchPdfTreeJson() {
+export async function fetchDocsTreeJson() {
     // const response = await fetch(`${BASE_URL}/tree`);
     // if (!response.ok) throw new Error('Failed to fetch PDF tree');
     // return response.json();
@@ -16,7 +16,7 @@ export async function fetchPdfTreeJson() {
 
     if (responsePromise.status === 401) {
         refreshToken();
-        return fetchPdfTreeJson();
+        return fetchDocsTreeJson();
     }
     if (responsePromise.status === 403) {
         return;
@@ -27,7 +27,7 @@ export async function fetchPdfTreeJson() {
     return body;
 }
 
-export async function fetchPdfStream(selectedPath) {
+export async function fetchDocsStream(selectedPath) {
     // const response = await fetch(`${BASE_URL}/tree`);
     // if (!response.ok) throw new Error('Failed to fetch PDF tree');
     // return response.json();
@@ -44,7 +44,7 @@ export async function fetchPdfStream(selectedPath) {
 
     if (responsePromise.status === 401) {
         refreshToken();
-        return fetchPdfStream(selectedPath);
+        return fetchDocsStream(selectedPath);
     }
     if (responsePromise.status === 403) {
         return;
