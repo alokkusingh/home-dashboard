@@ -3,7 +3,7 @@ import { Col, Row, Button, Input } from 'reactstrap';
 import { fetchDocsTreeJson, fetchDocsStream } from './api/DocsAPIManager.js';
 import { getHeadersNoAuthJson } from "./api/APIUtils";
 
-// Recursive PDF Folder Tree Node Component
+// Recursive Folder Tree Node Component
 class DocsTreeNode extends Component {
     constructor(props) {
         super(props);
@@ -45,7 +45,7 @@ class DocsTreeNode extends Component {
                         onClick={this.toggleOpen}
                         style={{ cursor: 'pointer', padding: '6px 0', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px', userSelect: 'none' }}
                     >
-                        {isOpen ? '📂' : '📁'} {node.name}
+                        {isOpen ? '📁' : '📁'} {node.name}
                     </div>
                     {isOpen && node.children && (
                         <div style={{ borderLeft: '1px dashed #ccc', marginLeft: '6px' }}>
@@ -69,6 +69,13 @@ class DocsTreeNode extends Component {
 
         if (!matchesSearch) return null;
 
+        // Clean file extensions for rendering
+        const displayName = node.name
+            .replace(/\.pdf$/i, '')
+            .replace(/\.png$/i, '')
+            .replace(/\.jpg$/i, '')
+            .replace(/\.jpeg$/i, '');
+
         return (
             <div
                 onClick={() => onPdfSelect(node.relativePath)}
@@ -82,20 +89,21 @@ class DocsTreeNode extends Component {
                     transition: 'background-color 0.2s'
                 }}
             >
-                📕 {node.name.replace('.pdf', '').replace('.PDF', '')}
+                📄 {displayName}
             </div>
         );
     }
 }
 
-// Main PDF Viewer Dashboard Page
+// Main Media Viewer Dashboard Page
 class HomeDocs extends Component {
     constructor(props) {
         super(props);
         this.state = {
             pdfTree: null,
             selectedPath: '',
-            pdfBlobUrl: '', // FIX: Explicitly initialize state property to prevent RAM tracking crash
+            pdfBlobUrl: '',
+            fileType: '', // Tracks the dynamic Content-Type (e.g., 'application/pdf' or 'image/png')
             isSidebarOpen: true,
             searchQuery: ''
         };
@@ -106,12 +114,11 @@ class HomeDocs extends Component {
             const data = await fetchDocsTreeJson();
             this.setState({ pdfTree: data });
         } catch (error) {
-            console.error("Error loading PDF tree configuration structure:", error);
+            console.error("Error loading document tree configuration structure:", error);
         }
     }
 
     componentWillUnmount() {
-        // Clean up binary resource links on exit to prevent framework memory leaks
         if (this.state.pdfBlobUrl) {
             URL.revokeObjectURL(this.state.pdfBlobUrl);
         }
@@ -125,13 +132,12 @@ class HomeDocs extends Component {
         this.setState({ searchQuery: e.target.value });
     };
 
-    // FIX: Renamed method cleanly from handlePdhandlePdfSelect to handlePdfSelect
     handlePdfSelect = async (relativePath) => {
         if (this.state.pdfBlobUrl) {
             URL.revokeObjectURL(this.state.pdfBlobUrl);
         }
 
-        this.setState({ selectedPath: relativePath, pdfBlobUrl: '' });
+        this.setState({ selectedPath: relativePath, pdfBlobUrl: '', fileType: '' });
 
         try {
             const streamUrl = `/home/docs/pdfs/stream?path=${encodeURIComponent(relativePath)}`;
@@ -146,17 +152,23 @@ class HomeDocs extends Component {
                 throw new Error(`Document download error. Status: ${response.status}`);
             }
 
+            // Extract the true content type header from your Cloudflare/API response
+            const contentType = response.headers.get('Content-Type') || '';
+
             const blob = await response.blob();
             const localBlobUrl = URL.createObjectURL(blob);
 
-            this.setState({ pdfBlobUrl: localBlobUrl });
+            this.setState({
+                pdfBlobUrl: localBlobUrl,
+                fileType: contentType
+            });
         } catch (error) {
             console.error("Failed to proxy frame target source:", error);
         }
     };
 
     render() {
-        const { pdfTree, selectedPath, pdfBlobUrl, isSidebarOpen, searchQuery } = this.state;
+        const { pdfTree, selectedPath, pdfBlobUrl, fileType, isSidebarOpen, searchQuery } = this.state;
 
         const filteredTree = pdfTree ? pdfTree.filter(node => {
             if (!searchQuery) return true;
@@ -168,11 +180,14 @@ class HomeDocs extends Component {
             return checkNodeDeep(node);
         }) : [];
 
+        // Check if the current file type is an image
+        const isImage = fileType.startsWith('image/');
+
         return (
             <div className="container-fluid" style={{ padding: '20px' }}>
                 <div className="mb-3 d-flex align-items-center">
                     <Button color="secondary" outline size="sm" onClick={this.toggleSidebar}>
-                        {isSidebarOpen ? '📁 Hide Document Library' : '📂 Show Document Library'}
+                        {isSidebarOpen ? ' Hide Media Library' : ' Show Media Library'}
                     </Button>
                 </div>
 
@@ -183,26 +198,26 @@ class HomeDocs extends Component {
                             <div className="mb-3">
                                 <Input
                                     type="text"
-                                    placeholder="Search documents..."
+                                    placeholder="Search library..."
                                     value={searchQuery}
                                     onChange={this.handleSearchChange}
                                     size="sm"
                                 />
                             </div>
-                            <h4 className="mb-3" style={{ fontSize: '1.25rem' }}>Doc Explorer</h4>
+                            <h4 className="mb-3" style={{ fontSize: '1.25rem' }}>Explorer</h4>
                             {filteredTree.length > 0 ? (
                                 filteredTree.map((childNode, idx) => (
                                     <DocsTreeNode
                                         key={idx}
                                         node={childNode}
-                                        onPdfSelect={this.handlePdfSelect} // Connected cleanly now
+                                        onPdfSelect={this.handlePdfSelect}
                                         selectedPath={selectedPath}
                                         searchFilter={searchQuery}
                                     />
                                 ))
                             ) : (
                                 <div className="text-muted small pl-2">
-                                    {pdfTree ? "No matching documents found." : "Loading explorer..."}
+                                    {pdfTree ? "No matching files found." : "Loading explorer..."}
                                 </div>
                             )}
                         </Col>
@@ -211,24 +226,32 @@ class HomeDocs extends Component {
                     {/* Full Canvas Viewport Presentation Block */}
                     <Col md={isSidebarOpen ? "9" : "12"} style={{ paddingLeft: isSidebarOpen ? '30px' : '15px' }}>
                         {selectedPath ? (
-                            <div style={{ width: '100%', height: '82vh', borderRadius: '4px', border: '1px solid #ccc', overflow: 'hidden' }}>
+                            <div style={{ width: '100%', height: '82vh', borderRadius: '4px', border: '1px solid #ccc', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8f9fa' }}>
                                 {pdfBlobUrl ? (
-                                    <embed
-                                        src={pdfBlobUrl}
-                                        type="application/pdf"
-                                        width="100%"
-                                        height="100%"
-                                    />
+                                    isImage ? (
+                                        <img
+                                            src={pdfBlobUrl}
+                                            alt="Loaded asset preview"
+                                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                        />
+                                    ) : (
+                                        <embed
+                                            src={pdfBlobUrl}
+                                            type="application/pdf"
+                                            width="100%"
+                                            height="100%"
+                                        />
+                                    )
                                 ) : (
-                                    <div className="text-center text-muted" style={{ marginTop: '180px' }}>
+                                    <div className="text-center text-muted">
                                         Streaming document structure bytes safely...
                                     </div>
                                 )}
                             </div>
                         ) : (
                             <div className="text-muted text-center" style={{ marginTop: '180px' }}>
-                                <h3>No Document Loaded</h3>
-                                <p>Select a PDF asset from the repository list tree to render its content view panel.</p>
+                                <h3>No File Loaded</h3>
+                                <p>Select an asset from the repository list tree to render its content view panel.</p>
                             </div>
                         )}
                     </Col>
