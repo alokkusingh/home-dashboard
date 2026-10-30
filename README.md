@@ -38,6 +38,11 @@ npm install -g pbf
 ```shell
 npm install pbf --save
 ```
+#### Add the markdown dependencies
+```shell
+npm install react-markdown@8.0.7 remark-gfm@3.0.1 --save
+npm install rehype-raw@6.1.1 --save
+```
 #### Generate JS from PROTO
 ```shell
 pbf src/proto/getInvestmentsResponse.proto  >src/proto/getInvestmentsResponse.js
@@ -47,7 +52,7 @@ pbf src/proto/getRawInvestmentsResponse.proto  >src/proto/getRawInvestmentsRespo
 ### Docker Build and Deploy
 1. Build
 ```shell
-docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:1.4.0 .
+ docker build -t alokkusingh/home-dashboard:latest -t alokkusingh/home-dashboard:1.4.0 .
 ```
 2. Push
 ```shell

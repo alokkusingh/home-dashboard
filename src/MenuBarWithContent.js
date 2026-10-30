@@ -17,6 +17,8 @@ import FormExpense from './FormExpense';
 import FormEstate from './FormEstate';
 import Timeline from "./Timeline";
 import MedicalTracker from "./MedicalTracker";
+import HomeNotes from "./HomeNotes";
+import HomeDocs from "./HomeDocs";
 
 export default class MenuBarWithContent extends Component {
     state = {activeItem: 'Summary'}
@@ -76,6 +78,12 @@ export default class MenuBarWithContent extends Component {
             }
             if (page === 'medical-tracker') {
                 return <MedicalTracker/>
+            }
+            if (page === 'notes') {
+                return <HomeNotes/>
+            }
+            if (page === 'document') {
+                return <HomeDocs/>
             }
 
             return <TbdPage/>;
@@ -246,6 +254,11 @@ export default class MenuBarWithContent extends Component {
                                            onClick={this.handleItemClick}>
                                     <Icon name='file alternate outline'/>
                                     Document
+                                </Menu.Item>
+                                <Menu.Item name='notes' active={activeItem === 'notes'}
+                                           onClick={this.handleItemClick}>
+                                    <Icon name='file alternate outline'/>
+                                    Notes
                                 </Menu.Item>
                             </Menu.Menu>
 

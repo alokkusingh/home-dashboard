@@ -64,6 +64,32 @@
   height: 40px;
 }
 
+/* Add this inside your notes CSS wrapper or import layer */
+.prose-layout table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.prose-layout th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  padding: 12px;
+  text-align: left;
+}
+
+.prose-layout td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: top;
+}
+
+.prose-layout tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
 
 @keyframes App-logo-spin {
   from {
