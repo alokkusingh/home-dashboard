@@ -685,7 +685,7 @@ class HomeCards extends Component {
                         </Col>
                         <Col l={4} m={4} s={4}>
                             <TileCard title="Loan"
-                                      x={{"value": NumberFormatNoCurrency(loanAmount), "text": "Dept"}}
+                                      x={{"value": NumberFormatNoCurrency(loanAmount), "text": "Debt"}}
                                       a={{
                                           "value": NumberFormatNoDecimal(loanInterestLastMonth),
                                           "text": getPreviousMonthFull() + ' Interest'
@@ -816,7 +816,7 @@ class HomeCards extends Component {
                                 </Table>
                                 <div align="left" style={{fontSize: '.6rem'}}>
                                     Notes: <br/>
-                                    1. Inc = Income, which includes salray credited in bank + investment by company -
+                                    1. Inc = Income, which includes salary credited in bank + investment by company -
                                     tax<br/>
                                     2. Exp = Expense <br/>
                                     3. Tra = Transfer, transferred to family and friend <br/>
