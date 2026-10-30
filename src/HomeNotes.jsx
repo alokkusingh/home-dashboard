@@ -1,28 +1,26 @@
 import React, { Component } from 'react';
-import { Col, Row, Button, Input } from 'reactstrap';
+import { Col, Row, Button, Input, Spinner } from 'reactstrap';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { fetchFileTreeJson, fetchNoteContentText } from './api/NotesAPIManager.js';
 import rehypeRaw from 'rehype-raw';
-import {getHeadersNoAuthJson} from "./api/APIUtils";
+import { fetchFileTreeJson, fetchNoteContentText } from './api/NotesAPIManager.js';
+import { getHeadersNoAuthJson } from "./api/APIUtils";
 
-// Recursive File Tree Node Subcomponent
+// Enhanced Folder Tree Node Component
 class TreeNode extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isOpen: false
-        };
+        this.state = { isOpen: false };
     }
 
-    // Automatically expand folders if a search filter is currently applied
     componentDidUpdate(prevProps) {
         if (this.props.searchFilter !== prevProps.searchFilter && this.props.searchFilter) {
             this.setState({ isOpen: true });
         }
     }
 
-    toggleOpen = () => {
+    toggleOpen = (e) => {
+        e.stopPropagation();
         this.setState(prevState => ({ isOpen: !prevState.isOpen }));
     };
 
@@ -33,11 +31,8 @@ class TreeNode extends Component {
         if (!node) return null;
 
         if (node.directory) {
-            // Filter children to match search query
             const filteredChildren = node.children ? node.children.filter(child => {
                 if (!searchFilter) return true;
-
-                // Helper to check if name matches or any deep descendants match
                 const matchesDeep = (n) => {
                     if (n.name.toLowerCase().includes(searchFilter.toLowerCase())) return true;
                     if (n.children) return n.children.some(matchesDeep);
@@ -52,12 +47,26 @@ class TreeNode extends Component {
                 <div style={{ marginLeft: '12px' }}>
                     <div
                         onClick={this.toggleOpen}
-                        style={{ cursor: 'pointer', padding: '6px 0', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px', userSelect: 'none' }}
+                        style={{
+                            cursor: 'pointer',
+                            padding: '6px 8px',
+                            fontWeight: '600',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            userSelect: 'none',
+                            borderRadius: '4px',
+                            fontSize: '0.9rem'
+                        }}
                     >
-                        {isOpen ? '📂' : '📁'} {node.name || "Root"}
+                        <span style={{ fontSize: '0.75rem', color: '#6c757d', display: 'inline-block', width: '12px' }}>
+                            {isOpen ? '▼' : '▶'}
+                        </span>
+                        <span>{isOpen ? '📂' : '📁'}</span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{node.name || "Root"}</span>
                     </div>
                     {isOpen && node.children && (
-                        <div style={{ borderLeft: '1px dashed #ccc', marginLeft: '6px' }}>
+                        <div style={{ borderLeft: '1px dashed #ced4da', marginLeft: '14px', paddingLeft: '4px' }}>
                             {filteredChildren.map((child, idx) => (
                                 <TreeNode
                                     key={idx}
@@ -73,7 +82,6 @@ class TreeNode extends Component {
             );
         }
 
-        // File Leaf Node
         const isSelected = selectedPath === node.relativePath;
         const matchesSearch = !searchFilter || node.name.toLowerCase().includes(searchFilter.toLowerCase());
 
@@ -84,21 +92,29 @@ class TreeNode extends Component {
                 onClick={() => onFileSelect(node.relativePath)}
                 style={{
                     marginLeft: '20px',
-                    padding: '4px 8px',
+                    padding: '6px 12px',
                     cursor: 'pointer',
                     borderRadius: '4px',
                     backgroundColor: isSelected ? '#007bff' : 'transparent',
-                    color: isSelected ? '#fff' : '#333',
-                    transition: 'background-color 0.2s'
+                    color: isSelected ? '#fff' : '#495057',
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '2px',
+                    transition: 'all 0.15s ease-in-out'
                 }}
             >
-                📄 {node.name.replace('.md', '')}
+                <span>📝</span>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {node.name.replace(/\.md$/i, '')}
+                </span>
             </div>
         );
     }
 }
 
-// Main Page Component
+// Optimized Notes Explorer Dashboard
 class HomeNotes extends Component {
     constructor(props) {
         super(props);
@@ -107,8 +123,10 @@ class HomeNotes extends Component {
             selectedPath: '',
             markdownContent: '',
             isSidebarOpen: true,
-            searchQuery: '' // State tracker for live file search
+            searchQuery: '',
+            isLoadingFile: false
         };
+        this.activeBlobUrls = []; // Track generated image URLs to prevent RAM leaks
     }
 
     async componentDidMount() {
@@ -120,6 +138,17 @@ class HomeNotes extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.cleanupActiveBlobs();
+    }
+
+    cleanupActiveBlobs = () => {
+        if (this.activeBlobUrls.length > 0) {
+            this.activeBlobUrls.forEach(url => URL.revokeObjectURL(url));
+            this.activeBlobUrls = [];
+        }
+    };
+
     toggleSidebar = () => {
         this.setState(prevState => ({ isSidebarOpen: !prevState.isSidebarOpen }));
     };
@@ -129,22 +158,20 @@ class HomeNotes extends Component {
     };
 
     handleFileSelect = async (relativePath) => {
-        // Import your header utility if it isn't already at the top of the file
-        // import { getHeadersNoAuthJson } from './utils/HeaderUtil.js';
+        // Clean up memory from the previous note's embedded images before fetching the next one
+        this.cleanupActiveBlobs();
 
-        this.setState({ selectedPath: relativePath, markdownContent: 'Loading content...' });
+        this.setState({ selectedPath: relativePath, markdownContent: '', isLoadingFile: true });
+
         try {
             let textContent = await fetchNoteContentText(relativePath);
 
-            // 1. Strip out Front Matter metadata blocks
+            // Strip Front Matter metadata
             textContent = textContent.replace(/^---[\s\S]*?---/, '');
 
-            // 2. Discover all WikiLink image tokens: ![[Image Name.ext]]
             const imageMatches = [...textContent.matchAll(/!\[\[(.*?)\]\]/g)];
             const imageBlobMap = {};
-
-            // 3. Pre-fetch all images concurrently using your required authentication headers
-            const IMAGE_BASE_URL = '/home/docs/notes/images'; // Relative proxy path
+            const IMAGE_BASE_URL = '/home/docs/notes/images';
 
             await Promise.all(imageMatches.map(async (match) => {
                 const cleanFileName = match[1].trim();
@@ -153,41 +180,41 @@ class HomeNotes extends Component {
                 try {
                     const response = await fetch(proxyUrl, {
                         method: 'GET',
-                        headers: getHeadersNoAuthJson(), // Injects mandatory validation headers
-                        credentials: 'include'           // Passes cookies along if needed
+                        headers: getHeadersNoAuthJson(),
+                        credentials: 'include'
                     });
 
                     if (response.ok) {
                         const blob = await response.blob();
-                        // Generate a local browser URL pointer bound to your frontend workspace
-                        imageBlobMap[cleanFileName] = URL.createObjectURL(blob);
+                        const localBlobUrl = URL.createObjectURL(blob);
+                        imageBlobMap[cleanFileName] = localBlobUrl;
+                        this.activeBlobUrls.push(localBlobUrl); // Queue url for layout garbage collection
                     }
                 } catch (err) {
                     console.error(`Failed to pre-fetch asset: ${cleanFileName}`, err);
                 }
             }));
 
-            // 4. Replace WikiLink image text with a direct HTML tag pointing to our loaded Blobs
+            // Replace WikiLinks with clean markdown preview images
             textContent = textContent.replace(/!\[\[(.*?)\]\]/g, (match, fileName) => {
                 const cleanFileName = fileName.trim();
-                // Use the pre-fetched local safe memory URL, fallback to raw proxy URL if fetch failed
                 const finalImageUrl = imageBlobMap[cleanFileName] || `${IMAGE_BASE_URL}/${encodeURIComponent(cleanFileName)}`;
-
-                return `<img src="${finalImageUrl}" alt="${cleanFileName}" style="max-width:100%; height:auto; border-radius:4px; margin:10px 0; display:block;" />`;
+                return `<img src="${finalImageUrl}" alt="${cleanFileName}" style="max-width:100%; height:auto; border-radius:6px; margin:14px 0; display:block; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" />`;
             });
 
-            this.setState({ markdownContent: textContent });
+            this.setState({ markdownContent: textContent, isLoadingFile: false });
         } catch (error) {
             console.error("Error loading markdown file content:", error);
-            this.setState({ markdownContent: "### Error\nFailed to load the file contents." });
+            this.setState({
+                markdownContent: "### ⚠️ Error\nFailed to load the file contents properly.",
+                isLoadingFile: false
+            });
         }
     };
 
-
     render() {
-        const { fileTree, selectedPath, markdownContent, isSidebarOpen, searchQuery } = this.state;
+        const { fileTree, selectedPath, markdownContent, isSidebarOpen, searchQuery, isLoadingFile } = this.state;
 
-        // Apply a high-level filter to the root tree elements
         const filteredTree = fileTree ? fileTree.filter(node => {
             if (!searchQuery) return true;
             const checkNodeDeep = (n) => {
@@ -198,67 +225,88 @@ class HomeNotes extends Component {
             return checkNodeDeep(node);
         }) : [];
 
+        const currentFilename = selectedPath.split('/').pop()?.replace(/\.md$/i, '') || '';
+
         return (
-            <div className="container-fluid" style={{ padding: '20px' }}>
+            <div className="container-fluid" style={{ padding: '20px', height: '100vh', display: 'flex', flexDirection: 'column' }}>
                 {/* Control Action Header */}
                 <div className="mb-3 d-flex align-items-center">
-                    <Button
-                        color="secondary"
-                        outline
-                        size="sm"
-                        onClick={this.toggleSidebar}
-                        style={{ fontWeight: '500' }}
-                    >
-                        {isSidebarOpen ? '📁 Hide Sidebar' : '📂 Show Sidebar'}
+                    <Button color="secondary" outline size="sm" onClick={this.toggleSidebar}>
+                        {isSidebarOpen ? '← Hide Sidebar' : '→ Show Sidebar'}
                     </Button>
                 </div>
 
-                <Row>
+                <Row className="flex-grow-1" style={{ minHeight: 0 }}>
                     {/* Collapsible Sidebar Explorer with Input Filter */}
                     {isSidebarOpen && (
-                        <Col md="3" style={{ borderRight: '1px solid #dee2e6', maxHeight: '85vh', overflowY: 'auto' }}>
-                            <div className="mb-3">
+                        <Col md="3" className="d-flex flex-column" style={{ borderRight: '1px solid #dee2e6', height: '82vh' }}>
+                            <div className="mb-2">
                                 <Input
                                     type="text"
                                     placeholder="Search notes..."
                                     value={searchQuery}
                                     onChange={this.handleSearchChange}
                                     size="sm"
+                                    style={{ borderRadius: '6px' }}
                                 />
                             </div>
-                            <h4 className="mb-3" style={{ fontSize: '1.25rem' }}>Notes Explorer</h4>
-                            {filteredTree.length > 0 ? (
-                                filteredTree.map((childNode, idx) => (
-                                    <TreeNode
-                                        key={idx}
-                                        node={childNode}
-                                        onFileSelect={this.handleFileSelect}
-                                        selectedPath={selectedPath}
-                                        searchFilter={searchQuery}
-                                    />
-                                ))
-                            ) : (
-                                <div className="text-muted small pl-2">
-                                    {fileTree ? "No matching notes found." : "Loading explorer..."}
-                                </div>
-                            )}
+                            <div style={{ overflowY: 'auto', flexGrow: 1, paddingRight: '4px' }}>
+                                <h4 className="mb-3" style={{ fontSize: '1.15rem', paddingLeft: '8px', color: '#495057' }}>Notes Explorer</h4>
+                                {filteredTree.length > 0 ? (
+                                    filteredTree.map((childNode, idx) => (
+                                        <TreeNode
+                                            key={idx}
+                                            node={childNode}
+                                            onFileSelect={this.handleFileSelect}
+                                            selectedPath={selectedPath}
+                                            searchFilter={searchQuery}
+                                        />
+                                    ))
+                                ) : (
+                                    <div className="text-muted small pl-2 mt-2">
+                                        {fileTree ? "No matching notes found." : "Loading explorer tree..."}
+                                    </div>
+                                )}
+                            </div>
                         </Col>
                     )}
 
-                    {/* Fluid Main Content Area */}
-                    <Col md={isSidebarOpen ? "9" : "12"} style={{ paddingLeft: isSidebarOpen ? '30px' : '15px', maxHeight: '85vh', overflowY: 'auto' }}>
+                    {/* Fluid Main Content Area Presentation block */}
+                    <Col md={isSidebarOpen ? "9" : "12"} className="d-flex flex-column" style={{ paddingLeft: isSidebarOpen ? '24px' : '15px', height: '82vh' }}>
                         {selectedPath ? (
-                            <article className="prose" style={{ maxWidth: isSidebarOpen ? '800px' : '100%', transition: 'max-width 0.2s' }}>
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    rehypePlugins={[rehypeRaw]}
-                                >
-                                    {markdownContent}
-                                </ReactMarkdown>
-                            </article>
+                            <div className="d-flex flex-column w-100 h-100" style={{ border: '1px solid #ced4da', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#fff' }}>
+
+                                {/* Action Toolbar Header */}
+                                <div className="d-flex justify-content-between align-items-center bg-light border-bottom px-3 py-2" style={{ minHeight: '48px' }}>
+                                    <div style={{ maxWidth: '80%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: '600', color: '#343a40' }}>
+                                        {currentFilename}
+                                    </div>
+                                </div>
+
+                                {/* Active Markdown viewport container */}
+                                <div className="flex-grow-1 p-4" style={{ backgroundColor: '#fff', overflowY: 'auto' }}>
+                                    {isLoadingFile ? (
+                                        <div className="d-flex flex-column justify-content-center align-items-center h-100 text-muted">
+                                            <Spinner size="md" color="primary" className="mb-2" />
+                                            <span>Parsing note links securely...</span>
+                                        </div>
+                                    ) : (
+                                        <article className="prose" style={{ maxWidth: '100%', color: '#212529', lineHeight: '1.6' }}>
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
+                                                rehypePlugins={[rehypeRaw]}
+                                            >
+                                                {markdownContent}
+                                            </ReactMarkdown>
+                                        </article>
+                                    )}
+                                </div>
+                            </div>
                         ) : (
-                            <div className="text-muted text-center" style={{ marginTop: '150px' }}>
-                                <h3>No Note Selected</h3>
+                            <div className="text-muted text-center m-auto">
+                                <span style={{ fontSize: '3rem' }}>📓</span>
+                                <h4 className="mt-2">No Note Selected</h4>
+                                <p className="text-muted small">Select a file from the tree workspace configuration matrix to display its markdown content view panels.</p>
                             </div>
                         )}
                     </Col>
