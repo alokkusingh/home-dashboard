@@ -85,6 +85,18 @@ class DocsTreeNode extends Component {
 
         if (!matchesSearch) return null;
 
+        // Dynamic extension verification rule for distinct file icons
+        const filenameLower = node.name.toLowerCase();
+        let fileIcon = '📄'; // Default fallback descriptor
+
+        if (filenameLower.endsWith('.pdf')) {
+            fileIcon = '📕'; // Red book matching typical PDF software branding
+        } else if (filenameLower.endsWith('.png')) {
+            fileIcon = '🖼️'; // Framed picture indicator for PNG graphics
+        } else if (filenameLower.endsWith('.jpg') || filenameLower.endsWith('.jpeg')) {
+            fileIcon = '📷'; // Camera graphic tracking standard JPG/JPEG photography logs
+        }
+
         const displayName = node.name
             .replace(/\.pdf$/i, '')
             .replace(/\.png$/i, '')
@@ -109,7 +121,8 @@ class DocsTreeNode extends Component {
                     transition: 'all 0.15s ease-in-out'
                 }}
             >
-                <span>📄</span>
+                {/* Dynamically assigned file format indicator */}
+                <span style={{ minWidth: '18px' }}>{fileIcon}</span>
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</span>
             </div>
         );
