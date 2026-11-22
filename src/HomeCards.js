@@ -282,6 +282,8 @@ class HomeCards extends Component {
         if (!targetDate) return;
 
         console.log("Processing expense drilldown modal for Date: ", targetDate);
+        // Pass this variable to display in the modal header for clarity on which date's expenses are being shown
+        const expenseModalDescription = `Expenses for ${format(parseISO(targetDate), 'dd MMM yyyy')}`;
 
         // 2. Optimize lookup traversal using .find() instead of looping over every single entry via .forEach
         const dayRecord = this.state.monthExpensesByDay.find(record => record.date === targetDate);
@@ -296,10 +298,10 @@ class HomeCards extends Component {
 
             return (
                 <tr key={`day-expense-${index}-${expense.date || targetDate}`}>
-                    <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left' }}>{expense.date}</td>
                     <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left', fontWeight: '500' }}>{expense.head}</td>
                     <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left', color: '#4a5568' }}>{expense.comment}</td>
                     <td className="table-cell-right" style={{ fontSize: '.8rem', textAlign: 'right', fontWeight: '600' }}>{formattedAmount}</td>
+                    <td className="table-cell-left" style={{ fontSize: '.8rem', textAlign: 'left', fontWeight: '500' }}>{expense.category}</td>
                 </tr>
             );
         });
@@ -307,6 +309,7 @@ class HomeCards extends Component {
         // 4. Consolidate into a single batched state mutation pass to prevent multi-render thread lags
         this.setState({
             dayExpensesRows: dayExpensesRows,
+            expenseModalDescription: expenseModalDescription,
             expenseModalShow: !this.state.expenseModalShow
         });
     };
@@ -318,9 +321,10 @@ class HomeCards extends Component {
     showCategoryExpenseModal = (event) => {
         console.log("event: ", event.target.getAttribute("id"))
         let expenses = [];
+        const expenseCategoryModelDescription = `Expenses for Category: ${event.target.getAttribute("id")}`;
         this.state.monthExpensesByCategory.forEach(
             record => {
-                if (record.category == event.target.getAttribute("id")) {
+                if (record.category === event.target.getAttribute("id")) {
                     expenses = record.expenses;
                 }
             }
@@ -334,7 +338,7 @@ class HomeCards extends Component {
             </tr>
         });
 
-        this.setState({catExpensesRows: catExpensesRows});
+        this.setState({catExpensesRows: catExpensesRows, expenseCategoryModelDescription: expenseCategoryModelDescription});
 
         this.setState({expenseCatModalShow: !this.state.expenseCatModalShow});
     }
@@ -744,8 +748,9 @@ class HomeCards extends Component {
                                 </Table>
                                 <Modal isOpen={expenseCatModalShow} onClose={this.closeCategoryExpenseModal}
                                        contentLabel="Expenses" modalClassName="custom-modal-style">
-                                    <ModalHeader toggle={this.closeCategoryExpenseModal}>Category
-                                        Transactions</ModalHeader>
+                                    <ModalHeader toggle={this.closeCategoryExpenseModal}>
+                                        {this.state.expenseCategoryModelDescription}
+                                    </ModalHeader>
                                     <Table striped bordered hover>
                                         <thead>
                                         <tr>
@@ -778,14 +783,16 @@ class HomeCards extends Component {
                                 </Table>
                                 <Modal isOpen={expenseModalShow} onClose={this.closeExpenseModal}
                                        contentLabel="Expenses" modalClassName="custom-modal-style">
-                                    <ModalHeader toggle={this.closeExpenseModal}>Day Transactions</ModalHeader>
+                                    <ModalHeader toggle={this.closeExpenseModal}>
+                                        {this.state.expenseModalDescription}
+                                    </ModalHeader>
                                     <Table striped bordered hover>
                                         <thead>
                                         <tr>
-                                            <th>Date</th>
                                             <th>Head</th>
                                             <th>Comment</th>
                                             <th>Amount</th>
+                                            <th>Category</th>
                                         </tr>
                                         </thead>
                                         <tbody>

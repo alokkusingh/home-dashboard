@@ -326,6 +326,8 @@ class ExpenseList extends Component {
         }
 
         console.log("event: ", {yearMonth, category})
+        const expenseCategoryModelDescription = `Expenses for ${category} in ${formatYearMonth(yearMonth.split('-')[0], yearMonth.split('-')[1])}`;
+        this.setState({expenseCategoryModelDescription: expenseCategoryModelDescription});
 
         fetchExpensesForYearMonthAndCategoryJson(yearMonth, category)
             .then(expensesJson => {
@@ -354,6 +356,8 @@ class ExpenseList extends Component {
     showYearlyExpenseCategoryModal = (event) => {
         const year = event.currentTarget.getAttribute("year");
         const category = event.currentTarget.getAttribute("category");
+        const expenseCategoryModelDescription = `Expenses for ${category} in ${year}`;
+        this.setState({expenseCategoryModelDescription: expenseCategoryModelDescription});
         if (!year || !category || year === 'null' || category === 'null') {
             return;
         }
@@ -513,7 +517,7 @@ class ExpenseList extends Component {
                             </ButtonDropdown>
                         </div>
                         <Card className="teal lighten-4" textClassName="black-text"
-                              title="Monthly Expenses by Category">
+                              title="Month Expenses by Category">
                             <Table striped bordered hover size="sm">
                                 <thead>
                                 <tr>
@@ -568,7 +572,7 @@ class ExpenseList extends Component {
                                 </DropdownMenu>
                             </ButtonDropdown>
                         </div>
-                        <Card className="teal lighten-4" textClassName="black-text" title="Yearly Expenses by Category">
+                        <Card className="teal lighten-4" textClassName="black-text" title="Year Expenses by Category">
                             <Table striped bordered hover size="sm">
                                 <thead>
                                 <tr>
@@ -615,7 +619,9 @@ class ExpenseList extends Component {
                             </Table>
                             <Modal isOpen={expenseCategoryModalShow} onClose={this.closeExpenseCategoryModal}
                                    modalClassName="custom-modal-style">
-                                <ModalHeader toggle={this.closeExpenseCategoryModal}>Expense Entries</ModalHeader>
+                                <ModalHeader toggle={this.closeExpenseCategoryModal}>
+                                    {this.state.expenseCategoryModelDescription}
+                                </ModalHeader>
                                 <Table striped bordered hover>
                                     <thead>
                                     <tr>
